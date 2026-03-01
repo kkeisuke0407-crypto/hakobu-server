@@ -1,24 +1,14 @@
 const express = require('express');
+const path = require('path');
 const app = express();
 
-// CORSヘッダーを全リクエストに手動付与
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Content-Type');
-  if (req.method === 'OPTIONS') return res.sendStatus(200);
-  next();
-});
-
 app.use(express.json());
-
-app.get('/health', (req, res) => res.json({ ok: true }));
+app.use(express.static(path.join(__dirname, 'public')));
 
 app.post('/api/chat', async (req, res) => {
   const { messages, system } = req.body;
   const body = { model: 'claude-haiku-4-5-20251001', max_tokens: 1000, messages };
   if (system) body.system = system;
-
   try {
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
@@ -37,6 +27,10 @@ app.post('/api/chat', async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+
+app.get('/health', (req, res) => res.json({ ok: true }));
+
+app.get('*', (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log('listening on ' + PORT));
