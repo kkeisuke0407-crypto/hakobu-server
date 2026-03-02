@@ -276,8 +276,35 @@ html,body{height:100%;background:#B8CCB8;font-family:'M PLUS Rounded 1c',sans-se
 .dmenu-item:hover{background:var(--bg);}
 
 /* ── プロジェクト画面 / タスク画面 ── */
-#s-proj,#s-tasks{display:none;flex-direction:column;height:100%;}
-#s-proj.on,#s-tasks.on{display:flex;}
+/* proj/tasks は scr と同じシステムで管理 */
+#s-proj,#s-tasks{position:absolute;inset:0;display:flex;flex-direction:column;opacity:0;pointer-events:none;transition:opacity .18s;background:var(--bg);}
+#s-proj.on,#s-tasks.on{opacity:1;pointer-events:all;}
+/* プロジェクト詳細展開 */
+.proj-card{background:#fff;border-radius:20px;margin-bottom:12px;box-shadow:0 2px 8px rgba(0,0,0,.07);overflow:hidden;}
+.proj-card-summary{padding:16px;cursor:pointer;display:flex;align-items:center;gap:12px;}
+.proj-card-tasks{display:none;border-top:1px solid var(--bdr);}
+.proj-card.expanded .proj-card-tasks{display:block;}
+.proj-task-row{display:flex;align-items:center;gap:10px;padding:11px 14px;border-bottom:1px solid var(--bdr);cursor:pointer;}
+.proj-task-row:last-child{border-bottom:none;}
+.proj-task-row:active{background:var(--bg);}
+.proj-task-name{flex:1;font-size:13px;color:var(--t1);}
+.proj-task-name.done{color:var(--t3);text-decoration:line-through;}
+/* カレンダービュー */
+.cal-view-tabs{display:flex;gap:6px;padding:10px 14px 0;}
+.cal-view-tab{padding:6px 14px;border-radius:20px;border:none;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer;background:var(--bg);color:var(--t2);}
+.cal-view-tab.on{background:var(--gr);color:#fff;}
+.task-cal-grid{padding:12px;overflow-y:auto;flex:1;padding-bottom:90px;}
+.task-day-row{margin-bottom:14px;}
+.task-day-label{font-size:11px;font-weight:700;color:var(--t3);letter-spacing:1px;margin-bottom:6px;padding:0 2px;}
+.task-day-label.today{color:var(--gr);}
+.task-cal-item{background:#fff;border-radius:12px;padding:10px 13px;margin-bottom:6px;display:flex;align-items:center;gap:10px;box-shadow:0 1px 4px rgba(0,0,0,.06);cursor:pointer;}
+.task-cal-item.done-item{opacity:.5;}
+/* プロジェクトビュー */
+.task-proj-section{margin-bottom:16px;}
+.task-proj-header{display:flex;align-items:center;gap:8px;padding:8px 2px;margin-bottom:6px;}
+.task-proj-header-icon{font-size:18px;}
+.task-proj-header-name{font-size:13px;font-weight:700;color:var(--t1);}
+.task-proj-header-pct{font-size:11px;color:var(--t2);margin-left:auto;}
 .proj-list{padding:14px;overflow-y:auto;flex:1;padding-bottom:90px;}
 .task-screen-list{padding:14px;overflow-y:auto;flex:1;padding-bottom:90px;}
 .proj-card{background:#fff;border-radius:20px;padding:16px;margin-bottom:12px;box-shadow:0 2px 8px rgba(0,0,0,.07);cursor:pointer;}
@@ -321,16 +348,18 @@ html,body{height:100%;background:#B8CCB8;font-family:'M PLUS Rounded 1c',sans-se
   <!-- HOME -->
   <div class="scr" id="s-home">
     <div class="hdr" id="home-hdr" style="display:flex;align-items:center;justify-content:space-between">
-      <div>
-        <div style="font-size:18px;font-weight:800;color:var(--t1)" id="home-title">田中家のOS</div>
-        <div style="font-size:11px;color:var(--t2);margin-top:2px" id="home-sub">今日も一緒に乗り越えよう</div>
+      <div style="display:flex;align-items:center;gap:10px">
+        <button id="ai-chat-btn" data-nav="chat" style="width:36px;height:36px;background:var(--gr);border:none;border-radius:10px;font-size:18px;cursor:pointer;color:#fff;display:flex;align-items:center;justify-content:center">🤖</button>
+        <div>
+          <div style="font-size:17px;font-weight:800;color:var(--t1)" id="home-title">田中家のOS</div>
+          <div style="font-size:11px;color:var(--t2);margin-top:1px" id="home-sub">今日も一緒に乗り越えよう</div>
+        </div>
       </div>
       <div style="position:relative">
         <button id="menu-btn" style="width:36px;height:36px;background:var(--bg);border:none;border-radius:10px;font-size:18px;cursor:pointer">⋯</button>
         <div id="dropdown-menu" style="display:none;position:absolute;right:0;top:40px;background:#fff;border-radius:16px;box-shadow:0 8px 30px rgba(0,0,0,.15);overflow:hidden;min-width:140px;z-index:999">
           <div class="dmenu-item" data-action="mem">👥 メンバー</div>
           <div class="dmenu-item" data-action="settings">⚙️ 設定</div>
-          <div class="dmenu-item" data-action="cal">📅 カレンダー</div>
         </div>
       </div>
     </div>
@@ -368,7 +397,6 @@ html,body{height:100%;background:#B8CCB8;font-family:'M PLUS Rounded 1c',sans-se
       <button class="tb on" data-nav="home"><span class="tb-i">🏠</span><span class="tb-l">ホーム</span></button>
       <button class="tb" data-nav="proj"><span class="tb-i">📋</span><span class="tb-l">プロジェクト</span></button>
       <button class="tb" data-nav="tasks"><span class="tb-i">✅</span><span class="tb-l">タスク</span><span class="tbadge" id="tbadge" style="display:none">!</span></button>
-      <button class="tb" data-nav="chat"><span class="tb-i">🤖</span><span class="tb-l">AI相談</span></button>
     </nav>
   </div>
 
@@ -385,7 +413,6 @@ html,body{height:100%;background:#B8CCB8;font-family:'M PLUS Rounded 1c',sans-se
       <button class="tb" data-nav="home"><span class="tb-i">🏠</span><span class="tb-l">ホーム</span></button>
       <button class="tb on" data-nav="proj"><span class="tb-i">📋</span><span class="tb-l">プロジェクト</span></button>
       <button class="tb" data-nav="tasks"><span class="tb-i">✅</span><span class="tb-l">タスク</span></button>
-      <button class="tb" data-nav="chat"><span class="tb-i">🤖</span><span class="tb-l">AI相談</span></button>
     </nav>
   </div>
 
@@ -398,16 +425,19 @@ html,body{height:100%;background:#B8CCB8;font-family:'M PLUS Rounded 1c',sans-se
       </div>
       <div class="type-tabs">
         <button class="type-tab on" data-type="all">すべて</button>
-        <button class="type-tab" data-type="single">単発</button>
         <button class="type-tab" data-type="project">プロジェクト</button>
       </div>
+      <div class="cal-view-tabs" id="cal-view-tabs">
+        <button class="cal-view-tab on" data-view="day">日</button>
+        <button class="cal-view-tab" data-view="week">週</button>
+        <button class="cal-view-tab" data-view="month">月</button>
+      </div>
     </div>
-    <div class="task-screen-list" id="task-screen-list"></div>
+    <div class="task-cal-grid" id="task-screen-list"></div>
     <nav class="tabs" id="tabs-tasks">
       <button class="tb" data-nav="home"><span class="tb-i">🏠</span><span class="tb-l">ホーム</span></button>
       <button class="tb" data-nav="proj"><span class="tb-i">📋</span><span class="tb-l">プロジェクト</span></button>
       <button class="tb on" data-nav="tasks"><span class="tb-i">✅</span><span class="tb-l">タスク</span></button>
-      <button class="tb" data-nav="chat"><span class="tb-i">🤖</span><span class="tb-l">AI相談</span></button>
     </nav>
   </div>
 
@@ -867,22 +897,26 @@ let chatCtx = null;
 
 function navTo(id, ctx){
   if(id==='settings'){ renderSettings(); return; }
-  if(id==='proj')  { renderProjScreen();  return; }
-  if(id==='tasks') { renderTasksScreen(); return; }
-  if(id==='mem')   { renderMem();         return; }
-  ['splash','home','chat','cal'].forEach(s=>{
+  if(id==='mem')   { renderMem(); return; }
+  // 全画面OFF
+  ['splash','home','chat','cal','proj','tasks'].forEach(s=>{
     const el = document.getElementById('s-'+s);
-    if(el) el.classList.toggle('on', s===id);
+    if(el) el.classList.remove('on');
   });
+  document.getElementById('s-settings')?.classList.remove('active');
   curScr = id;
   if(ctx !== undefined) chatCtx = ctx;
-  if(id==='home') renderHome();
-  if(id==='chat') openChat();
-  if(id==='cal')  renderCal();
-  // タブバーのアクティブ状態を更新
-  document.querySelectorAll('.tb').forEach(b=>{
-    b.classList.toggle('on', b.dataset.nav===id);
-  });
+  // 対象画面ON
+  const target = document.getElementById('s-'+id);
+  if(target) target.classList.add('on');
+  // タブ状態
+  document.querySelectorAll('.tb').forEach(b=>b.classList.toggle('on', b.dataset.nav===id));
+  // レンダリング
+  if(id==='home')  renderHome();
+  if(id==='chat')  openChat();
+  if(id==='cal')   renderCal();
+  if(id==='proj')  renderProjScreen();
+  if(id==='tasks') renderTasksScreen();
 }
 
 // Tab bar delegation (全タブに一括登録)
@@ -1446,16 +1480,7 @@ function toggleProjTask(taskId,projId,el){
 ═══════════════════════════════════════════════════════ */
 // ─── プロジェクト画面 ─────────────────────────────
 async function renderProjScreen(){
-  // 全画面OFF → proj画面ON
-  ['splash','home','chat','cal'].forEach(id=>{
-    document.getElementById('s-'+id)?.classList.remove('on');
-  });
-  document.getElementById('s-proj')?.classList.add('on');
-  document.getElementById('s-tasks')?.classList.remove('on');
-  // settings画面は動的生成なので個別に非表示
-  document.getElementById('s-settings')?.classList.remove('active');
   document.querySelectorAll('.tb').forEach(b=>b.classList.toggle('on',b.dataset.nav==='proj'));
-
   const s = await loadST();
   const el = document.getElementById('proj-list');
   if(!el) return;
@@ -1463,111 +1488,229 @@ async function renderProjScreen(){
 
   const projs = ProjectRepository.getAll(s);
   if(!projs.length){
-    el.innerHTML = '<div style="text-align:center;padding:40px 20px;color:var(--t2)"><div style="font-size:40px;margin-bottom:12px">📋</div><div style="font-weight:600">プロジェクトがありません</div><div style="font-size:12px;margin-top:6px">＋ ボタンから追加できます</div></div>';
+    el.innerHTML = '<div style="text-align:center;padding:40px 20px;color:var(--t2)"><div style="font-size:40px;margin-bottom:12px">📋</div><div style="font-weight:600">プロジェクトがありません</div></div>';
     return;
   }
 
   projs.forEach(proj=>{
     const progress = ProjectService.calculateProgress(s, proj.id);
-    const next = ProjectService.getNextTask(s, proj.id);
     const total = proj.tasks?.length||0;
     const done  = proj.tasks?.filter(t=>t.isCompleted||t.done).length||0;
 
     const card = document.createElement('div');
     card.className = 'proj-card';
 
-    const top = document.createElement('div'); top.className = 'proj-card-top';
-    const iconEl = document.createElement('div'); iconEl.className = 'proj-card-icon';
-    iconEl.style.background = proj.bg||'#F3F6F3';
+    // ── サマリー行（タップで展開） ──
+    const summary = document.createElement('div');
+    summary.className = 'proj-card-summary';
+    const iconEl = document.createElement('div');
+    iconEl.style.cssText = 'width:42px;height:42px;border-radius:14px;background:'+(proj.bg||'#F3F6F3')+';display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0';
     iconEl.textContent = proj.icon||'📁';
-    const info = document.createElement('div'); info.className = 'proj-card-info';
-    info.innerHTML = '<div class="proj-card-name">'+proj.name+'</div>'
-      +'<div class="proj-card-meta">'+done+'/'+total+' 完了 · '+(proj.deadline||proj.goalDate||'期限未設定')+'</div>';
-    top.append(iconEl, info);
+    const info = document.createElement('div'); info.style.flex='1';
+    info.innerHTML = '<div style="font-size:15px;font-weight:700;color:var(--t1)">'+proj.name+'</div>'
+      +'<div style="font-size:11px;color:var(--t2);margin-top:2px">'+done+'/'+total+' 完了</div>';
+    // 進捗バー
+    const barWrap = document.createElement('div');
+    barWrap.innerHTML = '<div class="prog-bar" style="margin-top:8px"><div class="prog-fill" style="width:'+progress+'%;background:'+proj.color+'"></div></div>'
+      +'<div class="prog-label"><span>'+(proj.deadline||proj.goalDate||'期限未設定')+'</span><span>'+progress+'%</span></div>';
+    const chevron = document.createElement('span');
+    chevron.textContent='›'; chevron.style.cssText='font-size:20px;color:var(--t3);transition:transform .2s;margin-left:4px;';
+    summary.append(iconEl, info, chevron);
 
-    const bar = document.createElement('div'); bar.className = 'prog-bar';
-    const fill = document.createElement('div'); fill.className = 'prog-fill';
-    fill.style.cssText = 'width:'+progress+'%;background:'+proj.color;
-    bar.appendChild(fill);
+    // ── タスク一覧（展開時） ──
+    const taskList = document.createElement('div');
+    taskList.className = 'proj-card-tasks';
+    (proj.tasks||[]).forEach(t=>{
+      const row = document.createElement('div'); row.className='proj-task-row';
+      const chk = document.createElement('div');
+      chk.className='pj-tchk'+(t.isCompleted||t.done?' done':'');
+      chk.textContent=(t.isCompleted||t.done)?'✓':'';
+      chk.style.cssText='width:20px;height:20px;border-radius:6px;border:2px solid var(--bdr);flex-shrink:0;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:10px;';
+      if(t.isCompleted||t.done) chk.style.background='var(--gr)';
+      chk.addEventListener('click', e=>{
+        e.stopPropagation();
+        toggleProjTask(t.id, proj.id, chk);
+        setTimeout(renderProjScreen, 350);
+      });
+      const nm = document.createElement('div'); nm.className='proj-task-name'+(t.isCompleted||t.done?' done':'');
+      nm.textContent=t.name||t.title;
+      const wl=document.createElement('span');
+      const who=t.who||t.assignee;
+      wl.textContent=who==='mama'?'👩':who==='papa'?'👨':'👫';
+      wl.style.cssText='font-size:14px;flex-shrink:0';
+      // タスクタップ → タスク画面へ
+      row.addEventListener('click', ()=>{
+        _taskFilter='project'; _taskViewMode='day';
+        navTo('tasks');
+      });
+      row.append(chk, nm, wl);
+      taskList.appendChild(row);
+    });
 
-    const lbl = document.createElement('div'); lbl.className = 'prog-label';
-    lbl.innerHTML = '<span>進捗</span><span>'+progress+'%</span>';
+    // AIで相談ボタン
+    const aiBtn = document.createElement('button');
+    aiBtn.style.cssText='width:100%;padding:11px;border:none;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;background:'+proj.color+';color:#fff;display:flex;align-items:center;justify-content:center;gap:6px;';
+    aiBtn.innerHTML='🤖 AIに計画を相談する';
+    aiBtn.addEventListener('click', e=>{ e.stopPropagation(); navTo('chat',{action:'project_'+proj.id}); });
+    taskList.appendChild(aiBtn);
 
-    card.append(top, bar, lbl);
+    // 展開トグル
+    summary.addEventListener('click', ()=>{
+      const expanded = card.classList.toggle('expanded');
+      chevron.style.transform = expanded ? 'rotate(90deg)' : '';
+      if(expanded) card.appendChild(barWrap);
+      else barWrap.remove();
+    });
 
-    if(next){
-      const nt = document.createElement('div'); nt.className = 'next-task';
-      nt.textContent = '▶ 次：'+next.name;
-      card.appendChild(nt);
-    }
-
-    card.addEventListener('click', ()=>navTo('chat',{action:'project_'+proj.id}));
+    card.append(summary, taskList);
     el.appendChild(card);
   });
 }
 
 // ─── タスク画面 ──────────────────────────────────
 let _taskFilter = 'all';
+let _taskViewMode = 'day'; // 'day'|'week'|'month'
+
 async function renderTasksScreen(){
-  ['splash','home','chat','cal'].forEach(id=>{
-    document.getElementById('s-'+id)?.classList.remove('on');
-  });
-  document.getElementById('s-proj')?.classList.remove('on');
-  document.getElementById('s-tasks')?.classList.add('on');
-  document.getElementById('s-settings')?.classList.remove('active');
   document.querySelectorAll('.tb').forEach(b=>b.classList.toggle('on',b.dataset.nav==='tasks'));
+  // カレンダータブ表示制御
+  const calViewTabs = document.getElementById('cal-view-tabs');
+  if(calViewTabs) calViewTabs.style.display = _taskFilter==='all' ? 'flex' : 'none';
 
   const s = await loadST();
   const el = document.getElementById('task-screen-list');
   if(!el) return;
-  el.innerHTML = '';
+  el.innerHTML='';
 
-  const tasks = TaskService.getTasksByType(s, _taskFilter);
-  const incomplete = tasks.filter(t=>!(t.isCompleted||t.done));
-  const complete   = tasks.filter(t=>  t.isCompleted||t.done);
-  const sorted = [...incomplete, ...complete];
+  if(_taskFilter==='project'){
+    renderTasksByProject(s, el);
+  } else {
+    renderTasksByCalendar(s, el);
+  }
+}
 
-  if(!sorted.length){
-    el.innerHTML = '<div style="text-align:center;padding:40px 20px;color:var(--t2)"><div style="font-size:40px;margin-bottom:12px">✅</div><div style="font-weight:600">タスクがありません</div></div>';
-    return;
+function renderTasksByCalendar(s, el){
+  const allT = allTasks(s);
+  const now  = new Date();
+  const today= new Date(now.getFullYear(),now.getMonth(),now.getDate());
+
+  // ビューモードに応じた日付範囲を生成
+  let days = [];
+  if(_taskViewMode==='day'){
+    // 今日 + 6日先
+    for(let i=0;i<7;i++){ const d=new Date(today); d.setDate(today.getDate()+i); days.push(d); }
+  } else if(_taskViewMode==='week'){
+    // 今週月曜から4週分
+    const mon = new Date(today);
+    mon.setDate(today.getDate() - (today.getDay()||7) + 1);
+    for(let i=0;i<28;i++){ const d=new Date(mon); d.setDate(mon.getDate()+i); days.push(d); }
+  } else {
+    // 今日から3ヶ月
+    for(let i=0;i<90;i++){ const d=new Date(today); d.setDate(today.getDate()+i); days.push(d); }
   }
 
-  sorted.forEach(t=>{
-    const row = document.createElement('div'); row.className = 'trow';
-    row.dataset.taskId = t.id;
-    row.dataset.projId = t.projId||'__single__';
-    row.style.marginBottom = '8px';
+  const parseDue = (due)=>{ if(!due) return null; const d=new Date(due); return isNaN(d)?null:d; };
 
-    const chk = document.createElement('div'); chk.className='tchk'+(t.isCompleted||t.done?' done':'');
-    if(t.isCompleted||t.done) chk.textContent='✓';
-    chk.addEventListener('click', e=>{
-      e.stopPropagation();
-      toggleTask(t.id, t.projId||'__single__', chk);
-      setTimeout(renderTasksScreen, 350);
+  // 「期限なし」タスクを先に表示
+  const noDue = allT.filter(t=>!parseDue(t.dueDate||t.due));
+  if(noDue.length){
+    const sec=document.createElement('div'); sec.className='task-day-row';
+    const lbl=document.createElement('div'); lbl.className='task-day-label';
+    lbl.textContent='期限なし';
+    sec.appendChild(lbl);
+    noDue.forEach(t=>sec.appendChild(makeCalItem(t,s)));
+    el.appendChild(sec);
+  }
+
+  // 日付別に表示
+  const WDAY=['日','月','火','水','木','金','土'];
+  let lastMonth=-1;
+  days.forEach(day=>{
+    const tasksOnDay=allT.filter(t=>{
+      const due=parseDue(t.dueDate||t.due);
+      if(!due) return false;
+      return due.getFullYear()===day.getFullYear()&&due.getMonth()===day.getMonth()&&due.getDate()===day.getDate();
     });
+    if(!tasksOnDay.length) return;
 
-    const bd = document.createElement('div'); bd.className='tbody';
-    const nm = document.createElement('div'); nm.className='tname'+(t.isCompleted||t.done?' done':'');
-    nm.textContent = t.title||t.name;
+    // 月表示（週/月ビュー時）
+    if(_taskViewMode!=='day' && day.getMonth()!==lastMonth){
+      lastMonth=day.getMonth();
+      const mh=document.createElement('div');
+      mh.style.cssText='font-size:13px;font-weight:800;color:var(--t1);padding:10px 2px 4px;letter-spacing:.5px';
+      mh.textContent=(day.getMonth()+1)+'月';
+      el.appendChild(mh);
+    }
 
-    const mt = document.createElement('div'); mt.className='tmeta';
-    const wc = t.assignee==='mama'||t.who==='mama'?'wt-m':t.assignee==='papa'||t.who==='papa'?'wt-p':'wt-b';
-    const wl = t.assignee==='mama'||t.who==='mama'?'👩ママ':t.assignee==='papa'||t.who==='papa'?'👨パパ':'👫二人';
-    const wt = document.createElement('span'); wt.className='wtag '+wc; wt.textContent=wl;
-    mt.appendChild(wt);
-
-    // タイプバッジ
-    const tb = document.createElement('span'); tb.className='dtag';
-    const isProj = t.type==='project'||(t.projId&&t.projId!=='__single__');
-    tb.textContent = isProj ? (t.projIcon||'📋')+' '+t.projName : '📌 単発';
-    mt.appendChild(tb);
-
-    bd.append(nm, mt);
-    const arr = document.createElement('span'); arr.className='tarr'; arr.textContent='›';
-    row.append(chk, bd, arr);
-    row.addEventListener('click', ()=>openTaskModal(t.id, t.projId||'__single__'));
-    el.appendChild(row);
+    const sec=document.createElement('div'); sec.className='task-day-row';
+    const isToday=day.toDateString()===now.toDateString();
+    const lbl=document.createElement('div'); lbl.className='task-day-label'+(isToday?' today':'');
+    lbl.textContent=(isToday?'今日 ':'')+(day.getMonth()+1)+'/'+day.getDate()+'('+WDAY[day.getDay()]+')';
+    sec.appendChild(lbl);
+    tasksOnDay.forEach(t=>sec.appendChild(makeCalItem(t,s)));
+    el.appendChild(sec);
   });
+
+  if(!el.children.length){
+    el.innerHTML='<div style="text-align:center;padding:40px 20px;color:var(--t2)"><div style="font-size:40px;margin-bottom:12px">✅</div><div style="font-weight:600">この期間のタスクはありません</div></div>';
+  }
+}
+
+function renderTasksByProject(s, el){
+  const projs = ProjectRepository.getAll(s);
+  // 単発タスク
+  const singles=(s.singleTasks||[]);
+  if(singles.length){
+    const sec=document.createElement('div'); sec.className='task-proj-section';
+    const hdr=document.createElement('div'); hdr.className='task-proj-header';
+    hdr.innerHTML='<span class="task-proj-header-icon">📌</span><span class="task-proj-header-name">単発タスク</span><span class="task-proj-header-pct">'+singles.filter(t=>t.isCompleted).length+'/'+singles.length+'</span>';
+    sec.appendChild(hdr);
+    singles.forEach(t=>{
+      const item=makeCalItem({...t,name:t.title,who:t.assignee,done:t.isCompleted,projId:'__single__',projIcon:'📌',projName:'単発タスク'},s);
+      sec.appendChild(item);
+    });
+    el.appendChild(sec);
+  }
+  projs.forEach(proj=>{
+    const tasks=proj.tasks||[];
+    const done=tasks.filter(t=>t.isCompleted||t.done).length;
+    const sec=document.createElement('div'); sec.className='task-proj-section';
+    const hdr=document.createElement('div'); hdr.className='task-proj-header';
+    hdr.innerHTML='<span class="task-proj-header-icon">'+proj.icon+'</span><span class="task-proj-header-name">'+proj.name+'</span><span class="task-proj-header-pct">'+done+'/'+tasks.length+'</span>';
+    sec.appendChild(hdr);
+    // 進捗バー
+    const pct2=ProjectService.calculateProgress(s,proj.id);
+    const bar=document.createElement('div');
+    bar.innerHTML='<div class="prog-bar" style="margin-bottom:8px"><div class="prog-fill" style="width:'+pct2+'%;background:'+proj.color+'"></div></div>';
+    sec.appendChild(bar);
+    tasks.forEach(t=>sec.appendChild(makeCalItem({...t,projId:proj.id,projIcon:proj.icon,projName:proj.name},s)));
+    el.appendChild(sec);
+  });
+}
+
+function makeCalItem(t,s){
+  const item=document.createElement('div');
+  item.className='task-cal-item'+(t.isCompleted||t.done?' done-item':'');
+  const chk=document.createElement('div');
+  chk.className='tchk'+(t.isCompleted||t.done?' done':'');
+  chk.textContent=(t.isCompleted||t.done)?'✓':'';
+  chk.addEventListener('click',e=>{
+    e.stopPropagation();
+    toggleTask(t.id,t.projId||'__single__',chk);
+    setTimeout(renderTasksScreen,350);
+  });
+  const body=document.createElement('div'); body.style.flex='1';
+  const nm=document.createElement('div');
+  nm.style.cssText='font-size:13px;font-weight:600;color:var(--t1)'+(t.isCompleted||t.done?';text-decoration:line-through;color:var(--t3)':'');
+  nm.textContent=t.name||t.title;
+  const mt=document.createElement('div'); mt.style.cssText='font-size:11px;color:var(--t2);margin-top:2px;display:flex;gap:6px;align-items:center';
+  const who=t.who||t.assignee;
+  mt.innerHTML=(who==='mama'?'👩 ママ':who==='papa'?'👨 パパ':'👫 二人')
+    +(t.isUrgent||t.urgent?' · <span style="color:var(--re);font-weight:700">⚠️ 緊急</span>':'');
+  body.append(nm,mt);
+  item.append(chk,body);
+  item.addEventListener('click',()=>openTaskModal(t.id,t.projId||'__single__'));
+  return item;
 }
 
 async function renderMem(){
@@ -2018,9 +2161,23 @@ async function boot(){
       document.querySelectorAll('.type-tab').forEach(b=>b.classList.remove('on'));
       btn.classList.add('on');
       _taskFilter = btn.dataset.type;
+      // プロジェクトタブ選択時はカレンダービュータブを隠す
+      const cvt=document.getElementById('cal-view-tabs');
+      if(cvt) cvt.style.display=_taskFilter==='all'?'flex':'none';
       renderTasksScreen();
     });
   });
+  // ── カレンダービュータブ ──────────────────────
+  document.querySelectorAll('.cal-view-tab').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      document.querySelectorAll('.cal-view-tab').forEach(b=>b.classList.remove('on'));
+      btn.classList.add('on');
+      _taskViewMode = btn.dataset.view;
+      renderTasksScreen();
+    });
+  });
+  // ── AI相談ボタン（左上）──────────────────────
+  document.getElementById('ai-chat-btn')?.addEventListener('click',()=>navTo('chat'));
 
   // ── 各タブバー（proj / tasks 画面にも同じタブ） ──
   document.querySelectorAll('.tb[data-nav]').forEach(btn=>{
