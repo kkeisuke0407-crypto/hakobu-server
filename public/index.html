@@ -269,6 +269,31 @@ html,body{height:100%;background:#B8CCB8;font-family:'M PLUS Rounded 1c',sans-se
 .tpill{display:inline-block;background:var(--bg);color:var(--t2);border-radius:10px;padding:3px 8px;font-size:11px;margin:2px;}
 /* burst */
 .burst{position:absolute;pointer-events:none;font-size:16px;z-index:999;animation:hpop .65s ease forwards;}
+
+/* ── ドロップダウンメニュー ── */
+.dmenu-item{padding:12px 18px;font-size:14px;font-weight:600;color:var(--t1);cursor:pointer;border-bottom:1px solid var(--bdr);}
+.dmenu-item:last-child{border-bottom:none;}
+.dmenu-item:hover{background:var(--bg);}
+
+/* ── プロジェクト画面 / タスク画面 ── */
+#s-proj,#s-tasks{display:none;flex-direction:column;height:100%;}
+#s-proj.on,#s-tasks.on{display:flex;}
+.proj-list{padding:14px;overflow-y:auto;flex:1;padding-bottom:90px;}
+.task-screen-list{padding:14px;overflow-y:auto;flex:1;padding-bottom:90px;}
+.proj-card{background:#fff;border-radius:20px;padding:16px;margin-bottom:12px;box-shadow:0 2px 8px rgba(0,0,0,.07);cursor:pointer;}
+.proj-card-top{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.proj-card-icon{width:42px;height:42px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
+.proj-card-info{flex:1;}
+.proj-card-name{font-size:15px;font-weight:700;color:var(--t1);}
+.proj-card-meta{font-size:11px;color:var(--t2);margin-top:2px;}
+.prog-bar{height:6px;background:var(--bg);border-radius:3px;overflow:hidden;margin-bottom:6px;}
+.prog-fill{height:100%;border-radius:3px;transition:width .4s;}
+.prog-label{font-size:11px;color:var(--t2);display:flex;justify-content:space-between;}
+.next-task{background:var(--bg);border-radius:12px;padding:8px 12px;font-size:12px;color:var(--gr);font-weight:600;margin-top:8px;}
+.type-tabs{display:flex;gap:8px;padding:12px 14px 4px;}
+.type-tab{padding:7px 16px;border-radius:20px;border:none;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;background:var(--bg);color:var(--t2);}
+.type-tab.on{background:var(--gr);color:#fff;}
+.fab{position:fixed;bottom:90px;right:20px;width:52px;height:52px;border-radius:16px;background:var(--gr);border:none;color:#fff;font-size:24px;cursor:pointer;box-shadow:0 4px 16px rgba(45,106,79,.4);display:flex;align-items:center;justify-content:center;z-index:100;}
 </style>
 </head>
 <body>
@@ -295,6 +320,20 @@ html,body{height:100%;background:#B8CCB8;font-family:'M PLUS Rounded 1c',sans-se
 
   <!-- HOME -->
   <div class="scr" id="s-home">
+    <div class="hdr" id="home-hdr" style="display:flex;align-items:center;justify-content:space-between">
+      <div>
+        <div style="font-size:18px;font-weight:800;color:var(--t1)" id="home-title">田中家のOS</div>
+        <div style="font-size:11px;color:var(--t2);margin-top:2px" id="home-sub">今日も一緒に乗り越えよう</div>
+      </div>
+      <div style="position:relative">
+        <button id="menu-btn" style="width:36px;height:36px;background:var(--bg);border:none;border-radius:10px;font-size:18px;cursor:pointer">⋯</button>
+        <div id="dropdown-menu" style="display:none;position:absolute;right:0;top:40px;background:#fff;border-radius:16px;box-shadow:0 8px 30px rgba(0,0,0,.15);overflow:hidden;min-width:140px;z-index:999">
+          <div class="dmenu-item" data-action="mem">👥 メンバー</div>
+          <div class="dmenu-item" data-action="settings">⚙️ 設定</div>
+          <div class="dmenu-item" data-action="cal">📅 カレンダー</div>
+        </div>
+      </div>
+    </div>
     <div class="scroll" id="home-scroll">
       <div class="prop-outer">
         <div class="prop-card" id="prop-card">
@@ -327,9 +366,48 @@ html,body{height:100%;background:#B8CCB8;font-family:'M PLUS Rounded 1c',sans-se
     </div>
     <nav class="tabs" id="tabs-home">
       <button class="tb on" data-nav="home"><span class="tb-i">🏠</span><span class="tb-l">ホーム</span></button>
-      <button class="tb" data-nav="chat"><span class="tb-i">🤖</span><span class="tb-l">AI相談</span><span class="tbadge" id="tbadge" style="display:none">!</span></button>
-      <button class="tb" data-nav="cal"><span class="tb-i">📅</span><span class="tb-l">カレンダー</span></button>
-      <button class="tb" data-nav="mem"><span class="tb-i">👥</span><span class="tb-l">メンバー</span></button>
+      <button class="tb" data-nav="proj"><span class="tb-i">📋</span><span class="tb-l">プロジェクト</span></button>
+      <button class="tb" data-nav="tasks"><span class="tb-i">✅</span><span class="tb-l">タスク</span><span class="tbadge" id="tbadge" style="display:none">!</span></button>
+      <button class="tb" data-nav="chat"><span class="tb-i">🤖</span><span class="tb-l">AI相談</span></button>
+    </nav>
+  </div>
+
+  <!-- PROJECT SCREEN -->
+  <div class="scr" id="s-proj">
+    <div class="hdr">
+      <div class="hdr-row">
+        <div class="hdr-title">プロジェクト</div>
+        <button id="proj-add-btn" style="width:32px;height:32px;background:var(--gr);border:none;border-radius:10px;font-size:18px;color:#fff;cursor:pointer">+</button>
+      </div>
+    </div>
+    <div class="proj-list" id="proj-list"></div>
+    <nav class="tabs" id="tabs-proj">
+      <button class="tb" data-nav="home"><span class="tb-i">🏠</span><span class="tb-l">ホーム</span></button>
+      <button class="tb on" data-nav="proj"><span class="tb-i">📋</span><span class="tb-l">プロジェクト</span></button>
+      <button class="tb" data-nav="tasks"><span class="tb-i">✅</span><span class="tb-l">タスク</span></button>
+      <button class="tb" data-nav="chat"><span class="tb-i">🤖</span><span class="tb-l">AI相談</span></button>
+    </nav>
+  </div>
+
+  <!-- TASKS SCREEN -->
+  <div class="scr" id="s-tasks">
+    <div class="hdr">
+      <div class="hdr-row">
+        <div class="hdr-title">タスク</div>
+        <button id="tasks-add-btn" style="width:32px;height:32px;background:var(--gr);border:none;border-radius:10px;font-size:18px;color:#fff;cursor:pointer">+</button>
+      </div>
+      <div class="type-tabs">
+        <button class="type-tab on" data-type="all">すべて</button>
+        <button class="type-tab" data-type="single">単発</button>
+        <button class="type-tab" data-type="project">プロジェクト</button>
+      </div>
+    </div>
+    <div class="task-screen-list" id="task-screen-list"></div>
+    <nav class="tabs" id="tabs-tasks">
+      <button class="tb" data-nav="home"><span class="tb-i">🏠</span><span class="tb-l">ホーム</span></button>
+      <button class="tb" data-nav="proj"><span class="tb-i">📋</span><span class="tb-l">プロジェクト</span></button>
+      <button class="tb on" data-nav="tasks"><span class="tb-i">✅</span><span class="tb-l">タスク</span></button>
+      <button class="tb" data-nav="chat"><span class="tb-i">🤖</span><span class="tb-l">AI相談</span></button>
     </nav>
   </div>
 
@@ -495,23 +573,33 @@ const SK = 'hakobu_v10';
 
 function mkState(){
   return {
+    // User モデル
+    user: { id:'u1', name:'さくら', role:'mom', planType:'free' },
     family: { name:'田中', mama:'さくら', papa:'けんじ', childAge:5, childEvent:'4月から入園' },
     prefs:  { liked:[], rejected:[], papaReturn:'21時以降', shopDay:'週末', papaGood:['ゴミ出し','週末料理'], isPro:false },
+    // 単発タスク（type:'single'、projectIdなし）
+    singleTasks: [
+      {id:'s1', title:'シャンプー補充を買う',  assignee:'mama', isCompleted:false, dueDate:null, createdAt:new Date().toISOString(), type:'single'},
+      {id:'s2', title:'宅急便の受け取り',      assignee:'both', isCompleted:false, dueDate:null, createdAt:new Date().toISOString(), type:'single'},
+    ],
+    // プロジェクトタスク（type:'project'、projectId付き）
     projects: [
       { id:'nyuuen', name:'幼稚園入園準備', icon:'🌸', color:'#D4611A', bg:'#FEF0E6', deadline:'4月入園',
+        status:'active', startDate:'2025-01-01', goalDate:'2025-04-01',
         tasks:[
-          {id:'n1',name:'入園説明会の参加',      who:'mama',done:true, urgent:false,due:''},
-          {id:'n2',name:'名前シール注文',          who:'papa',done:true, urgent:false,due:''},
-          {id:'n3',name:'保育料振込',              who:'mama',done:true, urgent:false,due:''},
-          {id:'n4',name:'制服のサイズ確認・注文',  who:'mama',done:false,urgent:false,due:''},
-          {id:'n5',name:'保護者会の出欠回答',      who:'mama',done:false,urgent:true, due:'今週金曜'},
-          {id:'n6',name:'入園式の衣装を決める',    who:'both',done:false,urgent:false,due:''},
+          {id:'n1',name:'入園説明会の参加',      title:'入園説明会の参加',      type:'project',projectId:'nyuuen',assignee:'mama',who:'mama',isCompleted:true, done:true, urgent:false,isUrgent:false,dueDate:null,due:'',createdAt:'2025-01-01T00:00:00.000Z'},
+          {id:'n2',name:'名前シール注文',          title:'名前シール注文',          type:'project',projectId:'nyuuen',assignee:'papa',who:'papa',isCompleted:true, done:true, urgent:false,isUrgent:false,dueDate:null,due:'',createdAt:'2025-01-02T00:00:00.000Z'},
+          {id:'n3',name:'保育料振込',              title:'保育料振込',              type:'project',projectId:'nyuuen',assignee:'mama',who:'mama',isCompleted:true, done:true, urgent:false,isUrgent:false,dueDate:null,due:'',createdAt:'2025-01-03T00:00:00.000Z'},
+          {id:'n4',name:'制服のサイズ確認・注文',  title:'制服のサイズ確認・注文',  type:'project',projectId:'nyuuen',assignee:'mama',who:'mama',isCompleted:false,done:false,urgent:false,isUrgent:false,dueDate:null,due:'',createdAt:'2025-01-04T00:00:00.000Z'},
+          {id:'n5',name:'保護者会の出欠回答',      title:'保護者会の出欠回答',      type:'project',projectId:'nyuuen',assignee:'mama',who:'mama',isCompleted:false,done:false,urgent:true, isUrgent:true, dueDate:null,due:'今週金曜',createdAt:'2025-01-05T00:00:00.000Z'},
+          {id:'n6',name:'入園式の衣装を決める',    title:'入園式の衣装を決める',    type:'project',projectId:'nyuuen',assignee:'both',who:'both',isCompleted:false,done:false,urgent:false,isUrgent:false,dueDate:null,due:'',createdAt:'2025-01-06T00:00:00.000Z'},
         ]},
       { id:'okinawa', name:'沖縄旅行計画', icon:'✈️', color:'#1E5EA8', bg:'#EBF3FF', deadline:'夏休み',
+        status:'active', startDate:'2025-01-01', goalDate:'2025-08-01',
         tasks:[
-          {id:'o1',name:'パスポートの有効期限確認', who:'papa',done:false,urgent:true, due:'今週中'},
-          {id:'o2',name:'旅行予算を夫婦で決める',   who:'both',done:false,urgent:false,due:''},
-          {id:'o3',name:'航空券・ホテルの比較',      who:'papa',done:false,urgent:false,due:''},
+          {id:'o1',name:'パスポートの有効期限確認', title:'パスポートの有効期限確認', type:'project',projectId:'okinawa',assignee:'papa',who:'papa',isCompleted:false,done:false,urgent:true, isUrgent:true, dueDate:null,due:'今週中',createdAt:'2025-01-01T00:00:00.000Z'},
+          {id:'o2',name:'旅行予算を夫婦で決める',   title:'旅行予算を夫婦で決める',   type:'project',projectId:'okinawa',assignee:'both',who:'both',isCompleted:false,done:false,urgent:false,isUrgent:false,dueDate:null,due:'',createdAt:'2025-01-02T00:00:00.000Z'},
+          {id:'o3',name:'航空券・ホテルの比較',      title:'航空券・ホテルの比較',      type:'project',projectId:'okinawa',assignee:'papa',who:'papa',isCompleted:false,done:false,urgent:false,isUrgent:false,dueDate:null,due:'',createdAt:'2025-01-03T00:00:00.000Z'},
         ]},
     ],
     stats: { sessions:0 },
@@ -531,15 +619,18 @@ async function loadST(){
       const def = mkState();
       // deep merge: 保存データにmkStateのデフォルト値を補完
       ST = {
-        family:   Object.assign({}, def.family,   saved.family   || {}),
-        prefs:    Object.assign({}, def.prefs,     saved.prefs    || {}),
-        projects: (saved.projects && saved.projects.length) ? saved.projects : def.projects,
-        stats:    Object.assign({}, def.stats,     saved.stats    || {}),
+        user:         Object.assign({}, def.user,     saved.user     || {}),
+        family:       Object.assign({}, def.family,   saved.family   || {}),
+        prefs:        Object.assign({}, def.prefs,    saved.prefs    || {}),
+        singleTasks:  Array.isArray(saved.singleTasks) ? saved.singleTasks : def.singleTasks,
+        projects:     (saved.projects && saved.projects.length) ? saved.projects : def.projects,
+        stats:        Object.assign({}, def.stats,    saved.stats    || {}),
       };
       // 配列フィールドの保証
       if(!Array.isArray(ST.prefs.liked))    ST.prefs.liked    = [];
       if(!Array.isArray(ST.prefs.rejected)) ST.prefs.rejected = [];
       if(!Array.isArray(ST.prefs.papaGood)) ST.prefs.papaGood = def.prefs.papaGood;
+      if(!ST.user) ST.user = def.user;
     } else {
       ST = mkState();
     }
@@ -557,13 +648,216 @@ async function saveST(){
 
 function pct(proj){
   if(!proj||!proj.tasks||!proj.tasks.length) return 0;
-  return Math.round(proj.tasks.filter(t=>t.done).length / proj.tasks.length * 100);
+  // ProjectService に委譲（後方互換のためラッパーとして残す）
+  return Math.round(proj.tasks.filter(t=>t.isCompleted||t.done).length / proj.tasks.length * 100);
 }
 
 function allTasks(s){
-  if(!s||!s.projects) return [];
-  return s.projects.flatMap(p=>(p.tasks||[]).map(t=>({...t,projName:p.name,projIcon:p.icon,projId:p.id,projColor:p.color})));
+  if(!s) return [];
+  // プロジェクトタスク
+  const projTasks = (s.projects||[]).flatMap(p=>(p.tasks||[]).map(t=>({
+    ...t,
+    projName:p.name, projIcon:p.icon, projId:p.id, projColor:p.color,
+    title: t.title||t.name, assignee:t.assignee||t.who,
+    isCompleted:t.isCompleted??t.done, isUrgent:t.isUrgent??t.urgent,
+    dueDate:t.dueDate||t.due||null, createdAt:t.createdAt||null,
+  })));
+  // 単発タスク（projName/projIconはダミー）
+  const singles = (s.singleTasks||[]).map(t=>({
+    ...t,
+    name:t.title, who:t.assignee,
+    done:t.isCompleted, urgent:false,
+    due:t.dueDate||'',
+    projName:'単発タスク', projIcon:'📌', projId:'__single__', projColor:'#9FAE9F',
+  }));
+  return [...projTasks, ...singles];
 }
+
+
+/* ═══════════════════════════════════════════════════════
+   taskService — タスクロジック（AIに依存しない）
+═══════════════════════════════════════════════════════ */
+/* ═══════════════════════════════════════════════════════
+   Repository 層 — データアクセス
+═══════════════════════════════════════════════════════ */
+const TaskRepository = {
+  getAll(s)    { return allTasks(s); },
+  getSingles(s){ return (s.singleTasks||[]); },
+  getProjTasks(s, projId) {
+    const p = (s.projects||[]).find(p=>p.id===projId);
+    return p ? p.tasks : [];
+  },
+  save(s, task) {
+    // 単発タスクの保存
+    if(!s.singleTasks) s.singleTasks=[];
+    const idx = s.singleTasks.findIndex(t=>t.id===task.id);
+    if(idx>=0) s.singleTasks[idx]=task;
+    else s.singleTasks.push(task);
+  },
+  update(s, id, patch) {
+    // 単発タスク
+    const si = (s.singleTasks||[]).findIndex(t=>t.id===id);
+    if(si>=0){ Object.assign(s.singleTasks[si], patch); return true; }
+    // プロジェクトタスク
+    for(const p of (s.projects||[])){
+      const ti = (p.tasks||[]).findIndex(t=>t.id===id);
+      if(ti>=0){ Object.assign(p.tasks[ti], patch); return true; }
+    }
+    return false;
+  },
+};
+
+const ProjectRepository = {
+  getAll(s)    { return s.projects||[]; },
+  find(s, id)  { return (s.projects||[]).find(p=>p.id===id)||null; },
+  save(s, proj){ if(!s.projects) s.projects=[]; s.projects.push(proj); },
+};
+
+const UserRepository = {
+  get(s)    { return s.user||{id:'u1',name:'さくら',role:'mom',planType:'free'}; },
+  save(s, u){ s.user=u; },
+};
+
+/* ═══════════════════════════════════════════════════════
+   Service 層 — ビジネスロジック
+   UI → Service → Repository → Data
+═══════════════════════════════════════════════════════ */
+const TaskService = {
+  // タスク作成（単発）
+  createTask(s, {title, dueDate=null, assignee='both'}) {
+    const task = {
+      id: 't'+Date.now(), title, type:'single',
+      projectId: null, dueDate, assignee,
+      isCompleted:false, urgent:false, isUrgent:false,
+      createdAt: new Date().toISOString(),
+      // 後方互換フィールド
+      name:title, who:assignee, done:false, due:dueDate||'',
+    };
+    TaskRepository.save(s, task);
+    return task;
+  },
+
+  // タスク完了
+  completeTask(s, id) {
+    const ok = TaskRepository.update(s, id, {isCompleted:true, done:true});
+    return ok;
+  },
+
+  // 今日これだけ（スコアリング）
+  findTodayTasks(s, user) {
+    const role = user?.role||'mom';
+    return taskService.getTodayTopTasks(TaskRepository.getAll(s), role);
+  },
+
+  // タイプ別取得
+  getTasksByType(s, type) {
+    const all = TaskRepository.getAll(s);
+    if(type==='single')  return all.filter(t=>!t.type||t.type==='single'||t.projId==='__single__');
+    if(type==='project') return all.filter(t=>t.type==='project'||t.projId!=='__single__');
+    return all;
+  },
+};
+
+const ProjectService = {
+  // 進捗計算（保存しない）
+  calculateProgress(s, projectId) {
+    const proj = ProjectRepository.find(s, projectId);
+    if(!proj||!proj.tasks?.length) return 0;
+    return Math.round(proj.tasks.filter(t=>t.isCompleted||t.done).length/proj.tasks.length*100);
+  },
+
+  // 次のタスク（未完了の最初の1件）
+  getNextTask(s, projectId) {
+    const proj = ProjectRepository.find(s, projectId);
+    return proj?.tasks?.find(t=>!(t.isCompleted||t.done))||null;
+  },
+
+  // プロジェクト作成（テンプレから）
+  createProject(s, {id, name, icon, color, bg, goalDate, steps=[]}) {
+    const proj = {
+      id: id||'p'+Date.now(), name, icon, color, bg,
+      status:'active', startDate:new Date().toISOString(), goalDate,
+      deadline: goalDate,
+      tasks: steps.map((step, i)=>({
+        id:'pt'+Date.now()+i, name:step.name, title:step.name,
+        type:'project', projectId:id,
+        who:step.who||'both', assignee:step.who||'both',
+        isCompleted:false, done:false, urgent:false, isUrgent:false,
+        dueDate:null, due:'', createdAt:new Date().toISOString(),
+      })),
+    };
+    ProjectRepository.save(s, proj);
+    return proj;
+  },
+};
+
+const AIService = {
+  // AI抽象層（後付け可能）
+  isPremiumAvailable(user) { return user?.planType==='premium'||user?.isPro; },
+
+  async generateAdvice(context, history, sys) {
+    // aiService に委譲（差し替え可能）
+    return aiService.call(history, sys);
+  },
+};
+
+/* ═══════════════════════════════════════════════════════
+   taskService — 既存互換ユーティリティ（変更不要）
+═══════════════════════════════════════════════════════ */
+const taskService = {
+  getTodayTopTasks(tasks, userRole) {
+    const now   = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const tomorrow = new Date(today); tomorrow.setDate(today.getDate()+1);
+    const in3days  = new Date(today); in3days.setDate(today.getDate()+3);
+    const parseDue = (due) => {
+      if(!due) return null;
+      const d = new Date(due);
+      return isNaN(d.getTime()) ? null : d;
+    };
+    const scored = tasks
+      .filter(t => !t.isCompleted && !t.done)
+      .map(t => {
+        let score = 0;
+        const due = parseDue(t.dueDate || t.due);
+        if(due){
+          const dueDay = new Date(due.getFullYear(), due.getMonth(), due.getDate());
+          if(dueDay < today)             score += 6;
+          else if(+dueDay === +today)    score += 5;
+          else if(+dueDay === +tomorrow) score += 3;
+          else if(dueDay <= in3days)     score += 2;
+        }
+        if(t.isUrgent || t.urgent) score += 3;
+        const who = t.assignee || t.who;
+        if(who === userRole || who === 'both') score += 1;
+        return {...t, _score: score};
+      });
+    scored.sort((a, b) => {
+      if(b._score !== a._score) return b._score - a._score;
+      const da = parseDue(a.dueDate||a.due), db = parseDue(b.dueDate||b.due);
+      if(da && db) return da - db;
+      if(da) return -1; if(db) return 1;
+      const ca = a.createdAt ? new Date(a.createdAt) : new Date(0);
+      const cb = b.createdAt ? new Date(b.createdAt) : new Date(0);
+      return ca - cb;
+    });
+    return scored.slice(0, 3);
+  },
+  getTodayMeal() {
+    const meals = ['外食OK 🍣','鶏肉の日 🍗','魚の日 🐟','丼の日 🍚','麺の日 🍜','カレーの日 🍛','冷凍OK 🧊'];
+    const hints = [
+      '週末はゆっくり外食を楽しんで',
+      'から揚げ・チキンソテーなど定番に',
+      '鮭のムニエルや煮魚はどうでしょう',
+      '牛丼・天丼・親子丼など手軽に',
+      'うどん・パスタ・ラーメンで時短',
+      '週末仕込み、平日はルウをかけるだけ',
+      '忙しい土曜は冷凍食材をフル活用',
+    ];
+    const dow = new Date().getDay();
+    return { meal: meals[dow], hint: hints[dow], dow };
+  },
+};
 
 /* ═══════════════════════════════════════════════════════
    NAVIGATION  (onclick属性なし)
@@ -573,17 +867,22 @@ let chatCtx = null;
 
 function navTo(id, ctx){
   if(id==='settings'){ renderSettings(); return; }
-  ['splash','home','chat','cal','mem'].forEach(s=>{
+  if(id==='proj')  { renderProjScreen();  return; }
+  if(id==='tasks') { renderTasksScreen(); return; }
+  if(id==='mem')   { renderMem();         return; }
+  ['splash','home','chat','cal'].forEach(s=>{
     const el = document.getElementById('s-'+s);
     if(el) el.classList.toggle('on', s===id);
   });
   curScr = id;
-  // ctxが明示的に渡された場合のみ更新（undefinedはタブバー等からの遷移）
   if(ctx !== undefined) chatCtx = ctx;
   if(id==='home') renderHome();
   if(id==='chat') openChat();
   if(id==='cal')  renderCal();
-  if(id==='mem')  renderMem();
+  // タブバーのアクティブ状態を更新
+  document.querySelectorAll('.tb').forEach(b=>{
+    b.classList.toggle('on', b.dataset.nav===id);
+  });
 }
 
 // Tab bar delegation (全タブに一括登録)
@@ -719,9 +1018,10 @@ pc.addEventListener('mouseleave',()=>{ if(swOn){swOn=false;swDx=0;pc.style.trans
 async function renderHome(){
   const s = await loadST();
   await renderProp();
+  renderMealBanner();       // ① 献立バナー
   renderProjRow(s);
   renderInv(s);
-  renderTaskList(s);
+  renderTodayTasks(s);      // ② プラン分岐タスク表示
   const urg = allTasks(s).filter(t=>!t.done&&t.urgent).length;
   const badge = document.getElementById('tbadge');
   if(badge) badge.style.display = urg>0?'flex':'none';
@@ -788,6 +1088,101 @@ function renderInv(s){
   cta.textContent='🤖 全部タスク化してTimeTreeに追加 →';
   cta.addEventListener('click',()=>navTo('chat',{action:'invisible'}));
   el.appendChild(cta);
+}
+
+// ─── 献立バナー ────────────────────────────────────
+function renderMealBanner(){
+  let banner = document.getElementById('meal-banner');
+  if(!banner){
+    banner = document.createElement('div');
+    banner.id = 'meal-banner';
+    banner.className = 'sec';
+    const projSec = document.getElementById('proj-row')?.closest('.sec');
+    if(projSec) projSec.parentNode.insertBefore(banner, projSec);
+  }
+  const {meal, hint} = taskService.getTodayMeal();
+  const inner = document.createElement('div');
+  inner.style.cssText = 'background:linear-gradient(135deg,#2D6A4F,#52B788);border-radius:20px;padding:14px 16px;display:flex;align-items:center;gap:12px;cursor:pointer';
+  inner.innerHTML = '<div style="font-size:28px;flex-shrink:0">&#127869;&#65039;</div>'
+    +'<div style="flex:1">'
+    +'<div style="font-size:11px;font-weight:700;color:rgba(255,255,255,.7);margin-bottom:3px">今日の献立テーマ</div>'
+    +'<div style="font-size:16px;font-weight:800;color:#fff">'+meal+'</div>'
+    +'<div style="font-size:11px;color:rgba(255,255,255,.75);margin-top:2px">'+hint+'</div>'
+    +'</div>'
+    +'<div style="font-size:18px;color:rgba(255,255,255,.6)">&#8250;</div>';
+  inner.addEventListener('click', function(){ navTo('chat',{action:'kondate'}); });
+  banner.innerHTML = '';
+  banner.appendChild(inner);
+}
+
+// ─── 今日やるべきタスク（プラン分岐） ─────────────
+async function renderTodayTasks(s){
+  const el = document.getElementById('task-list');
+  if(!el) return;
+
+  // セクションラベルを更新
+  const lbl = el.closest('.sec')?.querySelector('.sec-lbl');
+  if(lbl) lbl.textContent = '今日これだけ';
+
+  // Service層経由（三層構造）
+  const user = UserRepository.get(s);
+  let todayTasks;
+  if(s.prefs.isPro && aiService.provider !== 'mock'){
+    // Proプラン: AIロジック（緊急優先＋スコア）
+    todayTasks = TaskService.findTodayTasks(s, user);
+  } else {
+    // 無料プラン: TaskService 経由（スコアリング）
+    todayTasks = TaskService.findTodayTasks(s, user);
+  }
+
+  el.innerHTML = '';
+
+  if(!todayTasks.length){
+    const empty = document.createElement('div');
+    empty.className = 'trow';
+    empty.style.cssText = 'color:var(--t2);font-size:14px;padding:18px 14px;text-align:center;flex-direction:column;gap:6px';
+    empty.innerHTML = '<div style="font-size:24px">🌿</div><div>今日は余白の日です</div><div style="font-size:12px;color:var(--t3)">ゆっくり休んでください</div>';
+    el.appendChild(empty);
+  } else {
+    todayTasks.forEach(t=>{
+      const row=document.createElement('div'); row.className='trow';
+      row.dataset.taskId=t.id; row.dataset.projId=t.projId;
+
+      const chk=document.createElement('div'); chk.className='tchk'+(t.done?' done':'');
+      if(t.done) chk.textContent='✓';
+      chk.addEventListener('click', e=>{e.stopPropagation(); toggleTask(t.id,t.projId,chk);});
+
+      const bd=document.createElement('div'); bd.className='tbody';
+      const nm=document.createElement('div'); nm.className='tname'+(t.done?' done':''); nm.textContent=t.name||t.title;
+      const mt=document.createElement('div'); mt.className='tmeta';
+      const wc=t.who==='mama'?'wt-m':t.who==='papa'?'wt-p':'wt-b';
+      const wl=t.who==='mama'?'👩ママ':t.who==='papa'?'👨パパ':'👫二人';
+      const wt=document.createElement('span'); wt.className='wtag '+wc; wt.textContent=wl;
+      mt.appendChild(wt);
+      if((t.urgent||t.isUrgent)&&!t.done){ const dt=document.createElement('span'); dt.className='dtag urg'; dt.textContent='⚠️ '+(t.due||'緊急'); mt.appendChild(dt); }
+      const pt=document.createElement('span'); pt.className='dtag'; pt.textContent=t.projIcon+' '+t.projName;
+      mt.appendChild(pt);
+      bd.append(nm,mt);
+      const arr=document.createElement('span'); arr.className='tarr'; arr.textContent='›';
+      row.append(chk,bd,arr);
+      row.addEventListener('click', ()=>openTaskModal(t.id,t.projId));
+      el.appendChild(row);
+    });
+  }
+
+  // 「他のタスクを見る」導線
+  const more = document.createElement('div');
+  more.className = 'add-row';
+  more.textContent = '他のタスクを見る →';
+  more.style.cssText = 'color:var(--gr);font-weight:600';
+  more.addEventListener('click', ()=>navTo('cal'));
+  el.appendChild(more);
+
+  // タスク追加ボタン
+  const addRow=document.createElement('div'); addRow.className='add-row';
+  addRow.textContent='＋ タスクを追加';
+  addRow.addEventListener('click',()=>openAddModal());
+  el.appendChild(addRow);
 }
 
 function renderTaskList(s){
@@ -883,13 +1278,14 @@ document.querySelectorAll('#who-chips .chip').forEach(c=>{
   c.addEventListener('click',()=>{ document.querySelectorAll('#who-chips .chip').forEach(x=>x.classList.remove('on')); c.classList.add('on'); });
 });
 document.getElementById('add-save').addEventListener('click', async()=>{
-  const name=document.getElementById('new-name').value.trim();
-  if(!name){ toast('タスク名を入力してください'); return; }
+  const title=document.getElementById('new-name').value.trim();
+  if(!title){ toast('タスク名を入力してください'); return; }
   const onChip=document.querySelector('#who-chips .chip.on');
   const whoText=onChip?onChip.textContent:'👩 ママ';
-  const who=whoText.includes('パパ')?'papa':whoText.includes('二人')?'both':'mama';
+  const assignee=whoText.includes('パパ')?'papa':whoText.includes('二人')?'both':'mama';
   const s=await loadST();
-  s.projects[0].tasks.push({id:'u'+Date.now(),name,who,done:false,urgent:false,due:''});
+  // TaskService 経由で作成（三層構造）
+  TaskService.createTask(s, {title, assignee});
   await saveST();
   document.getElementById('add-modal').classList.remove('on');
   renderHome(); toast('✓ タスクを追加しました');
@@ -897,14 +1293,29 @@ document.getElementById('add-save').addEventListener('click', async()=>{
 
 function toggleTask(taskId,projId,el){
   if(!ST) return;
+  // 単発タスク
+  if(projId==='__single__'){
+    const si = (ST.singleTasks||[]).findIndex(t=>t.id===taskId);
+    if(si>=0){
+      ST.singleTasks[si].isCompleted = !ST.singleTasks[si].isCompleted;
+      ST.singleTasks[si].done        = ST.singleTasks[si].isCompleted;
+      saveST();
+      const done = ST.singleTasks[si].isCompleted;
+      el.classList.toggle('done',done); el.textContent=done?'✓':'';
+      el.closest('.trow')?.querySelector('.tname')?.classList.toggle('done',done);
+      if(done){ toast('✓ 完了！'); burst(); }
+      setTimeout(renderHome,400);
+    }
+    return;
+  }
+  // プロジェクトタスク
   const proj=ST.projects.find(p=>p.id===projId);
   const task=proj&&proj.tasks.find(t=>t.id===taskId);
   if(!task) return;
-  task.done=!task.done; saveST();
-  el.classList.toggle('done',task.done);
-  el.textContent=task.done?'✓':'';
-  const row=el.closest('.trow');
-  if(row) row.querySelector('.tname')?.classList.toggle('done',task.done);
+  task.done = !task.done; task.isCompleted = task.done;
+  saveST();
+  el.classList.toggle('done',task.done); el.textContent=task.done?'✓':'';
+  el.closest('.trow')?.querySelector('.tname')?.classList.toggle('done',task.done);
   if(task.done){ toast('✓ 完了！'); burst(); }
   setTimeout(renderHome,400);
 }
@@ -1022,7 +1433,8 @@ function toggleProjTask(taskId,projId,el){
   const proj=ST.projects.find(p=>p.id===projId);
   const task=proj&&proj.tasks.find(t=>t.id===taskId);
   if(!task) return;
-  task.done=!task.done; saveST();
+  task.done = !task.done; task.isCompleted = task.done;
+  saveST();
   el.classList.toggle('done',task.done); el.textContent=task.done?'✓':'';
   el.closest('.pj-trow')?.querySelector('.pj-tname')?.classList.toggle('done',task.done);
   if(task.done){ toast('✓ 完了！'); burst(); }
@@ -1032,6 +1444,132 @@ function toggleProjTask(taskId,projId,el){
 /* ═══════════════════════════════════════════════════════
    MEMBERS
 ═══════════════════════════════════════════════════════ */
+// ─── プロジェクト画面 ─────────────────────────────
+async function renderProjScreen(){
+  // 全画面OFF → proj画面ON
+  ['splash','home','chat','cal'].forEach(id=>{
+    document.getElementById('s-'+id)?.classList.remove('on');
+  });
+  document.getElementById('s-proj')?.classList.add('on');
+  document.getElementById('s-tasks')?.classList.remove('on');
+  // settings画面は動的生成なので個別に非表示
+  document.getElementById('s-settings')?.classList.remove('active');
+  document.querySelectorAll('.tb').forEach(b=>b.classList.toggle('on',b.dataset.nav==='proj'));
+
+  const s = await loadST();
+  const el = document.getElementById('proj-list');
+  if(!el) return;
+  el.innerHTML = '';
+
+  const projs = ProjectRepository.getAll(s);
+  if(!projs.length){
+    el.innerHTML = '<div style="text-align:center;padding:40px 20px;color:var(--t2)"><div style="font-size:40px;margin-bottom:12px">📋</div><div style="font-weight:600">プロジェクトがありません</div><div style="font-size:12px;margin-top:6px">＋ ボタンから追加できます</div></div>';
+    return;
+  }
+
+  projs.forEach(proj=>{
+    const progress = ProjectService.calculateProgress(s, proj.id);
+    const next = ProjectService.getNextTask(s, proj.id);
+    const total = proj.tasks?.length||0;
+    const done  = proj.tasks?.filter(t=>t.isCompleted||t.done).length||0;
+
+    const card = document.createElement('div');
+    card.className = 'proj-card';
+
+    const top = document.createElement('div'); top.className = 'proj-card-top';
+    const iconEl = document.createElement('div'); iconEl.className = 'proj-card-icon';
+    iconEl.style.background = proj.bg||'#F3F6F3';
+    iconEl.textContent = proj.icon||'📁';
+    const info = document.createElement('div'); info.className = 'proj-card-info';
+    info.innerHTML = '<div class="proj-card-name">'+proj.name+'</div>'
+      +'<div class="proj-card-meta">'+done+'/'+total+' 完了 · '+(proj.deadline||proj.goalDate||'期限未設定')+'</div>';
+    top.append(iconEl, info);
+
+    const bar = document.createElement('div'); bar.className = 'prog-bar';
+    const fill = document.createElement('div'); fill.className = 'prog-fill';
+    fill.style.cssText = 'width:'+progress+'%;background:'+proj.color;
+    bar.appendChild(fill);
+
+    const lbl = document.createElement('div'); lbl.className = 'prog-label';
+    lbl.innerHTML = '<span>進捗</span><span>'+progress+'%</span>';
+
+    card.append(top, bar, lbl);
+
+    if(next){
+      const nt = document.createElement('div'); nt.className = 'next-task';
+      nt.textContent = '▶ 次：'+next.name;
+      card.appendChild(nt);
+    }
+
+    card.addEventListener('click', ()=>navTo('chat',{action:'project_'+proj.id}));
+    el.appendChild(card);
+  });
+}
+
+// ─── タスク画面 ──────────────────────────────────
+let _taskFilter = 'all';
+async function renderTasksScreen(){
+  ['splash','home','chat','cal'].forEach(id=>{
+    document.getElementById('s-'+id)?.classList.remove('on');
+  });
+  document.getElementById('s-proj')?.classList.remove('on');
+  document.getElementById('s-tasks')?.classList.add('on');
+  document.getElementById('s-settings')?.classList.remove('active');
+  document.querySelectorAll('.tb').forEach(b=>b.classList.toggle('on',b.dataset.nav==='tasks'));
+
+  const s = await loadST();
+  const el = document.getElementById('task-screen-list');
+  if(!el) return;
+  el.innerHTML = '';
+
+  const tasks = TaskService.getTasksByType(s, _taskFilter);
+  const incomplete = tasks.filter(t=>!(t.isCompleted||t.done));
+  const complete   = tasks.filter(t=>  t.isCompleted||t.done);
+  const sorted = [...incomplete, ...complete];
+
+  if(!sorted.length){
+    el.innerHTML = '<div style="text-align:center;padding:40px 20px;color:var(--t2)"><div style="font-size:40px;margin-bottom:12px">✅</div><div style="font-weight:600">タスクがありません</div></div>';
+    return;
+  }
+
+  sorted.forEach(t=>{
+    const row = document.createElement('div'); row.className = 'trow';
+    row.dataset.taskId = t.id;
+    row.dataset.projId = t.projId||'__single__';
+    row.style.marginBottom = '8px';
+
+    const chk = document.createElement('div'); chk.className='tchk'+(t.isCompleted||t.done?' done':'');
+    if(t.isCompleted||t.done) chk.textContent='✓';
+    chk.addEventListener('click', e=>{
+      e.stopPropagation();
+      toggleTask(t.id, t.projId||'__single__', chk);
+      setTimeout(renderTasksScreen, 350);
+    });
+
+    const bd = document.createElement('div'); bd.className='tbody';
+    const nm = document.createElement('div'); nm.className='tname'+(t.isCompleted||t.done?' done':'');
+    nm.textContent = t.title||t.name;
+
+    const mt = document.createElement('div'); mt.className='tmeta';
+    const wc = t.assignee==='mama'||t.who==='mama'?'wt-m':t.assignee==='papa'||t.who==='papa'?'wt-p':'wt-b';
+    const wl = t.assignee==='mama'||t.who==='mama'?'👩ママ':t.assignee==='papa'||t.who==='papa'?'👨パパ':'👫二人';
+    const wt = document.createElement('span'); wt.className='wtag '+wc; wt.textContent=wl;
+    mt.appendChild(wt);
+
+    // タイプバッジ
+    const tb = document.createElement('span'); tb.className='dtag';
+    const isProj = t.type==='project'||(t.projId&&t.projId!=='__single__');
+    tb.textContent = isProj ? (t.projIcon||'📋')+' '+t.projName : '📌 単発';
+    mt.appendChild(tb);
+
+    bd.append(nm, mt);
+    const arr = document.createElement('span'); arr.className='tarr'; arr.textContent='›';
+    row.append(chk, bd, arr);
+    row.addEventListener('click', ()=>openTaskModal(t.id, t.projId||'__single__'));
+    el.appendChild(row);
+  });
+}
+
 async function renderMem(){
   const s=await loadST();
   const el=document.getElementById('mem-body');
@@ -1455,7 +1993,61 @@ function scrollChat(){ const cb=document.getElementById('chat-body'); if(cb) set
    BOOT
 ═══════════════════════════════════════════════════════ */
 async function boot(){
-  await loadST(); // プリロード — スプラッシュは既にon
+  await loadST();
+
+  // ── ドロップダウンメニュー ────────────────────
+  const menuBtn = document.getElementById('menu-btn');
+  const dropMenu = document.getElementById('dropdown-menu');
+  if(menuBtn && dropMenu){
+    menuBtn.addEventListener('click', e=>{
+      e.stopPropagation();
+      dropMenu.style.display = dropMenu.style.display==='none' ? 'block' : 'none';
+    });
+    document.addEventListener('click', ()=>{ dropMenu.style.display='none'; });
+    document.querySelectorAll('.dmenu-item').forEach(item=>{
+      item.addEventListener('click', ()=>{
+        dropMenu.style.display='none';
+        navTo(item.dataset.action);
+      });
+    });
+  }
+
+  // ── タスク画面タイプタブ ──────────────────────
+  document.querySelectorAll('.type-tab').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      document.querySelectorAll('.type-tab').forEach(b=>b.classList.remove('on'));
+      btn.classList.add('on');
+      _taskFilter = btn.dataset.type;
+      renderTasksScreen();
+    });
+  });
+
+  // ── 各タブバー（proj / tasks 画面にも同じタブ） ──
+  document.querySelectorAll('.tb[data-nav]').forEach(btn=>{
+    // boot時点で既存のonclickは不要、全てdata-navで処理
+    btn.addEventListener('click', ()=>navTo(btn.dataset.nav));
+  });
+
+  // ── プロジェクト追加ボタン（将来実装） ──────────
+  document.getElementById('proj-add-btn')?.addEventListener('click', ()=>{
+    toast('プロジェクト追加は近日公開 🚧');
+  });
+
+  // ── タスク追加FAB ────────────────────────────
+  document.getElementById('tasks-add-btn')?.addEventListener('click', ()=>{
+    openAddModal();
+  });
+
+  // ── ホームヘッダー初期化 ──────────────────────
+  loadST().then(s=>{
+    const ht = document.getElementById('home-title');
+    const hs = document.getElementById('home-sub');
+    if(ht) ht.textContent = (s.family?.name||'田中')+'家のOS';
+    if(hs){
+      const dow = ['日','月','火','水','木','金','土'][new Date().getDay()];
+      hs.textContent = dow+'曜日 · 今日も一緒に乗り越えよう';
+    }
+  });
 }
 boot();
 </script>
