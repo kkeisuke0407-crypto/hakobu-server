@@ -424,13 +424,13 @@ html,body{height:100%;background:#B8CCB8;font-family:'M PLUS Rounded 1c',sans-se
         <button id="tasks-add-btn" style="width:32px;height:32px;background:var(--gr);border:none;border-radius:10px;font-size:18px;color:#fff;cursor:pointer">+</button>
       </div>
       <div class="type-tabs">
-        <button class="type-tab on" data-type="all">すべて</button>
+        <button class="type-tab on" data-type="cal">カレンダー</button>
+        <button class="type-tab" data-type="single">単発</button>
         <button class="type-tab" data-type="project">プロジェクト</button>
       </div>
       <div class="cal-view-tabs" id="cal-view-tabs">
-        <button class="cal-view-tab on" data-view="day">日</button>
+        <button class="cal-view-tab on" data-view="day">30日</button>
         <button class="cal-view-tab" data-view="week">週</button>
-        <button class="cal-view-tab" data-view="month">月</button>
       </div>
     </div>
     <div class="task-cal-grid" id="task-screen-list"></div>
@@ -548,8 +548,16 @@ html,body{height:100%;background:#B8CCB8;font-family:'M PLUS Rounded 1c',sans-se
             <button class="chip">👫 二人で</button>
           </div>
         </div>
-        <div style="display:flex;align-items:center;gap:7px;background:var(--gr3);border-radius:var(--r);padding:10px 12px;margin-bottom:13px">
-          <span>📅</span><span style="font-size:12px;font-weight:600;color:var(--gr)">iOSカレンダー → TimeTree に自動同期</span>
+        <div class="field">
+          <label>期日（任意）</label>
+          <input type="date" id="new-due" style="width:100%;padding:10px 12px;border:1.5px solid var(--bdr);border-radius:var(--r);font-family:inherit;font-size:14px;color:var(--t1);background:#fff">
+        </div>
+        <div class="field">
+          <label>種別</label>
+          <div class="chips" id="type-chips">
+            <button class="chip on" data-val="single">単発</button>
+            <button class="chip" data-val="project">プロジェクト</button>
+          </div>
         </div>
         <button class="btn btn-g" id="add-save" style="margin-bottom:8px">追加する</button>
         <button class="btn btn-ghost" id="add-cancel">キャンセル</button>
@@ -1317,12 +1325,20 @@ document.getElementById('add-save').addEventListener('click', async()=>{
   const onChip=document.querySelector('#who-chips .chip.on');
   const whoText=onChip?onChip.textContent:'👩 ママ';
   const assignee=whoText.includes('パパ')?'papa':whoText.includes('二人')?'both':'mama';
+  const dueVal=document.getElementById('new-due')?.value||'';
+  const dueDate=dueVal||null;
+  const typeChip=document.querySelector('#type-chips .chip.on');
+  const taskType=typeChip?.dataset.val||'single';
   const s=await loadST();
-  // TaskService 経由で作成（三層構造）
-  TaskService.createTask(s, {title, assignee});
+  TaskService.createTask(s, {title, assignee, dueDate, type:taskType});
   await saveST();
   document.getElementById('add-modal').classList.remove('on');
-  renderHome(); toast('✓ タスクを追加しました');
+  document.getElementById('new-name').value='';
+  document.getElementById('new-due').value='';
+  // 現在の画面に応じてリフレッシュ
+  if(curScr==='tasks') renderTasksScreen();
+  else renderHome();
+  toast('✓ タスクを追加しました');
 });
 
 function toggleTask(taskId,projId,el){
@@ -1543,16 +1559,44 @@ async function renderProjScreen(){
         _taskFilter='project'; _taskViewMode='day';
         navTo('tasks');
       });
-      row.append(chk, nm, wl);
+      // 削除ボタン
+      const del = document.createElement('button');
+      del.textContent='✕'; del.style.cssText='border:none;background:none;color:var(--t3);font-size:14px;cursor:pointer;padding:4px;flex-shrink:0';
+      del.addEventListener('click', async e=>{
+        e.stopPropagation();
+        const st=await loadST();
+        const p=st.projects.find(p=>p.id===proj.id); if(!p) return;
+        p.tasks=p.tasks.filter(x=>x.id!==t.id);
+        await saveST(); toast('削除しました'); renderProjScreen();
+      });
+      row.append(chk, nm, wl, del);
       taskList.appendChild(row);
     });
 
-    // AIで相談ボタン
-    const aiBtn = document.createElement('button');
-    aiBtn.style.cssText='width:100%;padding:11px;border:none;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;background:'+proj.color+';color:#fff;display:flex;align-items:center;justify-content:center;gap:6px;';
-    aiBtn.innerHTML='🤖 AIに計画を相談する';
-    aiBtn.addEventListener('click', e=>{ e.stopPropagation(); navTo('chat',{action:'project_'+proj.id}); });
-    taskList.appendChild(aiBtn);
+    // タスク追加フォーム
+    const addRow = document.createElement('div');
+    addRow.style.cssText='display:flex;align-items:center;gap:8px;padding:10px 14px;border-top:1px solid var(--bdr)';
+    const addInp = document.createElement('input');
+    addInp.placeholder='タスクを追加…';
+    addInp.style.cssText='flex:1;border:1.5px solid var(--bdr);border-radius:10px;padding:8px 11px;font-family:inherit;font-size:13px;color:var(--t1);background:#fff';
+    const addBtn = document.createElement('button');
+    addBtn.textContent='追加';
+    addBtn.style.cssText='padding:8px 14px;background:'+proj.color+';color:#fff;border:none;border-radius:10px;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap';
+    addBtn.addEventListener('click', async e=>{
+      e.stopPropagation();
+      const name=addInp.value.trim(); if(!name) return;
+      const st=await loadST();
+      const p=st.projects.find(p=>p.id===proj.id); if(!p) return;
+      if(!p.tasks) p.tasks=[];
+      const newT={id:'pt'+Date.now(),name,title:name,type:'project',projectId:proj.id,
+        who:'both',assignee:'both',isCompleted:false,done:false,urgent:false,isUrgent:false,
+        dueDate:null,due:'',createdAt:new Date().toISOString()};
+      p.tasks.push(newT);
+      await saveST(); addInp.value='';
+      toast('✓ タスクを追加しました'); renderProjScreen();
+    });
+    addRow.append(addInp, addBtn);
+    taskList.appendChild(addRow);
 
     // 展開トグル
     summary.addEventListener('click', ()=>{
@@ -1568,14 +1612,14 @@ async function renderProjScreen(){
 }
 
 // ─── タスク画面 ──────────────────────────────────
-let _taskFilter = 'all';
+let _taskFilter = 'cal';
 let _taskViewMode = 'day'; // 'day'|'week'|'month'
 
 async function renderTasksScreen(){
   document.querySelectorAll('.tb').forEach(b=>b.classList.toggle('on',b.dataset.nav==='tasks'));
   // カレンダータブ表示制御
   const calViewTabs = document.getElementById('cal-view-tabs');
-  if(calViewTabs) calViewTabs.style.display = _taskFilter==='all' ? 'flex' : 'none';
+  if(calViewTabs) calViewTabs.style.display = _taskFilter==='cal' ? 'flex' : 'none';
 
   const s = await loadST();
   const el = document.getElementById('task-screen-list');
@@ -1584,93 +1628,308 @@ async function renderTasksScreen(){
 
   if(_taskFilter==='project'){
     renderTasksByProject(s, el);
+  } else if(_taskFilter==='single'){
+    renderTasksBySingle(s, el);
   } else {
-    renderTasksByCalendar(s, el);
+    renderTasksByCalendar(s, el);  // 'cal'
   }
 }
 
 function renderTasksByCalendar(s, el){
   const allT = allTasks(s);
-  const now  = new Date();
-  const today= new Date(now.getFullYear(),now.getMonth(),now.getDate());
+  const now   = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const parseDue = due => {
+    if(!due) return null;
+    const d = new Date(due);
+    return isNaN(d) ? null : new Date(d.getFullYear(), d.getMonth(), d.getDate());
+  };
 
-  // ビューモードに応じた日付範囲を生成
-  let days = [];
-  if(_taskViewMode==='day'){
-    // 今日 + 6日先
-    for(let i=0;i<7;i++){ const d=new Date(today); d.setDate(today.getDate()+i); days.push(d); }
-  } else if(_taskViewMode==='week'){
-    // 今週月曜から4週分
-    const mon = new Date(today);
-    mon.setDate(today.getDate() - (today.getDay()||7) + 1);
-    for(let i=0;i<28;i++){ const d=new Date(mon); d.setDate(mon.getDate()+i); days.push(d); }
-  } else {
-    // 今日から3ヶ月
-    for(let i=0;i<90;i++){ const d=new Date(today); d.setDate(today.getDate()+i); days.push(d); }
-  }
-
-  const parseDue = (due)=>{ if(!due) return null; const d=new Date(due); return isNaN(d)?null:d; };
-
-  // 「期限なし」タスクを先に表示
-  const noDue = allT.filter(t=>!parseDue(t.dueDate||t.due));
-  if(noDue.length){
-    const sec=document.createElement('div'); sec.className='task-day-row';
-    const lbl=document.createElement('div'); lbl.className='task-day-label';
-    lbl.textContent='期限なし';
-    sec.appendChild(lbl);
-    noDue.forEach(t=>sec.appendChild(makeCalItem(t,s)));
-    el.appendChild(sec);
-  }
-
-  // 日付別に表示
-  const WDAY=['日','月','火','水','木','金','土'];
-  let lastMonth=-1;
-  days.forEach(day=>{
-    const tasksOnDay=allT.filter(t=>{
-      const due=parseDue(t.dueDate||t.due);
-      if(!due) return false;
-      return due.getFullYear()===day.getFullYear()&&due.getMonth()===day.getMonth()&&due.getDate()===day.getDate();
-    });
-    if(!tasksOnDay.length) return;
-
-    // 月表示（週/月ビュー時）
-    if(_taskViewMode!=='day' && day.getMonth()!==lastMonth){
-      lastMonth=day.getMonth();
-      const mh=document.createElement('div');
-      mh.style.cssText='font-size:13px;font-weight:800;color:var(--t1);padding:10px 2px 4px;letter-spacing:.5px';
-      mh.textContent=(day.getMonth()+1)+'月';
-      el.appendChild(mh);
-    }
-
-    const sec=document.createElement('div'); sec.className='task-day-row';
-    const isToday=day.toDateString()===now.toDateString();
-    const lbl=document.createElement('div'); lbl.className='task-day-label'+(isToday?' today':'');
-    lbl.textContent=(isToday?'今日 ':'')+(day.getMonth()+1)+'/'+day.getDate()+'('+WDAY[day.getDay()]+')';
-    sec.appendChild(lbl);
-    tasksOnDay.forEach(t=>sec.appendChild(makeCalItem(t,s)));
-    el.appendChild(sec);
+  // タスクをdateKey別マップ
+  const taskMap = {};
+  allT.forEach(t => {
+    const d = parseDue(t.dueDate||t.due);
+    if(!d) return;
+    const k = d.toDateString();
+    if(!taskMap[k]) taskMap[k] = [];
+    taskMap[k].push(t);
   });
 
-  if(!el.children.length){
-    el.innerHTML='<div style="text-align:center;padding:40px 20px;color:var(--t2)"><div style="font-size:40px;margin-bottom:12px">✅</div><div style="font-weight:600">この期間のタスクはありません</div></div>';
+  if(_taskViewMode === 'week') {
+    renderWeekView(s, el, taskMap, today, now);
+  } else {
+    renderMonthView(s, el, taskMap, today, now);
   }
+}
+
+// ── 30日グリッド（TimeTree風）────────────────────
+function renderMonthView(s, el, taskMap, today, now) {
+  const WDAY = ['日','月','火','水','木','金','土'];
+
+  // 選択日管理
+  if(!window._selDay) window._selDay = today;
+
+  // コンテナ2段構造：上=カレンダー、下=タスク一覧（スクロール対象外）
+  el.style.overflow = 'hidden';
+  el.style.display  = 'flex';
+  el.style.flexDirection = 'column';
+  el.style.padding  = '0';
+
+  // ── 上段: カレンダーグリッド ─────────────────
+  const calWrap = document.createElement('div');
+  calWrap.style.cssText = 'flex-shrink:0;background:#fff;border-bottom:1px solid var(--bdr);padding-bottom:8px';
+
+  // 曜日ヘッダー
+  const dowHdr = document.createElement('div');
+  dowHdr.style.cssText = 'display:grid;grid-template-columns:repeat(7,1fr);padding:6px 8px 2px';
+  WDAY.forEach((w, wi) => {
+    const c = document.createElement('div');
+    c.style.cssText = 'text-align:center;font-size:10px;font-weight:700;color:'
+      + (wi===0?'#C0392B': wi===6?'#1E5EA8':'var(--t3)');
+    c.textContent = w;
+    dowHdr.appendChild(c);
+  });
+  calWrap.appendChild(dowHdr);
+
+  // 月グリッド（今日から30日を含む月全体を表示）
+  const gridStart = new Date(today.getFullYear(), today.getMonth(), 1);
+  const gridEnd   = new Date(today.getFullYear(), today.getMonth()+2, 0); // 翌月末
+
+  // 先頭の空白（月初の曜日）
+  const startDow = gridStart.getDay();
+  const grid = document.createElement('div');
+  grid.style.cssText = 'display:grid;grid-template-columns:repeat(7,1fr);gap:1px;padding:0 8px';
+  for(let i = 0; i < startDow; i++){
+    grid.appendChild(document.createElement('div'));
+  }
+
+  // 今月全日
+  for(let d2 = new Date(gridStart); d2 <= gridEnd; d2.setDate(d2.getDate()+1)){
+    const day = new Date(d2);
+    const key = day.toDateString();
+    const isToday   = key === today.toDateString();
+    const isSel     = key === window._selDay.toDateString();
+    const isPast    = day < today;
+    const dayTasks  = taskMap[key]||[];
+    const hasTasks  = dayTasks.length > 0;
+    const allDone   = hasTasks && dayTasks.every(t => t.isCompleted||t.done);
+    const dow       = day.getDay();
+
+    const cell = document.createElement('div');
+    cell.style.cssText = 'display:flex;flex-direction:column;align-items:center;padding:4px 2px;cursor:pointer;border-radius:8px;'
+      + (isSel ? 'background:var(--gr);' : isToday ? 'background:var(--gr3);' : '');
+
+    // 日付数字
+    const numEl = document.createElement('div');
+    numEl.style.cssText = 'font-size:13px;font-weight:' + (isToday||isSel ? '800' : '600')
+      + ';color:' + (isSel ? '#fff' : isToday ? 'var(--gr)' : isPast ? 'var(--t3)' : dow===0 ? '#C0392B' : dow===6 ? '#1E5EA8' : 'var(--t1)')
+      + ';line-height:1.6;min-width:22px;text-align:center';
+    numEl.textContent = day.getDate();
+    cell.appendChild(numEl);
+
+    // タスクドット
+    if(hasTasks){
+      const dotRow = document.createElement('div');
+      dotRow.style.cssText = 'display:flex;gap:2px;justify-content:center;min-height:6px';
+      const showN = Math.min(dayTasks.length, 3);
+      for(let di=0; di<showN; di++){
+        const t = dayTasks[di];
+        const dot = document.createElement('div');
+        const isDone = t.isCompleted||t.done;
+        dot.style.cssText = 'width:5px;height:5px;border-radius:50%;flex-shrink:0;background:'
+          + (isSel ? 'rgba(255,255,255,.7)' : isDone ? 'var(--t3)' : (t.projColor||'var(--gr)'));
+        dotRow.appendChild(dot);
+      }
+      if(dayTasks.length > 3){
+        const more = document.createElement('div');
+        more.style.cssText = 'width:5px;height:5px;border-radius:50%;background:'+(isSel?'rgba(255,255,255,.5)':'var(--t3)');
+        dotRow.appendChild(more);
+      }
+      cell.appendChild(dotRow);
+    }
+
+    cell.addEventListener('click', () => {
+      window._selDay = day;
+      renderTasksScreen(); // 全体再描画
+    });
+    grid.appendChild(cell);
+  }
+  calWrap.appendChild(grid);
+  el.appendChild(calWrap);
+
+  // ── 下段: 選択日タスク一覧 ───────────────────
+  const listWrap = document.createElement('div');
+  listWrap.style.cssText = 'flex:1;overflow-y:auto;padding:0 12px 90px';
+
+  const selKey = window._selDay.toDateString();
+  const selTasks = taskMap[selKey]||[];
+  const WDAY2 = ['日','月','火','水','木','金','土'];
+  const selD = window._selDay;
+  const isSelToday = selKey === today.toDateString();
+
+  // 選択日ヘッダー
+  const selHdr = document.createElement('div');
+  selHdr.style.cssText = 'padding:14px 2px 8px;font-size:14px;font-weight:800;color:var(--t1);display:flex;align-items:center;gap:8px';
+  const selBadge = document.createElement('span');
+  selBadge.style.cssText = 'display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:var(--gr);color:#fff;font-size:13px;font-weight:800';
+  selBadge.textContent = selD.getDate();
+  selHdr.appendChild(selBadge);
+  selHdr.appendChild(document.createTextNode(
+    (selD.getMonth()+1)+'月'+selD.getDate()+'日（'+WDAY2[selD.getDay()]+'）'
+    + (isSelToday ? ' · 今日' : '')
+  ));
+  listWrap.appendChild(selHdr);
+
+  if(!selTasks.length){
+    const emp = document.createElement('div');
+    emp.style.cssText = 'padding:24px 0;text-align:center;color:var(--t3);font-size:13px';
+    emp.textContent = 'この日のタスクはありません';
+    listWrap.appendChild(emp);
+  } else {
+    selTasks.forEach(t => listWrap.appendChild(makeCalItem(t, window.ST)));
+  }
+
+  // 期限なしタスク（一番下）
+  const noDue = allT.filter(t => !parseDue(t.dueDate||t.due));
+  if(noDue.length && isSelToday){
+    const ndHdr = document.createElement('div');
+    ndHdr.style.cssText = 'padding:14px 2px 8px;font-size:12px;font-weight:700;color:var(--t3);letter-spacing:.5px';
+    ndHdr.textContent = '期限なし';
+    listWrap.appendChild(ndHdr);
+    noDue.forEach(t => listWrap.appendChild(makeCalItem(t, window.ST)));
+  }
+
+  el.appendChild(listWrap);
+}
+
+// ── 週ビュー（当週のみ + 日別タスク一覧）────────
+function renderWeekView(s, el, taskMap, today, now) {
+  const WDAY = ['日','月','火','水','木','金','土'];
+
+  // 今週月曜
+  const mon = new Date(today);
+  mon.setDate(today.getDate() - ((today.getDay()||7) - 1));
+
+  el.style.overflow = 'hidden';
+  el.style.display  = 'flex';
+  el.style.flexDirection = 'column';
+  el.style.padding  = '0';
+
+  // ── 上段: 週グリッド ──────────────────────────
+  const calWrap = document.createElement('div');
+  calWrap.style.cssText = 'flex-shrink:0;background:#fff;border-bottom:1px solid var(--bdr)';
+
+  // 曜日ヘッダー（日付付き）
+  const dowHdr = document.createElement('div');
+  dowHdr.style.cssText = 'display:grid;grid-template-columns:repeat(7,1fr);padding:6px 8px 4px;gap:2px';
+
+  for(let d=0; d<7; d++){
+    const day = new Date(mon); day.setDate(mon.getDate()+d);
+    const isToday = day.toDateString()===today.toDateString();
+    const isSel   = window._selWeekDay && day.toDateString()===window._selWeekDay.toDateString();
+    const key = day.toDateString();
+    const n = (taskMap[key]||[]).length;
+    const dow = day.getDay();
+
+    const col = document.createElement('div');
+    col.style.cssText = 'display:flex;flex-direction:column;align-items:center;gap:3px;padding:4px 2px;border-radius:10px;cursor:pointer;'
+      + (isSel ? 'background:var(--gr);' : isToday ? 'background:var(--gr3);' : '');
+
+    const wEl = document.createElement('div');
+    wEl.style.cssText = 'font-size:10px;font-weight:700;color:'
+      + (isSel ? 'rgba(255,255,255,.8)' : dow===0 ? '#C0392B' : dow===6 ? '#1E5EA8' : 'var(--t3)');
+    wEl.textContent = WDAY[dow];
+
+    const numEl = document.createElement('div');
+    numEl.style.cssText = 'font-size:15px;font-weight:800;color:'
+      + (isSel ? '#fff' : isToday ? 'var(--gr)' : dow===0 ? '#C0392B' : dow===6 ? '#1E5EA8' : 'var(--t1)');
+    numEl.textContent = day.getDate();
+
+    col.appendChild(wEl);
+    col.appendChild(numEl);
+
+    // タスク数バッジ
+    if(n > 0){
+      const badge = document.createElement('div');
+      badge.style.cssText = 'font-size:9px;font-weight:800;color:'+(isSel?'rgba(255,255,255,.9)':'var(--gr)')+';background:'+(isSel?'rgba(255,255,255,.2)':'var(--gr3)')+';border-radius:8px;padding:1px 5px';
+      badge.textContent = n;
+      col.appendChild(badge);
+    }
+
+    col.addEventListener('click', () => {
+      window._selWeekDay = day;
+      renderTasksScreen();
+    });
+    dowHdr.appendChild(col);
+  }
+  calWrap.appendChild(dowHdr);
+  el.appendChild(calWrap);
+
+  // ── 下段: 日別タスク一覧（全7日、選択日はハイライト）─
+  const listWrap = document.createElement('div');
+  listWrap.style.cssText = 'flex:1;overflow-y:auto;padding:0 12px 90px';
+
+  const selWeekKey = window._selWeekDay ? window._selWeekDay.toDateString() : today.toDateString();
+
+  for(let d=0; d<7; d++){
+    const day = new Date(mon); day.setDate(mon.getDate()+d);
+    const key = day.toDateString();
+    const isToday = key===today.toDateString();
+    const isSel   = key===selWeekKey;
+    const dayTasks = taskMap[key]||[];
+
+    const sec = document.createElement('div');
+    sec.style.cssText = 'margin-top:12px';
+    if(isSel) sec.id = '_week_sel_sec';
+
+    // 日付ラベル
+    const lbl = document.createElement('div');
+    lbl.style.cssText = 'display:flex;align-items:center;gap:8px;margin-bottom:6px;padding:0 2px';
+    const badge = document.createElement('span');
+    badge.style.cssText = 'display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;font-size:12px;font-weight:800;'
+      + (isToday ? 'background:var(--gr);color:#fff;' : isSel ? 'background:var(--gr3);color:var(--gr);' : 'background:var(--bg);color:var(--t2);');
+    badge.textContent = day.getDate();
+    const dayLbl = document.createElement('span');
+    dayLbl.style.cssText = 'font-size:12px;font-weight:700;color:'+(isToday?'var(--gr)':isSel?'var(--t1)':'var(--t2)');
+    dayLbl.textContent = WDAY[day.getDay()] + (isToday?' · 今日':'');
+    lbl.append(badge, dayLbl);
+    sec.appendChild(lbl);
+
+    if(!dayTasks.length){
+      const emp = document.createElement('div');
+      emp.style.cssText = 'padding:8px 12px;font-size:12px;color:var(--t3);font-style:italic';
+      emp.textContent = 'タスクなし';
+      sec.appendChild(emp);
+    } else {
+      dayTasks.forEach(t => sec.appendChild(makeCalItem(t, window.ST)));
+    }
+    listWrap.appendChild(sec);
+  }
+
+  // 期限なしタスク
+  const allT2 = allTasks(window.ST);
+  const parseDue2 = due=>{ if(!due) return null; const d=new Date(due); return isNaN(d)?null:d; };
+  const noDue = allT2.filter(t=>!parseDue2(t.dueDate||t.due));
+  if(noDue.length){
+    const ndSec = document.createElement('div'); ndSec.style.cssText='margin-top:16px';
+    const ndHdr = document.createElement('div'); ndHdr.style.cssText='font-size:11px;font-weight:700;color:var(--t3);letter-spacing:.5px;margin-bottom:6px;padding:0 2px';
+    ndHdr.textContent='期限なし'; ndSec.appendChild(ndHdr);
+    noDue.forEach(t=>ndSec.appendChild(makeCalItem(t,window.ST)));
+    listWrap.appendChild(ndSec);
+  }
+
+  el.appendChild(listWrap);
+
+  // 選択日セクションにスクロール
+  setTimeout(()=>{
+    const sel = document.getElementById('_week_sel_sec');
+    if(sel) sel.scrollIntoView({behavior:'smooth',block:'start'});
+  }, 80);
 }
 
 function renderTasksByProject(s, el){
   const projs = ProjectRepository.getAll(s);
-  // 単発タスク
-  const singles=(s.singleTasks||[]);
-  if(singles.length){
-    const sec=document.createElement('div'); sec.className='task-proj-section';
-    const hdr=document.createElement('div'); hdr.className='task-proj-header';
-    hdr.innerHTML='<span class="task-proj-header-icon">📌</span><span class="task-proj-header-name">単発タスク</span><span class="task-proj-header-pct">'+singles.filter(t=>t.isCompleted).length+'/'+singles.length+'</span>';
-    sec.appendChild(hdr);
-    singles.forEach(t=>{
-      const item=makeCalItem({...t,name:t.title,who:t.assignee,done:t.isCompleted,projId:'__single__',projIcon:'📌',projName:'単発タスク'},s);
-      sec.appendChild(item);
-    });
-    el.appendChild(sec);
-  }
+  // 単発タスクはプロジェクトビューに含めない
   projs.forEach(proj=>{
     const tasks=proj.tasks||[];
     const done=tasks.filter(t=>t.isCompleted||t.done).length;
@@ -1685,6 +1944,22 @@ function renderTasksByProject(s, el){
     sec.appendChild(bar);
     tasks.forEach(t=>sec.appendChild(makeCalItem({...t,projId:proj.id,projIcon:proj.icon,projName:proj.name},s)));
     el.appendChild(sec);
+  });
+}
+
+function renderTasksBySingle(s, el){
+  const singles = (s.singleTasks||[]);
+  if(!singles.length){
+    el.innerHTML='<div style="text-align:center;padding:40px 20px;color:var(--t2)"><div style="font-size:40px;margin-bottom:12px">📌</div><div style="font-weight:600">単発タスクがありません</div><div style="font-size:12px;margin-top:6px">＋ボタンから追加できます</div></div>';
+    return;
+  }
+  // 未完了→完了 の順
+  const sorted=[...singles.filter(t=>!t.isCompleted),...singles.filter(t=>t.isCompleted)];
+  sorted.forEach(t=>{
+    el.appendChild(makeCalItem({
+      ...t, name:t.title, who:t.assignee, done:t.isCompleted,
+      projId:'__single__', projIcon:'📌', projName:'単発タスク'
+    }, s));
   });
 }
 
@@ -2161,9 +2436,9 @@ async function boot(){
       document.querySelectorAll('.type-tab').forEach(b=>b.classList.remove('on'));
       btn.classList.add('on');
       _taskFilter = btn.dataset.type;
-      // プロジェクトタブ選択時はカレンダービュータブを隠す
+      // カレンダータブ選択時だけ日/週/月タブを表示
       const cvt=document.getElementById('cal-view-tabs');
-      if(cvt) cvt.style.display=_taskFilter==='all'?'flex':'none';
+      if(cvt) cvt.style.display=_taskFilter==='cal'?'flex':'none';
       renderTasksScreen();
     });
   });
@@ -2178,6 +2453,13 @@ async function boot(){
   });
   // ── AI相談ボタン（左上）──────────────────────
   document.getElementById('ai-chat-btn')?.addEventListener('click',()=>navTo('chat'));
+  // ── 種別チップ（add-modal内）──────────────────
+  document.querySelectorAll('#type-chips .chip').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      document.querySelectorAll('#type-chips .chip').forEach(b=>b.classList.remove('on'));
+      btn.classList.add('on');
+    });
+  });
 
   // ── 各タブバー（proj / tasks 画面にも同じタブ） ──
   document.querySelectorAll('.tb[data-nav]').forEach(btn=>{
