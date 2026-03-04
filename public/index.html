@@ -116,8 +116,7 @@ html,body{height:100%;background:#E8E4D0;font-family:'Noto Sans JP',sans-serif;}
 .p-skip{flex:1;padding:11px;background:rgba(255,255,255,.2);border:none;border-radius:var(--r);font-family:inherit;font-size:13px;font-weight:600;color:#fff;cursor:pointer;}
 /* swipe overlay */
 .sw-over{position:absolute;inset:0;border-radius:var(--r3);display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:800;color:#fff;opacity:0;pointer-events:none;}
-.sw-L{background:rgba(255,77,109,.2);border:3px solid rgba(255,77,109,.5);}
-.sw-R{background:rgba(34,197,94,.2);border:3px solid rgba(34,197,94,.5);}
+
 /* pager */
 .pdots{display:flex;gap:5px;justify-content:center;padding:9px 0 0;}
 .pdot{width:5px;height:5px;border-radius:50%;background:rgba(0,0,0,.12);transition:all .2s;}
@@ -188,12 +187,12 @@ html,body{height:100%;background:#E8E4D0;font-family:'Noto Sans JP',sans-serif;}
 .td:nth-child(2){animation-delay:.16s;}
 .td:nth-child(3){animation-delay:.32s;}
 /* choices */
-.cwrap{align-self:flex-start;display:flex;flex-direction:column;gap:6px;max-width:97%;}
-.cbtn{display:flex;align-items:center;gap:9px;background:var(--sur);border:2px solid var(--bdr);border-radius:var(--r2);padding:11px 13px;font-size:13px;font-weight:500;color:var(--t1);text-align:left;cursor:pointer;font-family:inherit;min-height:var(--tap);box-shadow:var(--sh);transition:all .12s;width:100%;}
+.cwrap{display:flex;flex-wrap:wrap;gap:8px;padding:4px 0;}
+.cbtn{display:flex;align-items:center;gap:5px;padding:9px 16px;background:#fff;border:2px solid var(--bdr);border-radius:999px;font-size:13px;font-weight:700;color:var(--t1);cursor:pointer;white-space:nowrap;transition:background .12s,border-color .12s;}
 .cbtn:hover{border-color:var(--t1);background:var(--yel3);}
-.cbtn:active{transform:scale(.98);}
+.cbtn:active{background:var(--yel2);border-color:var(--t1);}
 .cbtn:disabled{opacity:.35;pointer-events:none;}
-.cicon{width:28px;height:28px;border-radius:8px;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;}
+.cicon{display:inline-flex;align-items:center;font-size:13px;}
 /* ingredient picker */
 .ing-wrap{align-self:flex-start;max-width:99%;background:var(--sur);border-radius:var(--r2);padding:13px;box-shadow:var(--sh);}
 .ing-lbl{font-size:12px;color:var(--t2);margin-bottom:9px;line-height:1.5;}
@@ -336,6 +335,63 @@ html,body{height:100%;background:#E8E4D0;font-family:'Noto Sans JP',sans-serif;}
 .tb-i [data-lucide] svg{stroke-width:2.8;}
 </style>
 <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
+<!-- Firebase SDK -->
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import { getDatabase, ref, set, get, onValue, off } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
+import { getAuth, signInAnonymously } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+
+window._fbReady = false;
+window._fbApp = null;
+window._fbDb  = null;
+window._fbAuth = null;
+window._fbUnsubscribe = null;
+
+window.initFirebase = async function(config) {
+  try {
+    if(window._fbApp) return true;
+    window._fbApp  = initializeApp(config);
+    window._fbDb   = getDatabase(window._fbApp);
+    window._fbAuth = getAuth(window._fbApp);
+    window._fbReady = true;
+    console.log('[Firebase] initialized');
+    return true;
+  } catch(e) { console.error('[Firebase] init error', e); return false; }
+};
+
+window.fbSignIn = async function() {
+  if(!window._fbAuth) return null;
+  try { const cred = await signInAnonymously(window._fbAuth); return cred.user.uid; }
+  catch(e) { console.error('[Firebase] signIn error', e); return null; }
+};
+
+window.fbSave = async function(familyId, data) {
+  if(!window._fbDb || !familyId) return false;
+  try { await set(ref(window._fbDb, 'families/' + familyId + '/state'), data); return true; }
+  catch(e) { console.error('[Firebase] save error', e); return false; }
+};
+
+window.fbLoad = async function(familyId) {
+  if(!window._fbDb || !familyId) return null;
+  try {
+    const snap = await get(ref(window._fbDb, 'families/' + familyId + '/state'));
+    return snap.exists() ? snap.val() : null;
+  } catch(e) { console.error('[Firebase] load error', e); return null; }
+};
+
+window.fbSubscribe = function(familyId, callback) {
+  if(!window._fbDb || !familyId) return;
+  if(window._fbUnsubscribe) window._fbUnsubscribe();
+  const r = ref(window._fbDb, 'families/' + familyId + '/state');
+  onValue(r, snap => { if(snap.exists()) callback(snap.val()); });
+  window._fbUnsubscribe = () => off(r);
+};
+
+window.fbUnsubscribe = function() {
+  if(window._fbUnsubscribe) { window._fbUnsubscribe(); window._fbUnsubscribe=null; }
+};
+</script>
 </head>
 <body>
 <div class="shell">
@@ -379,20 +435,7 @@ html,body{height:100%;background:#E8E4D0;font-family:'Noto Sans JP',sans-serif;}
     </div>
     <div class="scroll" id="home-scroll">
       <div class="prop-outer">
-        <div class="prop-card" id="prop-card">
-          <div class="prop-bg" id="prop-bg"></div>
-          <div class="sw-over sw-L" id="sw-L">✕</div>
-          <div class="sw-over sw-R" id="sw-R">✓</div>
-          <div class="prop-content">
-            <div class="prop-tag" id="prop-tag">✦ 今日の提案</div>
-            <div class="prop-title" id="prop-title">読み込み中...</div>
-            <div class="prop-desc" id="prop-desc"></div>
-            <div class="prop-btns">
-              <button class="p-adopt" id="prop-adopt">採用する →</button>
-              <button class="p-skip" id="prop-skip">別の案</button>
-            </div>
-          </div>
-        </div>
+        <div class="prop-card" id="prop-card"></div>
         <div class="pdots" id="pdots"></div>
       </div>
       <div class="sec">
@@ -551,6 +594,58 @@ html,body{height:100%;background:#E8E4D0;font-family:'Noto Sans JP',sans-serif;}
         <button class="btn btn-g" id="td-done" style="margin-bottom:8px;background:var(--gr2)">✓ 完了にする</button>
         <button class="btn btn-ghost" id="td-delete" style="margin-bottom:8px;color:var(--re)">削除する</button>
         <button class="btn btn-ghost" id="td-close">キャンセル</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FIREBASE SETUP MODAL -->
+  <div class="modal-bg" id="fb-setup-modal">
+    <div class="modal-sheet" style="max-height:92vh;display:flex;flex-direction:column;overflow-y:auto">
+      <div class="mhandle"></div>
+      <div class="minner">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+          <div class="mtitle">🔥 Firebase設定</div>
+          <button onclick="hideFbSetup()" style="border:none;background:none;font-size:22px;cursor:pointer;color:var(--t2)">×</button>
+        </div>
+        <div style="background:#FFF8E1;border-radius:12px;padding:12px 14px;margin-bottom:16px;font-size:12px;color:#B45309;line-height:1.7">
+          <strong>設定手順：</strong><br>
+          1. <a href="https://console.firebase.google.com" target="_blank" style="color:#1E5EA8">Firebase Console</a> でプロジェクトを作成<br>
+          2. Realtime Database を有効化（テストモードでOK）<br>
+          3. プロジェクト設定 → ウェブアプリ追加 → 設定値をコピー<br>
+          4. 下に貼り付けて「接続する」を押す
+        </div>
+        <div class="field"><label>API Key <span style="color:var(--re)">*</span></label>
+          <input id="fb-apikey" placeholder="AIzaSy..." style="width:100%;padding:10px 12px;border:1.5px solid var(--bdr);border-radius:var(--r);font-family:inherit;font-size:13px">
+        </div>
+        <div class="field"><label>Auth Domain</label>
+          <input id="fb-authdomain" placeholder="your-app.firebaseapp.com" style="width:100%;padding:10px 12px;border:1.5px solid var(--bdr);border-radius:var(--r);font-family:inherit;font-size:13px">
+        </div>
+        <div class="field"><label>Database URL <span style="color:var(--re)">*</span></label>
+          <input id="fb-dburl" placeholder="https://xxx-default-rtdb.firebaseio.com" style="width:100%;padding:10px 12px;border:1.5px solid var(--bdr);border-radius:var(--r);font-family:inherit;font-size:13px">
+        </div>
+        <div class="field"><label>Project ID <span style="color:var(--re)">*</span></label>
+          <input id="fb-projectid" placeholder="your-project-id" style="width:100%;padding:10px 12px;border:1.5px solid var(--bdr);border-radius:var(--r);font-family:inherit;font-size:13px">
+        </div>
+        <button onclick="saveFbConfig()" class="btn btn-g" style="margin-top:8px">接続する</button>
+        <button onclick="hideFbSetup()" class="btn btn-ghost" style="margin-top:8px">キャンセル</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- JOIN FAMILY MODAL -->
+  <div class="modal-bg" id="join-modal">
+    <div class="modal-sheet" style="display:flex;flex-direction:column">
+      <div class="mhandle"></div>
+      <div class="minner">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+          <div class="mtitle">👨 招待コードで参加</div>
+          <button onclick="hideJoinRoom()" style="border:none;background:none;font-size:22px;cursor:pointer;color:var(--t2)">×</button>
+        </div>
+        <div style="font-size:13px;color:var(--t2);margin-bottom:20px">ママから受け取った6文字のコードを入力してください</div>
+        <input id="join-code" placeholder="AB3X7Z" maxlength="6"
+          style="width:100%;padding:14px;border:2px solid var(--bdr);border-radius:var(--r);font-family:inherit;font-size:28px;font-weight:900;letter-spacing:10px;text-align:center;text-transform:uppercase;margin-bottom:20px;box-sizing:border-box">
+        <button onclick="joinFamilyRoom()" class="btn btn-g">参加する</button>
+        <button onclick="hideJoinRoom()" class="btn btn-ghost" style="margin-top:8px">キャンセル</button>
       </div>
     </div>
   </div>
@@ -753,47 +848,96 @@ function mkState(){
 let ST = null;
 let calOff = 0;
 
+// ── Firebase / localStorage ハイブリッドストレージ ──────────────────────────
+const LS_KEY    = 'hakobu_st';
+const LS_FB_KEY = 'hakobu_fb_config'; // Firebaseの設定をlocalStorageに保持
+
+function lsSave(data){ try{ localStorage.setItem(LS_KEY, JSON.stringify(data)); }catch(_){} }
+function lsLoad(){ try{ const v=localStorage.getItem(LS_KEY); return v?JSON.parse(v):null; }catch(_){ return null; } }
+function fbConfigSave(cfg){ try{ localStorage.setItem(LS_FB_KEY, JSON.stringify(cfg)); }catch(_){} }
+function fbConfigLoad(){ try{ const v=localStorage.getItem(LS_FB_KEY); return v?JSON.parse(v):null; }catch(_){ return null; } }
+
+// family IDを取得 or 生成
+function getFamilyId(st) {
+  if(st && st.sync && st.sync.familyId) return st.sync.familyId;
+  return null;
+}
+
+function mergeState(saved) {
+  const def = mkState();
+  const st = {
+    user:         Object.assign({}, def.user,     saved.user     || {}),
+    family:       Object.assign({}, def.family,   saved.family   || {}),
+    prefs:        Object.assign({}, def.prefs,    saved.prefs    || {}),
+    singleTasks:  Array.isArray(saved.singleTasks) ? saved.singleTasks : def.singleTasks,
+    projects:     (saved.projects && saved.projects.length) ? saved.projects : def.projects,
+    stats:        Object.assign({}, def.stats,    saved.stats    || {}),
+    kaji:         { shop:  Array.isArray(saved.kaji?.shop)  ? saved.kaji.shop  : [],
+                    chore: Array.isArray(saved.kaji?.chore) ? saved.kaji.chore : [] },
+    dismissedEventIds: Array.isArray(saved.dismissedEventIds) ? saved.dismissedEventIds : [],
+    sync:         Object.assign({ familyId:null, role:'mama', fbConfigured:false }, saved.sync||{}),
+  };
+  if(!Array.isArray(st.prefs.liked))    st.prefs.liked    = [];
+  if(!Array.isArray(st.prefs.rejected)) st.prefs.rejected = [];
+  if(!Array.isArray(st.prefs.papaGood)) st.prefs.papaGood = def.prefs.papaGood;
+  return st;
+}
+
 async function loadST(){
   if(ST) return ST;
-  try{
-    if(!window.storage) throw new Error('no storage');
-    const r = await window.storage.get(SK);
-    if(r){
-      const saved = JSON.parse(r.value);
-      const def = mkState();
-      // deep merge: 保存データにmkStateのデフォルト値を補完
-      ST = {
-        user:         Object.assign({}, def.user,     saved.user     || {}),
-        family:       Object.assign({}, def.family,   saved.family   || {}),
-        prefs:        Object.assign({}, def.prefs,    saved.prefs    || {}),
-        singleTasks:  Array.isArray(saved.singleTasks) ? saved.singleTasks : def.singleTasks,
-        projects:     (saved.projects && saved.projects.length) ? saved.projects : def.projects,
-        stats:        Object.assign({}, def.stats,    saved.stats    || {}),
-        kaji:         { shop:  Array.isArray(saved.kaji && saved.kaji.shop)  ? saved.kaji.shop  : [],
-                        chore: Array.isArray(saved.kaji && saved.kaji.chore) ? saved.kaji.chore : [] },
-        dismissedEventIds: Array.isArray(saved.dismissedEventIds) ? saved.dismissedEventIds : [],
-      };
-      // 配列フィールドの保証
-      if(!Array.isArray(ST.prefs.liked))    ST.prefs.liked    = [];
-      if(!Array.isArray(ST.prefs.rejected)) ST.prefs.rejected = [];
-      if(!Array.isArray(ST.prefs.papaGood)) ST.prefs.papaGood = def.prefs.papaGood;
-      if(!ST.user) ST.user = def.user;
-      if(!ST.kaji) ST.kaji = { shop: [], chore: [] };
-      if(!Array.isArray(ST.kaji.shop))  ST.kaji.shop  = [];
-      if(!Array.isArray(ST.kaji.chore)) ST.kaji.chore = [];
-    } else {
-      ST = mkState();
+  // まずlocalStorageから
+  const local = lsLoad();
+  if(local) ST = mergeState(local);
+  else ST = mkState();
+
+  // Firebase設定があれば接続してデータ取得
+  const fbCfg = fbConfigLoad();
+  if(fbCfg && fbCfg.apiKey && window.initFirebase) {
+    const ok = await window.initFirebase(fbCfg);
+    if(ok) {
+      const fid = getFamilyId(ST);
+      if(fid) {
+        const remote = await window.fbLoad(fid).catch(()=>null);
+        if(remote) {
+          ST = mergeState(remote);
+          lsSave(ST); // ローカルにもキャッシュ
+        }
+        // リアルタイム更新購読（他端末の変更を反映）
+        window.fbSubscribe(fid, (data)=>{
+          const prev = JSON.stringify(ST);
+          ST = mergeState(data);
+          if(JSON.stringify(ST) !== prev) {
+            lsSave(ST);
+            // 現在の画面を再描画
+            if(typeof renderHome==='function' && document.getElementById('s-home')?.classList.contains('on')) renderHome();
+          }
+        });
+      }
     }
-  }catch(_){ ST = mkState(); }
+  }
+
+  // window.storageフォールバック（Claude環境）
+  if(!local) {
+    try{
+      if(!window.storage) throw new Error('no storage');
+      const r = await window.storage.get(SK);
+      if(r) { ST = mergeState(JSON.parse(r.value)); lsSave(ST); }
+    }catch(_){}
+  }
+  if(!ST) ST = mkState();
   return ST;
 }
 
 async function saveST(){
   if(!ST) return;
-  try{
-    if(!window.storage) return;
-    await window.storage.set(SK, JSON.stringify(ST));
-  }catch(_){}
+  lsSave(ST);
+  // Claudeストレージにも保存
+  try{ if(window.storage) await window.storage.set(SK, JSON.stringify(ST)); }catch(_){}
+  // Firebaseに同期
+  const fid = getFamilyId(ST);
+  if(fid && window._fbReady) {
+    window.fbSave(fid, ST).catch(()=>{});
+  }
 }
 
 function pct(proj){
@@ -1064,86 +1208,148 @@ document.getElementById('cal-next').addEventListener('click',   ()=>{calOff++;re
    イベント提案エンジン
    年中行事・祝日連休・子育てイベントを自動検出して提案
 ═══════════════════════════════════════════════════════ */
-const EVENT_TEMPLATES = [
-  // ── 年中行事 ──────────────────────────────────────
-  { id:'oshogatsu',    month:1,  day:1,   name:'お正月',        icon:'🎍', color:'#C0392B', bg:'linear-gradient(135deg,#C0392B,#E74C3C)',
-    hint:'年賀状・おせち・初詣の準備', prep:60,
-    tasks:['年賀状の作成・投函','おせちの予約','初詣スポットを決める','帰省の交通手段を予約'] },
-  { id:'setsubun',     month:2,  day:3,   name:'節分',          icon:'👹', color:'#D4611A', bg:'linear-gradient(135deg,#D4611A,#E8841A)',
-    hint:'豆まき・恵方巻きの準備', prep:14,
-    tasks:['豆と恵方巻きを買う','恵方を調べる','鬼のお面を用意する'] },
-  { id:'hinamatsuri',  month:3,  day:3,   name:'ひな祭り',      icon:'🎎', color:'#E91E8C', bg:'linear-gradient(135deg,#C2185B,#E91E8C)',
-    hint:'ひな人形・ちらし寿司の準備', prep:30,
-    tasks:['ひな人形を出す','ちらし寿司の材料を買う','ひな壇飾り付け','写真撮影の準備'] },
-  { id:'spring_eq',    month:3,  day:20,  name:'春分・春の連休', icon:'🌸', color:'#111111', bg:'linear-gradient(135deg,#F59E0B,#FFD800)',
-    hint:'春のお出かけ・お花見計画', prep:21,
-    tasks:['花見スポットを調べる','お花見の食材を準備','春のお出かけ先を決める'] },
-  { id:'kodomo',       month:5,  day:5,   name:'こどもの日',    icon:'🎏', color:'#1E5EA8', bg:'linear-gradient(135deg,#1E5EA8,#2980B9)',
-    hint:'鯉のぼり・兜飾り・柏餅', prep:30,
-    tasks:['兜や鯉のぼりを出す','柏餅・ちまきを買う','子供の好きな場所に連れていく計画'] },
-  { id:'gw',           month:5,  day:3,   name:'GW',            icon:'🌿', color:'#055442', bg:'linear-gradient(135deg,#111111,#333333)',
-    hint:'大型連休（5/3〜5/6）の計画', prep:90,
-    tasks:['旅行・お出かけ先を予約','実家への帰省を計画','子供の体験活動を予約','GW中の食材をまとめ買い'] },
-  { id:'tanabata',     month:7,  day:7,   name:'七夕',          icon:'🎋', color:'#5B21B6', bg:'linear-gradient(135deg,#5B21B6,#7C3AED)',
-    hint:'短冊・飾り付けの準備', prep:14,
-    tasks:['短冊と笹を用意する','飾り付けを作る','子供と願いごとを考える'] },
-  { id:'obon',         month:8,  day:13,  name:'お盆・帰省',    icon:'🏮', color:'#B45309', bg:'linear-gradient(135deg,#92400E,#B45309)',
-    hint:'帰省・お盆の準備', prep:60,
-    tasks:['交通手段を予約する','お墓参りの準備','帰省のお土産を買う','子供の夏休み企画'] },
-  { id:'shichi_go_san',month:11, day:15,  name:'七五三',        icon:'👘', color:'#BE185D', bg:'linear-gradient(135deg,#9D174D,#BE185D)',
-    hint:'着物・写真館・千歳飴の準備', prep:60,
-    tasks:['着物・スーツをレンタル予約','写真館を予約する','千歳飴・お守りを準備','神社の予約'] },
-  { id:'christmas',    month:12, day:25,  name:'クリスマス',    icon:'🎄', color:'#1A5E20', bg:'linear-gradient(135deg,#1A5E20,#2E7D32)',
-    hint:'プレゼント・ケーキ・飾り付け', prep:30,
-    tasks:['プレゼントを選んで注文','ケーキを予約する','クリスマス飾り付け','家族で過ごす計画を立てる'] },
-  { id:'osoji',        month:12, day:28,  name:'年末大掃除',    icon:'🧹', color:'#37474F', bg:'linear-gradient(135deg,#263238,#37474F)',
-    hint:'大掃除・不用品整理', prep:21,
-    tasks:['エアコンフィルター掃除','冷蔵庫の整理','クローゼット断捨離','換気扟掃除','お風呂の大掃除'] },
-  // ── 子育て定期イベント（childAgeで出し分け）──────
-  { id:'nyuugaku',     month:4,  day:1,   name:'入学・進級',    icon:'🎒', color:'#1565C0', bg:'linear-gradient(135deg,#0D47A1,#1565C0)',
-    hint:'入学式・進級の準備', prep:60, childPhase:'school',
-    tasks:['学用品リストを確認','ランドセル・制服の準備','通学路を親子で確認','名前シールを発注'] },
-  { id:'checkup_baby', month:0,  day:0,   name:'乳幼児健診',    icon:'👶', color:'#00695C', bg:'linear-gradient(135deg,#004D40,#00695C)',
-    hint:'健診・予防接種の予約', prep:14, childPhase:'baby',
-    tasks:['かかりつけ医に予約を入れる','母子手帳を確認する','健診当日の準備'] },
+// ── 日本の祝日マスタ（月/日 固定のもの）──────────────────────────────────
+// isoWeekday=true の祝日は「前後平日に挟まれた1日祝日」= 有休チェックを追加
+const HOLIDAY_MASTER = [
+  { id:'newyear',      month:1,  day:1,  name:'元日',          icon:'🎍', color:'#C0392B', bg:'linear-gradient(135deg,#C0392B,#E74C3C)',
+    hint:'初詣・おせち・年賀状の総仕上げ',
+    tasks:['年賀状の最終確認・投函','おせちの予約または食材購入','初詣スポットと時間を決める','帰省の交通手段を予約する','子供の晴れ着・正装を確認する','お年玉の準備（ポチ袋・金額を決める）','年末年始の食材をまとめ買いする','家族みんなの年始の目標を話し合う','実家・義実家への連絡と挨拶の計画','三が日の過ごし方のスケジュールを作る'] },
+  { id:'seijin',       month:1,  day:13, name:'成人の日',       icon:'🎌', color:'#1565C0', bg:'linear-gradient(135deg,#0D47A1,#1565C0)',
+    hint:'1月第2月曜日（3連休の最終日）',
+    tasks:['3連休の過ごし方を家族で計画する','子供との特別なお出かけ先を予約する','家の中の正月飾りを片付ける','冬物クリーニングの予約を入れる','1月の家計・食費の振り返りをする','年始に届いた書類・郵便を整理する','子供の3学期の持ち物を確認する','パパの担当家事を今週中に決める','冬の乾燥対策グッズを補充する','加湿器のフィルターを掃除する'] },
+  { id:'kenkoku',      month:2,  day:11, name:'建国記念日',     icon:'🗾', color:'#455A64', bg:'linear-gradient(135deg,#263238,#455A64)',
+    hint:'2月の3連休チャンス',
+    tasks:['3連休の家族プランを立てる','バレンタインのチョコ材料を購入する','子供の春物衣類をリストアップする','確定申告の準備を始める（医療費集計）','花粉症対策グッズを揃える','春の衣替えのスケジュールを立てる','子供の進級・入学準備リストを確認する','パパに頼める週末家事を3つ決める','冬物布団のクリーニング予約を入れる','家の換気・空気清浄機フィルター掃除'] },
+  { id:'setsubun',     month:2,  day:3,  name:'節分',           icon:'👹', color:'#D4611A', bg:'linear-gradient(135deg,#D4611A,#E8841A)',
+    hint:'豆まき・恵方巻きの準備',
+    tasks:['今年の恵方をコンパスアプリで確認する','恵方巻を予約する（人気店は2週間前までに）','豆まき用の豆（個包装タイプ）を購入する','鬼のお面を子供と手作りまたは購入する','イワシの頭と柊を玄関に飾る','豆まきのルールを家族で確認する','当日の夕食メニュー全体を確定する','写真・動画撮影の準備をする','豆まき後の掃除道具を準備する','翌日のゴミ出しの準備をしておく'] },
+  { id:'hinamatsuri',  month:3,  day:3,  name:'ひな祭り',       icon:'🎎', color:'#E91E8C', bg:'linear-gradient(135deg,#C2185B,#E91E8C)',
+    hint:'ひな人形・ちらし寿司の準備',
+    tasks:['ひな人形の欠損チェックをして出す（2月中旬までに）','桃の花を花屋に予約または購入する','はまぐりの砂抜き（当日朝から）','菱餅・ひなあられを購入する','ちらし寿司の具材を準備する','お祝い膳のメニューを確定・食材購入','記念写真の背景を整える（生活感を消す）','祖父母を招待する場合は日程調整・連絡','盛り付け・テーブルコーディネートを考える','3/4以降に人形をすぐ片付ける'] },
+  { id:'spring_eq',    month:3,  day:20, name:'春分の日',       icon:'🌸', color:'#2E7D32', bg:'linear-gradient(135deg,#1B5E20,#2E7D32)',
+    hint:'春のお彼岸・お墓参りとお花見計画',
+    tasks:['お墓参りの日程と段取りを決める','お供え物・お花を準備する','花見スポットと開花情報を調べる','お花見の食材・レジャーシートを準備する','春のお出かけ先を家族で決める','子供の春休みの予定を立てる','エアコンのフィルター掃除をする（春前に）','春物衣類の衣替えを始める','庭・ベランダの植物の手入れをする','春休み中の子供の体験活動を予約する'] },
+  { id:'showa',        month:4,  day:29, name:'昭和の日',       icon:'🌿', color:'#1B5E20', bg:'linear-gradient(135deg,#004D40,#1B5E20)',
+    hint:'GW初日・大型連休スタート',
+    tasks:['GWの旅行・お出かけ先を予約する（直前は混雑）','実家への帰省の交通手段を確保する','GW中の食材をまとめ買いリストを作る','子供の体験活動・イベントを予約する','GW中のパパの担当タスクを決める','旅行の持ち物リストを作成する','ペットや植物の世話の手配をする','GW明けの仕事の段取りを確認する','お土産リストを作っておく','帰省先へのお土産を購入する'] },
+  { id:'kenpo',        month:5,  day:3,  name:'憲法記念日',     icon:'📜', color:'#37474F', bg:'linear-gradient(135deg,#263238,#37474F)',
+    hint:'GW中日・家族時間を充実させる',
+    tasks:['GWのお出かけ写真を整理・バックアップする','子供との思い出作りプランを実行する','GW中の家計・出費を把握する','旅行先・外出先での記念写真を撮る','子供と一緒に季節の工作・遊びをする','GW後半の過ごし方を確認する','疲れが出やすいので体調管理をする','帰省先でのお手伝いを子供に体験させる','家族みんなの靴を点検・買い替え検討','子供の成長記録（身長・体重）をつける'] },
+  { id:'midori',       month:5,  day:4,  name:'みどりの日',     icon:'🌱', color:'#388E3C', bg:'linear-gradient(135deg,#2E7D32,#388E3C)',
+    hint:'GW後半・自然と過ごす日',
+    tasks:['公園・自然の中でのお出かきを計画する','子供と一緒に植物を育てる（プランター等）','ベランダ・庭の夏に向けた準備をする','GWの振り返りと次の連休計画を立てる','夏に向けた虫よけ・日焼け止めを購入する','子供の夏服・水着をリストアップする','プール・海水浴の計画を立て始める','家族の健康診断の予約を入れる','こどもの日の準備（兜・鯉のぼりを確認）','翌日のこどもの日のご飯メニューを決める'] },
+  { id:'kodomo',       month:5,  day:5,  name:'こどもの日',     icon:'🎏', color:'#1E5EA8', bg:'linear-gradient(135deg,#1E5EA8,#2980B9)',
+    hint:'こどもの日・家族でお祝い',
+    tasks:['兜・鯉のぼりを出して飾る','柏餅・ちまきを購入する','子供の好きな料理でお祝い膳を作る','子供と一緒に「やりたいこと」リストを作る','記念写真・動画を撮影する','子供に「大きくなったね」と成長を伝える','GW総まとめ・思い出を話し合う','子供の体重・身長を測って記録する','来年の兜・鯉のぼりの収納方法を確認する','GW明けの持ち物・準備を確認する'] },
+  { id:'umi',          month:7,  day:21, name:'海の日',         icon:'🌊', color:'#0277BD', bg:'linear-gradient(135deg,#01579B,#0277BD)',
+    hint:'7月第3月曜日・夏本番の3連休',
+    tasks:['海水浴・プールのお出かけを計画する','水着・浮き輪・サンダルをチェックする','日焼け止め・虫よけを十分に準備する','熱中症対策グッズ（塩飴・経口補水液）を備蓄する','子供の夏休みの宿題スケジュールを立てる','夏休み中の学童・サマースクールを確認する','お盆の帰省の交通手段を予約する（早めに）','夏の電気代対策（エアコン設定・遮光カーテン）','冷凍食材をまとめ買いして夏の料理を効率化','パパの夏休みの取得予定を確認する'] },
+  { id:'yama',         month:8,  day:11, name:'山の日',         icon:'⛰️', color:'#5D4037', bg:'linear-gradient(135deg,#4E342E,#5D4037)',
+    hint:'8月の3連休・お盆前の最後のチャンス',
+    tasks:['お盆の帰省準備を最終確認する','帰省のお土産を購入する','お墓参りの準備（お花・お供え）をする','子供の夏休みの宿題の進捗を確認する','2学期の学用品・持ち物リストを確認する','夏休み残りの思い出プランを立てる','家の窓・網戸の掃除をする','秋物衣類の確認と衣替え準備を始める','子供の健康診断・歯科検診を予約する','2学期に向けた生活リズムの立て直しを始める'] },
+  { id:'obon',         month:8,  day:13, name:'お盆・帰省',     icon:'🏮', color:'#B45309', bg:'linear-gradient(135deg,#92400E,#B45309)',
+    hint:'お盆・帰省・先祖供養の準備',
+    tasks:['帰省の交通手段を予約する（早めに）','お墓参りの準備（お花・線香・お供え）','帰省のお土産を購入する','子供の夏休みの宿題・自由研究を仕上げる','帰省先での子供の過ごし方を計画する','盆踊り・花火大会など夏の行事を調べる','2学期の持ち物・学用品を準備する','夏服→秋服の衣替え準備を始める','エアコンのフィルター掃除をする','帰省後の疲れ対策・体調管理を意識する'] },
+  { id:'keiro',        month:9,  day:15, name:'敬老の日',       icon:'👴', color:'#7B1FA2', bg:'linear-gradient(135deg,#6A1B9A,#7B1FA2)',
+    hint:'9月第3月曜日・おじいちゃんおばあちゃんへの感謝',
+    tasks:['祖父母へのプレゼントを選んで購入する','子供に手紙・似顔絵を書かせる','祖父母を招待する場合は日程調整・連絡する','食事会・外食の予約をする','祖父母の好きな料理を調べて作る','子供と一緒に「おじいちゃん・おばあちゃんへ感謝メッセージ」を考える','記念写真・動画を撮影する','祖父母の体調・健康状態を確認する','秋のお出かけ・紅葉スポットを一緒に計画する','贈り物の配送手配をする'] },
+  { id:'shubun',       month:9,  day:22, name:'秋分の日',       icon:'🍁', color:'#E65100', bg:'linear-gradient(135deg,#BF360C,#E65100)',
+    hint:'秋のお彼岸・衣替えのタイミング',
+    tasks:['お墓参りの日程と段取りを決める','お供え物・お花（菊など）を準備する','夏物→秋冬物の衣替えをする','子供の秋冬服のサイズを確認・買い足す','冬物布団を出す・洗濯する','エアコンを暖房モードに切り替え確認する','インフルエンザ予防接種の予約を入れる','秋の運動会・発表会の準備を確認する','加湿器を出して清掃・準備する','ハロウィンの準備を始める'] },
+  { id:'sports',       month:10, day:14, name:'スポーツの日',   icon:'🏃', color:'#00695C', bg:'linear-gradient(135deg,#004D40,#00695C)',
+    hint:'10月第2月曜日・秋の3連休',
+    tasks:['3連休の家族お出かきプランを立てる','秋の運動会・体育祭の応援準備をする','子供と一緒に体を動かす計画を立てる','ハロウィンの衣装・装飾を準備する','秋の行楽地・紅葉スポットを調べる','年末大掃除の計画を立て始める','冬物家電（ヒーター・こたつ）を出す準備','子供の来年の習い事・塾の検討を始める','インフルエンザ予防接種を受ける','ふるさと納税の上限額を確認・注文する'] },
+  { id:'bunka',        month:11, day:3,  name:'文化の日',       icon:'🎨', color:'#512DA8', bg:'linear-gradient(135deg,#4527A0,#512DA8)',
+    hint:'秋の3連休・芸術・文化を楽しむ',
+    tasks:['博物館・美術館・文化イベントを調べる','子供と一緒に工作・絵を描く時間を作る','七五三の準備を最終確認する（衣装・写真館）','クリスマスプレゼントのリサーチを始める','年賀状の準備を始める（写真撮影など）','冬物衣料・コートを出して確認する','暖房器具のメンテナンスをする','子供の秋冬用靴・上着を確認・購入','年末年始の帰省日程を検討する','ふるさと納税の締め切りを確認する'] },
+  { id:'kinro',        month:11, day:23, name:'勤労感謝の日',   icon:'🙏', color:'#4E342E', bg:'linear-gradient(135deg,#3E2723,#4E342E)',
+    hint:'11月の3連休・年末準備スタート',
+    tasks:['家族みんなへの「ありがとう」を伝える日にする','クリスマスプレゼントを決めて注文する','ケーキ・チキンを予約する（人気店は早め）','年賀状の宛先リストを整理・更新する','年末大掃除の計画と役割分担を決める','クリスマス飾り付けグッズを確認する','冬休みの過ごし方・旅行プランを検討する','子供のお年玉の準備（ポチ袋・金額）','来年の手帳・カレンダーを購入する','大掃除で使う掃除用品を揃え始める'] },
+  { id:'christmas',    month:12, day:25, name:'クリスマス',     icon:'🎄', color:'#1A5E20', bg:'linear-gradient(135deg,#1A5E20,#2E7D32)',
+    hint:'プレゼント・ケーキ・サンタ演出の準備',
+    tasks:['子供の欲しいものをヒアリング（サンタへの手紙）','プレゼントをネット注文する（12月上旬までに）','ケーキ・チキンを予約する（人気店は11月中に）','ツリーの電飾チェック（断線・球切れ確認）','プレゼントの隠し場所を確保する','室内の飾り付けをする（ツリー・リース）','当日のBGMプレイリストを作成する','パーティーメニューの食材をまとめ買いする','プレゼントのラッピング・リボン仕上げ','翌日の片付け・ツリーの保管方法を確認する'] },
+  { id:'osoji',        month:12, day:28, name:'年末大掃除',     icon:'🧹', color:'#37474F', bg:'linear-gradient(135deg,#263238,#37474F)',
+    hint:'大掃除・断捨離・新年準備',
+    tasks:['エアコンフィルターの掃除・交換をする','換気扇・レンジフードの油汚れを落とす','冷蔵庫の中身を全出しして庫内を拭き掃除する','浴室の鏡・水垢・カビ取りを徹底清掃する','窓ガラス・サッシ・網戸の拭き掃除をする','押し入れ・クローゼットを整理し不用品を処分する','照明器具・天井・壁のほこりを落とす','洗濯機の槽洗浄をする（専用クリーナー使用）','玄関・ベランダ・排水口を掃き・拭き掃除する','不用品を粗大ゴミ申し込みまたはフリマ出品する'] },
+  // ── 子育て定期イベント ──────────────────────────────
+  { id:'nyuugaku',     month:4,  day:1,  name:'入学・進級',     icon:'🎒', color:'#1565C0', bg:'linear-gradient(135deg,#0D47A1,#1565C0)',
+    hint:'入学式・進級の準備', childPhase:'school',
+    tasks:['学用品リストを確認して購入する','ランドセル・制服・体操服を準備する','全持ち物への名前書きをする（お名前スタンプ推奨）','提出書類を全て記入する（予防接種記録など）','通学路を親子で一緒に歩いて確認する','親のフォーマル服・美容院の予約をする','ビデオカメラ・スマホの充電・容量確認をする','スリッパ・靴袋（親用）を準備する','当日の集合時間・持ち物を最終確認する','式典後のお祝い食事・写真撮影の計画を立てる'] },
+  { id:'checkup_baby', month:0,  day:0,  name:'乳幼児健診',     icon:'👶', color:'#00695C', bg:'linear-gradient(135deg,#004D40,#00695C)',
+    hint:'健診・予防接種の予約', childPhase:'baby',
+    tasks:['かかりつけ医に予約を入れる','母子手帳の記録を最新にする','健診当日の持ち物を準備する','予防接種のスケジュールを確認する','子供の成長記録（身長・体重）をつける','授乳・食事の記録を整理する','健診結果を夫婦で共有する','次回の健診日程を手帳に記録する','離乳食・幼児食の進み具合を確認する','小児科・かかりつけ医の連絡先を更新する'] },
 ];
 
-// 次に来るイベントを計算して返す（3ヶ月先まで）
+// ── 祝日ユーティリティ ──────────────────────────────────────────────────────
+// 「ポツン祝日」= 前日(日曜除く)・翌日(土曜除く)が平日の1日のみの祝日
+function isIsolatedHoliday(evDate) {
+  const prev = new Date(evDate); prev.setDate(prev.getDate()-1);
+  const next = new Date(evDate); next.setDate(next.getDate()+1);
+  const prevDow = prev.getDay(); // 0=日,6=土
+  const nextDow = next.getDay();
+  // 前が平日 かつ 後が平日 → ポツン祝日
+  return (prevDow >= 1 && prevDow <= 5) && (nextDow >= 1 && nextDow <= 5);
+}
+
+const EVENT_TEMPLATES = HOLIDAY_MASTER;
+
+// 次に来るイベントを計算して返す
+// ・祝日: 当月に入ったら即表示（月初から月末まで）
+// ・ポツン祝日: 有休チェックタスクを先頭に自動追加
 function getUpcomingEvents(s) {
   const now   = new Date();
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
   const childAge = s.family?.childAge ?? null;
   const dismissed = new Set(s.dismissedEventIds||[]);
+  const thisMonth = today.getMonth(); // 0-11
+  const thisYear  = today.getFullYear();
 
   const events = [];
-  // 今年と来年の候補を生成
   for(let yearOff=0; yearOff<=1; yearOff++){
     const y = today.getFullYear() + yearOff;
     EVENT_TEMPLATES.forEach(ev => {
       if(ev.month === 0) return; // baby系は別途
-      const evDate = new Date(y, ev.month-1, ev.day);
-      const prepDate = new Date(evDate); prepDate.setDate(evDate.getDate() - ev.prep);
-      const daysUntil = Math.ceil((evDate - today) / 86400000);
-      const daysUntilPrep = Math.ceil((prepDate - today) / 86400000);
 
-      // 表示条件: 3ヶ月先まで かつ 準備開始日を超えていない
+      const evDate = new Date(y, ev.month-1, ev.day);
+      const daysUntil = Math.ceil((evDate - today) / 86400000);
+
+      // 【祝日表示ルール】当月に入ったら即表示、当月末まで
+      // 過去7日以内（直近終わったもの）は除外、先180日まで
       if(daysUntil < -7 || daysUntil > 180) return;
+
+      // 祝日は「当月になったら即表示」= 月が一致していれば月初から表示
+      const evMonth = evDate.getMonth();
+      const evYear  = evDate.getFullYear();
+      const isThisMonth = (evMonth === thisMonth && evYear === thisYear);
+      // 当月以外は従来通り（30日前から）
+      if(!isThisMonth && daysUntil > 30 && !ev.childPhase) return;
 
       // childPhase フィルタ
       if(ev.childPhase==='school' && (childAge==null || childAge < 5)) return;
       if(ev.childPhase==='baby'   && (childAge==null || childAge > 3)) return;
 
-      // GWは3ヶ月前から
-      if(ev.id==='gw' && daysUntil > 90) return;
+      // ポツン祝日チェック → 有休取得タスクを先頭に追加
+      let finalTasks = [...(ev.tasks||[])];
+      const isolated = isIsolatedHoliday(evDate);
+      if(isolated && finalTasks.length > 0){
+        finalTasks.unshift('📅 有休を取って3連休にする検討をする');
+        finalTasks.unshift('📝 パパ・ママ双方の会社の有休申請を確認する');
+        // 末尾2件を削除して合計10件を維持
+        if(finalTasks.length > 10) finalTasks = finalTasks.slice(0, 10);
+      }
 
-      events.push({...ev, evDate, daysUntil, daysUntilPrep});
+      events.push({...ev, evDate, daysUntil, tasks: finalTasks, isolated});
     });
   }
 
   events.sort((a,b) => a.daysUntil - b.daysUntil);
-  // 重複排除（同じidで直近のものだけ）
   const seen = new Set();
-  return events.filter(e => { if(seen.has(e.id)) return false; seen.add(e.id); if(dismissed.has(e.id)) return false; return true; });
+  return events.filter(e => {
+    if(seen.has(e.id)) return false;
+    seen.add(e.id);
+    if(dismissed.has(e.id)) return false;
+    return true;
+  });
 }
 
 // urgency ラベル
@@ -1156,8 +1362,7 @@ function getEventUrgency(ev) {
   return { label: Math.ceil(d/30)+'ヶ月後', color:'#5C6E5E' };
 }
 
-let pIdx = 0;
-let swX=0, swDx=0, swOn=false;
+/* 提案カードはrenderEventProposals内で管理 */
 
 async function renderProp(){
   // renderEventProposals に委譲
@@ -1165,171 +1370,282 @@ async function renderProp(){
   renderEventProposals(s);
 }
 
+// ── 季節メンテカード生成 ─────────────────────────────────────────────────────
+function getSeasonalMainteCard() {
+  const m = new Date().getMonth()+1; // 1-12
+  const cards = {
+    3:  { icon:'🌸', name:'春の衣替え・家メンテ', color:'#2E7D32', bg:'linear-gradient(135deg,#1B5E20,#2E7D32)',
+          hint:'3月はエアコン→扇風機・花粉対策の季節', type:'seasonal',
+          tasks:['エアコンフィルターを掃除して暖房→冷房切り替え準備','冬物コート・セーターを洗濯してクリーニングに出す','扇風機・サーキュレーターを出して動作確認する','花粉対策グッズ（空気清浄機フィルター）を交換する','冬用布団を洗濯・クリーニングして収納する','春物衣類を出してサイズアウトをチェックする','ベランダ・庭の冬仕様から春仕様に切り替える','窓の花粉拭き掃除・カーテンを洗濯する','虫よけグッズの在庫を確認して補充する','水回り（排水口・洗面台）の掃除をする'] },
+    6:  { icon:'☔', name:'梅雨・夏前のメンテ', color:'#0277BD', bg:'linear-gradient(135deg,#01579B,#0277BD)',
+          hint:'エアコン本格稼働・カビ対策の季節', type:'seasonal',
+          tasks:['エアコンのフィルター掃除・試運転をする（夏前に）','除湿機・乾燥機の準備と動作確認をする','カビ防止グッズ（浴室・押し入れ）を補充する','梅雨時の洗濯乾燥方法を決める（乾燥機・室内干し）','夏物衣類への衣替えを完了させる','子供の水着・プール道具を確認・購入する','日焼け止め・虫よけの在庫を補充する','冷蔵庫の掃除と夏の食材管理ルールを決める','網戸の掃除・補修をする','窓の結露・雨漏り確認をしておく'] },
+    9:  { icon:'🍂', name:'秋の衣替え・冬準備', color:'#E65100', bg:'linear-gradient(135deg,#BF360C,#E65100)',
+          hint:'9月は暑さが残る中でも冬準備スタート', type:'seasonal',
+          tasks:['夏物衣類を洗濯して収納する','秋冬物衣類を出してサイズアウトをチェックする','子供の秋冬の制服・体操服を確認・購入する','エアコンのフィルター掃除（夏の酷使ケア）','加湿器を出して清掃・準備する','暖房器具（ヒーター・こたつ）を出して動作確認','インフルエンザ予防接種の予約を入れる','冬用布団を出して洗濯・干す','ベランダの夏物（プールや遊具）を片付ける','乾燥肌対策グッズ（保湿クリーム等）を補充する'] },
+    12: { icon:'🧹', name:'年末大掃除・新年準備', color:'#37474F', bg:'linear-gradient(135deg,#263238,#37474F)',
+          hint:'12月は掃除・断捨離・お正月準備を並行で', type:'seasonal',
+          tasks:['大掃除の役割分担をパパと決めて書き出す','エアコン・換気扇・レンジフードを掃除する','冷蔵庫の中身を整理して年末食材計画を立てる','クローゼット・押し入れを断捨離する','不用品を粗大ゴミ申し込みまたはフリマ出品する','お正月飾り・おせちの準備・予約をする','年賀状の最終作成・投函をする','帰省の持ち物リストを作成する','子供の冬休みの生活リズムプランを立てる','来年のカレンダー・手帳に家族の予定を転記する'] },
+  };
+  // 該当月なければ直近の季節メンテを返す
+  if(cards[m]) return cards[m];
+  // 春(3)夏(6)秋(9)冬(12)の直近
+  const seasons=[3,6,9,12];
+  const next=seasons.find(s=>s>m)||3;
+  return {...cards[next], hint:'次の季節メンテ（'+next+'月）の準備を始めましょう'};
+}
+
+// ── パパ振り分け提案カード生成 ───────────────────────────────────────────────
+function getPapaCard(s) {
+  const allT = (s.projects||[]).flatMap(p=>(p.tasks||[]).filter(t=>!t.done && (t.who==='both'||t.who==='papa')));
+  const single = (s.singleTasks||[]).filter(t=>!t.done);
+  const papaT = allT.filter(t=>t.who==='papa').slice(0,3);
+  const bothT = allT.filter(t=>t.who==='both').slice(0,4);
+  const today = new Date();
+  const dow = ['日','月','火','水','木','金','土'][today.getDay()];
+  // パパ担当タスクの候補（未アサイン or 両方担当から）
+  const candidates = [
+    ...bothT.map(t=>'👨 【振り分け候補】'+t.name),
+    ...papaT.map(t=>'✅ 【パパ担当確認】'+t.name),
+  ];
+  // 固定の振り分けTips
+  const tips = [
+    'ゴミ出しの曜日ルールをパパと再確認する',
+    '週末のパパ担当料理メニューを決める',
+    '子供のお風呂・寝かしつけ担当を今週決める',
+    '買い物リストをパパと共有して分担する',
+    'パパに「来週やってほしいこと3つ」をLINEで送る',
+    '週末の公園・お出かきをパパ主導にお願いする',
+  ];
+  const tasks = [...candidates.slice(0,4), ...tips].slice(0,10);
+  return {
+    id:'papa_balance', name:'パパへの振り分け提案', icon:'👨', type:'papa',
+    color:'#1E5EA8', bg:'linear-gradient(135deg,#1E5EA8,#2980B9)',
+    hint:dow+'曜日・今週パパに頼めることをまとめました',
+    tasks, evDate: today, daysUntil:0, isolated:false,
+  };
+}
+
 function renderEventProposals(s) {
-  const events = getUpcomingEvents(s);
+  // 祝日イベント＋季節メンテ＋パパ振り分けを合わせたカードリスト
+  const holidayCards = getUpcomingEvents(s);
+  const seasonCard   = getSeasonalMainteCard();
+  const papaCard     = getPapaCard(s);
+  // 順番: 直近祝日 → 季節メンテ → パパ振り分け → 残り祝日
+  const firstHoliday = holidayCards.slice(0,2);
+  const restHoliday  = holidayCards.slice(2);
+  const events = [...firstHoliday, seasonCard, papaCard, ...restHoliday];
+
   const container = document.getElementById('prop-card');
   if(!container) return;
 
-  // prop-card を流用してイベント提案UIに変換
-  container.style.cssText = 'border-radius:20px;overflow:hidden;background:#fff;box-shadow:0 4px 20px rgba(0,0,0,.1)';
+  container.style.cssText = 'border-radius:20px;overflow:hidden;background:#fff;box-shadow:0 4px 20px rgba(0,0,0,.1);position:relative;';
   container.innerHTML = '';
 
+  const pdots = document.getElementById('pdots');
+
   if(!events.length){
-    container.innerHTML = '<div style="padding:20px;text-align:center;color:var(--t2)">今後3ヶ月のイベントはありません</div>';
+    container.innerHTML = '<div style="padding:20px;text-align:center;color:var(--t2)">今後のイベントはありません</div>';
+    if(pdots) pdots.style.display='none';
     return;
   }
 
-  // タブバー
   let activeIdx = 0;
-  const tabBar = document.createElement('div');
-  tabBar.style.cssText = 'display:flex;overflow-x:auto;scrollbar-width:none;background:#f8f9f8;border-bottom:1px solid var(--bdr)';
-  tabBar.style['-webkit-overflow-scrolling'] = 'touch';
+  const total = Math.min(events.length, 8);
 
-  // コンテンツパネル
+  // ドット更新
+  if(pdots){
+    pdots.style.display='flex';
+    pdots.innerHTML='';
+    for(let i=0;i<total;i++){
+      const d=document.createElement('div');
+      d.className='pdot'; if(i===0) d.classList.add('on');
+      pdots.appendChild(d);
+    }
+  }
+  function updateDots(idx){
+    if(!pdots) return;
+    pdots.querySelectorAll('.pdot').forEach((d,i)=>d.classList.toggle('on',i===idx));
+  }
+
   const panelWrap = document.createElement('div');
+  container.appendChild(panelWrap);
 
-  async function renderPanel(idx) {
+  function renderPanel(idx) {
     panelWrap.innerHTML = '';
     const ev = events[idx];
     const urg = getEventUrgency(ev);
-
     const panel = document.createElement('div');
-    panel.style.cssText = 'padding:0';
 
-    // ── ヘッダー（グラデーション）──────────────
+    // ── ヘッダー ──
     const hdr = document.createElement('div');
-    hdr.style.cssText = 'background:'+ev.bg+';padding:16px;display:flex;align-items:center;gap:12px';
-    const iconEl = document.createElement('div');
-    iconEl.style.cssText = 'font-size:32px;flex-shrink:0';
-    iconEl.textContent = ev.icon;
-    const hdrText = document.createElement('div');
-    hdrText.style.flex = '1';
-    // 緊急度バッジ
+    hdr.style.cssText = 'background:'+ev.bg+';padding:12px 14px 10px;';
+
+    // ‹ タイトル n/total ›
+    const nav = document.createElement('div');
+    nav.style.cssText = 'display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;';
+
+    const prevBtn = document.createElement('button');
+    prevBtn.style.cssText = 'border:none;background:rgba(255,255,255,.2);color:#fff;border-radius:8px;width:28px;height:28px;cursor:pointer;font-size:18px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;';
+    prevBtn.textContent = '\u2039';
+    prevBtn.style.opacity = idx===0 ? '0.3' : '1';
+    prevBtn.addEventListener('click',(e)=>{
+      e.stopPropagation();
+      if(idx>0){ activeIdx=idx-1; renderPanel(activeIdx); updateDots(activeIdx); }
+    });
+
+    const navTitle = document.createElement('div');
+    navTitle.style.cssText = 'color:#fff;font-size:13px;font-weight:800;flex:1;text-align:center;';
+    navTitle.textContent = ev.icon+' '+ev.name+'  '+(idx+1)+'/'+ total;
+
+    const nextBtn = document.createElement('button');
+    nextBtn.style.cssText = 'border:none;background:rgba(255,255,255,.2);color:#fff;border-radius:8px;width:28px;height:28px;cursor:pointer;font-size:18px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;';
+    nextBtn.textContent = '\u203a';
+    nextBtn.style.opacity = idx===total-1 ? '0.3' : '1';
+    nextBtn.addEventListener('click',(e)=>{
+      e.stopPropagation();
+      if(idx<total-1){ activeIdx=idx+1; renderPanel(activeIdx); updateDots(activeIdx); }
+    });
+
+    nav.append(prevBtn, navTitle, nextBtn);
+    hdr.appendChild(nav);
+
+    // 緊急度バッジ + ヒント（タイプ別）
     const urgBadge = document.createElement('span');
     urgBadge.style.cssText = 'display:inline-block;background:rgba(255,255,255,.25);color:#fff;font-size:10px;font-weight:800;border-radius:6px;padding:2px 7px;margin-bottom:4px';
-    urgBadge.textContent = urg.label + ' · ' + ev.evDate.getMonth()+'月'+ev.evDate.getDate()+'日';
-    const nameEl = document.createElement('div');
-    nameEl.style.cssText = 'font-size:18px;font-weight:800;color:#fff;line-height:1.2';
-    nameEl.textContent = ev.icon+' '+ev.name;
+    if(ev.type==='seasonal'){
+      urgBadge.textContent = '🌡️ 今月の季節メンテ';
+    } else if(ev.type==='papa'){
+      urgBadge.textContent = '👨 今週のパパ振り分け';
+    } else {
+      const dateStr = (ev.evDate.getMonth()+1)+'月'+ev.evDate.getDate()+'日';
+      urgBadge.textContent = urg.label + ' · ' + dateStr + (ev.isolated?' 🗓️有休チャンス':'');
+    }
     const hintEl = document.createElement('div');
-    hintEl.style.cssText = 'font-size:11px;color:rgba(255,255,255,.8);margin-top:3px';
+    hintEl.style.cssText = 'font-size:11px;color:rgba(255,255,255,.82);margin-top:2px';
     hintEl.textContent = ev.hint;
-    hdrText.append(urgBadge, nameEl, hintEl);
-    hdr.append(iconEl, hdrText);
+    hdr.append(urgBadge, hintEl);
     panel.appendChild(hdr);
 
-    // ── やることリスト ──────────────────────────
+    // ── やること（既存プロジェクト優先 → PROJECT_TEMPLATESフォールバック）──
+    // 既存プロジェクトで同イベント対応のものを探す
+    const linkedProj = s.projects.find(p => p.id === ev.id+'_proj' || p.name === ev.name);
+    let tasks;
+    if(linkedProj && linkedProj.tasks && linkedProj.tasks.length) {
+      // 既存プロジェクトのタスクを使用（未完了→完了の順）
+      tasks = [...linkedProj.tasks].sort((a,b)=>(a.done?1:0)-(b.done?1:0)).map(t=>({text:t.name,done:t.done}));
+    } else {
+      // PROJECT_TEMPLATESから対応テンプレを探す（タイトル一致）
+      const tpl = (typeof PROJECT_TEMPLATES!=='undefined') && PROJECT_TEMPLATES.find(t=>t.title===ev.name||t.id===ev.id);
+      const rawTasks = tpl ? tpl.tasks : (ev.tasks||[]);
+      tasks = rawTasks.map(t=>({text:t,done:false}));
+    }
+    const SHOW = 3;
+    let expanded = false;
+
     const listHdr = document.createElement('div');
-    listHdr.style.cssText = 'padding:10px 14px 4px;font-size:11px;font-weight:700;color:var(--t3);letter-spacing:.5px';
-    listHdr.textContent = 'やること';
+    listHdr.style.cssText = 'padding:8px 14px 2px;font-size:11px;font-weight:700;color:var(--t3);letter-spacing:.5px';
+    listHdr.textContent = 'やること（'+tasks.length+'件）'+(linkedProj?'  ✓ 進行中':'');
     panel.appendChild(listHdr);
 
-    (ev.tasks||[]).forEach(task => {
-      const row = document.createElement('div');
-      row.style.cssText = 'display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid var(--bdr)';
-      const dot = document.createElement('div');
-      dot.style.cssText = 'width:8px;height:8px;border-radius:50%;background:'+ev.color+';flex-shrink:0';
-      const taskNm = document.createElement('div');
-      taskNm.style.cssText = 'font-size:13px;color:var(--t1);flex:1';
-      taskNm.textContent = task;
-      row.append(dot, taskNm);
-      panel.appendChild(row);
-    });
+    const taskList = document.createElement('div');
 
-    // ── プロジェクト化ボタン ──────────────────────
-    const actBtn = document.createElement('button');
-    actBtn.style.cssText = 'width:100%;padding:14px;border:none;font-family:inherit;font-size:14px;font-weight:800;cursor:pointer;'
-      +'background:'+ev.color+';color:#fff;display:flex;align-items:center;justify-content:center;gap:6px';
-    actBtn.innerHTML = '＋ プロジェクトとして追加する';
-    actBtn.addEventListener('click', async ()=>{
-      const st = await loadST();
-      // 既存プロジェクトに同IDがあれば追加しない
-      if(st.projects.find(p=>p.id===ev.id+'_proj')){
-        toast('既に追加済みです'); return;
-      }
-      ProjectService.createProject(st, {
-        id: ev.id+'_proj', name: ev.name, icon: ev.icon,
-        color: ev.color, bg: ev.bg.replace('linear-gradient(135deg,','').split(',')[0]+'22',
-        goalDate: ev.evDate.toISOString().split('T')[0],
-        steps: (ev.tasks||[]).map(t=>({name:t, who:'both'})),
+    function renderTasks(){
+      taskList.innerHTML='';
+      const showing = expanded ? tasks : tasks.slice(0, SHOW);
+      showing.forEach(task => {
+        const isDone = typeof task==='object' && task.done;
+        const taskText = typeof task==='object' ? task.text : task;
+        const row = document.createElement('div');
+        row.style.cssText = 'display:flex;align-items:center;gap:10px;padding:7px 14px;border-bottom:1px solid var(--bdr);opacity:'+(isDone?'0.45':'1');
+        const dot = document.createElement('div');
+        dot.style.cssText = 'width:7px;height:7px;border-radius:50%;background:'+(isDone?'#aaa':ev.color)+';flex-shrink:0';
+        const nm = document.createElement('div');
+        nm.style.cssText = 'font-size:12px;color:var(--t1);flex:1'+(isDone?';text-decoration:line-through':'');
+        nm.textContent = taskText;
+        row.append(dot, nm);
+        taskList.appendChild(row);
       });
-      // 追加済みとして提案から非表示
-      if(!st.dismissedEventIds) st.dismissedEventIds=[];
-      if(!st.dismissedEventIds.includes(ev.id)) st.dismissedEventIds.push(ev.id);
-      await saveST();
-      toast('✓「'+ev.name+'」をプロジェクトに追加しました！');
-      renderHome();
-    });
+      if(tasks.length > SHOW){
+        const toggle = document.createElement('button');
+        toggle.style.cssText = 'width:100%;border:none;background:none;padding:5px;font-size:11px;font-weight:700;color:var(--t3);cursor:pointer;font-family:inherit;border-bottom:1px solid var(--bdr);';
+        toggle.textContent = expanded
+          ? '\u25b2 \u9589\u3058\u308b'
+          : '\u25bc \u3042\u3068'+(tasks.length-SHOW)+'\u4ef6\u3092\u898b\u308b';
+        toggle.addEventListener('click', (e)=>{ e.stopPropagation(); expanded=!expanded; renderTasks(); });
+        taskList.appendChild(toggle);
+      }
+    }
+    renderTasks();
+    panel.appendChild(taskList);
+
+    // ── アクションボタン（タイプ別）──
+    const actBtn = document.createElement('button');
+    actBtn.style.cssText = 'width:100%;padding:12px;border:none;font-family:inherit;font-size:13px;font-weight:800;cursor:pointer;'
+      +'background:'+ev.color+';color:#fff;display:flex;align-items:center;justify-content:center;gap:6px';
+    if(ev.type==='seasonal'){
+      actBtn.textContent = '+ 季節メンテをプロジェクトに追加する';
+      actBtn.addEventListener('click', async ()=>{
+        const st = await loadST();
+        const sid = 'seasonal_'+( new Date().getMonth()+1)+'_proj';
+        if(st.projects.find(p=>p.id===sid)){ toast('既に追加済みです'); return; }
+        ProjectService.createProject(st, {
+          id: sid, name: ev.name, icon: ev.icon, color: ev.color,
+          bg: ev.color+'22', goalDate: null,
+          steps: ev.tasks.map(t=>({name:t,who:'both'})),
+        });
+        await saveST();
+        toast('✓「'+ev.name+'」をプロジェクトに追加しました！');
+        renderHome();
+      });
+    } else if(ev.type==='papa'){
+      actBtn.textContent = '👨 パパにタスクを振り分けるAIに相談する';
+      actBtn.addEventListener('click', ()=>{ navTo('chat',{action:'balance'}); });
+    } else {
+      actBtn.textContent = '+ プロジェクトとして追加する';
+      actBtn.addEventListener('click', async ()=>{
+        const st = await loadST();
+        if(st.projects.find(p=>p.id===ev.id+'_proj')){ toast('既に追加済みです'); return; }
+        const localFmt = d => d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+        ProjectService.createProject(st, {
+          id: ev.id+'_proj', name: ev.name, icon: ev.icon,
+          color: ev.color, bg: ev.color+'22',
+          goalDate: localFmt(ev.evDate),
+          steps: ev.tasks.map(t=>({name:t,who:'both'})),
+        });
+        if(!st.dismissedEventIds) st.dismissedEventIds=[];
+        if(!st.dismissedEventIds.includes(ev.id)) st.dismissedEventIds.push(ev.id);
+        await saveST();
+        toast('✓「'+ev.name+'」をプロジェクトに追加しました！');
+        renderHome();
+      });
+    }
     panel.appendChild(actBtn);
+    panelWrap.innerHTML='';
     panelWrap.appendChild(panel);
   }
 
-  // タブを生成
-  events.slice(0,6).forEach((ev, idx)=>{
-    const tab = document.createElement('button');
-    tab.style.cssText = 'border:none;background:none;font-family:inherit;padding:8px 14px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;'
-      +'color:'+(idx===0?ev.color:'var(--t2)')+';border-bottom:'+(idx===0?'2px solid '+ev.color:'2px solid transparent');
-    tab.innerHTML = ev.icon+' '+ev.name;
-    tab.addEventListener('click',()=>{
-      activeIdx = idx;
-      tabBar.querySelectorAll('button').forEach((b,bi)=>{
-        const e2=events[bi];
-        b.style.color    = bi===idx ? e2.color : 'var(--t2)';
-        b.style.borderBottom = bi===idx ? '2px solid '+e2.color : '2px solid transparent';
-      });
-      renderPanel(idx);
-    });
-    tabBar.appendChild(tab);
-  });
-
-  container.appendChild(tabBar);
-  container.appendChild(panelWrap);
   renderPanel(0);
+  updateDots(0);
 
-  // pdots は非表示
-  const pdots = document.getElementById('pdots');
-  if(pdots) pdots.style.display='none';
+  // ── スワイプで切り替え ──
+  let _sx=0, _sdx=0, _son=false;
+  container.addEventListener('touchstart', e=>{
+    _sx=e.touches[0].clientX; _sdx=0; _son=true;
+  },{passive:true});
+  container.addEventListener('touchmove', e=>{
+    if(!_son) return;
+    _sdx=e.touches[0].clientX-_sx;
+  },{passive:true});
+  container.addEventListener('touchend', ()=>{
+    if(!_son) return; _son=false;
+    if(_sdx < -50 && activeIdx < total-1){ activeIdx++; renderPanel(activeIdx); updateDots(activeIdx); }
+    else if(_sdx > 50 && activeIdx > 0){ activeIdx--; renderPanel(activeIdx); updateDots(activeIdx); }
+    _sdx=0;
+  });
 }
 
-document.getElementById('prop-adopt').addEventListener('click', ()=>{
-  const p = PROPS[pIdx];
-  navTo('chat', {action: p.action});
-});
-document.getElementById('prop-skip').addEventListener('click', async()=>{
-  const s = await loadST();
-  if(PROPS[pIdx].action==='kondate'){ s.prefs.rejected.push('skip_'+Date.now()); await saveST(); }
-  pIdx = (pIdx+1)%PROPS.length;
-  renderProp();
-});
-
-/* swipe */
-const pc = document.getElementById('prop-card');
-function swStart(e){ swX=e.touches?e.touches[0].clientX:e.clientX; swDx=0; swOn=true; pc.style.transition='none'; }
-function swMove(e){
-  if(!swOn) return;
-  swDx=(e.touches?e.touches[0].clientX:e.clientX)-swX;
-  pc.style.transform=`translateX(${swDx*.3}px) rotate(${swDx*.04}deg)`;
-  document.getElementById('sw-L').style.opacity=swDx<-30?Math.min(.9,Math.abs(swDx)/100):0;
-  document.getElementById('sw-R').style.opacity=swDx>30?Math.min(.9,swDx/100):0;
-  if(e.cancelable) e.preventDefault();
-}
-function swEnd(){
-  if(!swOn) return; swOn=false;
-  pc.style.transition='transform .28s cubic-bezier(.34,1.56,.64,1)';
-  pc.style.transform='';
-  document.getElementById('sw-L').style.opacity=0;
-  document.getElementById('sw-R').style.opacity=0;
-  if(swDx<-60) document.getElementById('prop-skip').click();
-  else if(swDx>60) document.getElementById('prop-adopt').click();
-  swDx=0;
-}
-pc.addEventListener('touchstart',swStart,{passive:false});
-pc.addEventListener('touchmove', swMove, {passive:false});
-pc.addEventListener('touchend',  swEnd);
-pc.addEventListener('mousedown', swStart);
-pc.addEventListener('mousemove', swMove);
-pc.addEventListener('mouseup',   swEnd);
-pc.addEventListener('mouseleave',()=>{ if(swOn){swOn=false;swDx=0;pc.style.transform='';} });
+/* 旧スワイプコード削除済み - renderEventProposals 内のタッチイベントで処理 */
 
 /* ═══════════════════════════════════════════════════════
    HOME
@@ -1382,9 +1698,9 @@ function getInvItems(s){
   const isWe=[0,6].includes(new Date().getDay());
   const isFri=new Date().getDay()===5;
   const items=[];
-  if((s?.prefs?.liked||[]).length<3) items.push({icon:'🍽️',name:'今週の献立が未決定'});
+  if((s?.prefs?.liked||[]).length<3) items.push({icon:'utensils',name:'今週の献立が未決定'});
   items.push({icon:'🧴',name:'シャンプー・消耗品の在庫確認'});
-  items.push(isWe?{icon:'🛒',name:'週末の買い物リストを作る'}:{icon:'📋',name:`保護者会の出欠回答（${isFri?'今日':'今週金曜'}）`});
+  items.push(isWe?{icon:'shopping-cart',name:'週末の買い物リストを作る'}:{icon:'clipboard-list',name:`保護者会の出欠回答（${isFri?'今日':'今週金曜'}）`});
   items.push({icon:'👔',name:'子どもの季節着替えの入れ替え'});
   return items;
 }
@@ -1717,21 +2033,62 @@ async function renderCal(){
   document.getElementById('cal-range').textContent=`${dates[0].getMonth()+1}/${dates[0].getDate()} — ${dates[6].getMonth()+1}/${dates[6].getDate()}`;
 
   const DAYS=['月','火','水','木','金','土','日'];
+
+  // 祝日判定ヘルパー（HOLIDAY_MASTERから当該日を探す）
+  function getHolidayName(date) {
+    const m = date.getMonth()+1, d2 = date.getDate();
+    const hit = HOLIDAY_MASTER.find(h => h.month===m && h.day===d2);
+    return hit ? hit.name : null;
+  }
+
   const dowEl=document.getElementById('cal-dow');
   dowEl.innerHTML='';
   dates.forEach((d,i)=>{
-    const isToday=d.toDateString()===today.toDateString();
+    const isToday   = d.toDateString()===today.toDateString();
+    const isSun     = d.getDay()===0;
+    const isSat     = d.getDay()===6;
+    const holidayName = getHolidayName(d);
+    const isHoliday = !!holidayName;
+
     const cell=document.createElement('div'); cell.className='cdh';
-    const lb=document.createElement('span'); lb.className='cdh-lbl'; lb.textContent=DAYS[i];
-    const nm=document.createElement('span'); nm.className='cdh-num'+(isToday?' today':''); nm.textContent=d.getDate();
-    cell.append(lb,nm); dowEl.appendChild(cell);
+    if(isHoliday) cell.style.cssText='background:rgba(192,57,43,.08);border-radius:8px;';
+
+    const lb=document.createElement('span');
+    lb.className='cdh-lbl';
+    lb.textContent = isHoliday ? '祝' : DAYS[i];
+    if(isHoliday||isSun) lb.style.color='#C0392B';
+    else if(isSat)       lb.style.color='#1E5EA8';
+
+    const nm=document.createElement('span');
+    nm.className='cdh-num'+(isToday?' today':'');
+    nm.textContent=d.getDate();
+    if(!isToday){
+      if(isHoliday||isSun) nm.style.color='#C0392B';
+      else if(isSat)       nm.style.color='#1E5EA8';
+    }
+
+    cell.append(lb,nm);
+
+    // 祝日名ツールチップ（タップで表示）
+    if(isHoliday){
+      cell.title = holidayName;
+      cell.style.cursor='pointer';
+      cell.addEventListener('click', ()=>toast('🎌 '+holidayName));
+    }
+
+    dowEl.appendChild(cell);
   });
 
   const tasks2=allTasks(s);
   const gridEl=document.getElementById('cal-grid');
   gridEl.innerHTML='';
-  dates.forEach((_,di)=>{
+  dates.forEach((d,di)=>{
+    const isSun = d.getDay()===0;
+    const isSat = d.getDay()===6;
+    const isHolidayCol = !!getHolidayName(d);
     const col=document.createElement('div'); col.className='ccol';
+    if(isHolidayCol||isSun) col.style.background='rgba(192,57,43,.04)';
+    else if(isSat)           col.style.background='rgba(30,94,168,.04)';
     tasks2.filter((_2,ti)=>ti%7===di).slice(0,3).forEach(t=>{
       const chip=document.createElement('div');
       chip.className='cchip '+t.who+(t.done?' done':'');
@@ -2169,8 +2526,8 @@ function renderTasksByCalendar(s, el){
   addBtn2.style.cssText = 'width:30px;height:30px;background:var(--t1);border:none;border-radius:50%;font-size:18px;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0';
   addBtn2.textContent = '+';
   addBtn2.addEventListener('click',()=>{
-    // 選択日をadd-modalの日付にセット
-    const fmt = d => d.toISOString().split('T')[0];
+    // 選択日をadd-modalの日付にセット（ローカル日付使用・UTCズレ修正）
+    const fmt = d => d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
     document.getElementById('new-due').value = fmt(selD);
     openAddModal();
   });
@@ -2320,11 +2677,14 @@ async function renderMem(){
   const el = document.getElementById('mem-body');
   el.innerHTML = '';
 
-  // ── タスクからバランスを計算
-  const allTasks = [...(s.tasks||[]), ...(s.projects||[]).flatMap(p=>p.tasks||[])];
-  const done = allTasks.filter(t=>t.done);
-  const mamaTotal = allTasks.filter(t=>t.who==='mama').length;
-  const papaTotal = allTasks.filter(t=>t.who==='papa').length;
+  // ── タスクからバランスを計算（単発タスク + プロジェクトタスク）
+  const allTasks = [
+    ...(s.singleTasks||[]),
+    ...(s.projects||[]).flatMap(p=>p.tasks||[]),
+  ];
+  const done = allTasks.filter(t=>t.isCompleted||t.done);
+  const mamaTotal = allTasks.filter(t=>(t.who||t.assignee)==='mama').length;
+  const papaTotal = allTasks.filter(t=>(t.who||t.assignee)==='papa').length;
   const total = mamaTotal + papaTotal || 1;
   const mamaLoad = Math.round(mamaTotal/total*100);
   const papaLoad = 100 - mamaLoad;
@@ -2401,7 +2761,7 @@ async function renderMem(){
     // AIボタン
     if(m.action){
       const btn = document.createElement('button'); btn.className='btn btn-g'; btn.style.marginTop='10px';
-      btn.textContent = '${m.av} へのタスクをAIに提案してもらう →';
+      btn.textContent = `${m.av} へのタスクをAIに提案してもらう →`;
       btn.onclick = ()=>navTo('chat',{action:m.action});
       card.appendChild(btn);
     }
@@ -2498,12 +2858,18 @@ function renderSettings(){
       +'<div style="height:1px"></div>'
       +'</div>'
 
+      // ── 家族共有・Firebase設定
+      +'<div class="sec-lbl">家族共有 / パパとの同期</div>'
+      +'<div class="card" style="margin-bottom:14px" id="sync-card">'
+      + renderSyncCard(s)
+      +'</div>'
+
       // ── アプリ情報
       +'<div class="sec-lbl">アプリ情報</div>'
       +'<div class="card" style="margin-bottom:14px">'
       +'<div style="padding:13px 14px;border-bottom:1px solid var(--bdr);display:flex;justify-content:space-between"><span style="color:var(--t1)">バージョン</span><span style="color:var(--t3)">v2.4.0</span></div>'
       +'<div style="padding:13px 14px;border-bottom:1px solid var(--bdr);display:flex;justify-content:space-between"><span style="color:var(--t1)">データ件数</span><span style="color:var(--t3)">'
-      +(( (s.projects||[]).length + (s.tasks||[]).length + (s.kaji?.shop?.length||0) + (s.kaji?.chore?.length||0)) + '件')
+      +(( (s.projects||[]).length + (s.singleTasks||[]).length + (s.kaji?.shop?.length||0) + (s.kaji?.chore?.length||0)) + '件')
       +'</span></div>'
       +'<div style="padding:13px 14px;cursor:pointer" onclick="if(confirm(\'すべてのデータをリセットしますか？\'))localStorage.clear(),location.reload()">'
       +'<span style="color:var(--re);font-weight:700">データをリセット</span></div>'
@@ -2511,6 +2877,167 @@ function renderSettings(){
 
       +'</div>'; // scroll end
   });
+}
+
+// ── 家族同期カード描画 ────────────────────────────────────────────────────
+function renderSyncCard(s) {
+  const sync = s.sync || {};
+  const fid  = sync.familyId;
+  const fbCfg = typeof fbConfigLoad === 'function' ? fbConfigLoad() : null;
+  const hasConfig = fbCfg && fbCfg.apiKey;
+
+  if(!hasConfig) {
+    // Firebase未設定
+    return '<div style="padding:16px 14px">'
+      +'<div style="font-size:13px;font-weight:700;color:var(--t1);margin-bottom:6px">🔗 パパと同期するにはFirebaseの設定が必要です</div>'
+      +'<div style="font-size:11px;color:var(--t2);margin-bottom:14px">Firebaseの無料プランで家族間リアルタイム同期ができます。<br>下のボタンからセットアップを始めてください。</div>'
+      +'<button onclick="showFbSetup()" style="width:100%;padding:11px;background:var(--t1);color:#fff;border:none;border-radius:12px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit">Firebaseをセットアップする</button>'
+      +'</div>';
+  }
+
+  if(!fid) {
+    // Firebase設定済み・家族IDなし → 新規作成 or 参加
+    return '<div style="padding:16px 14px">'
+      +'<div style="font-size:13px;font-weight:700;color:var(--t1);margin-bottom:12px">✅ Firebase接続済み</div>'
+      +'<button onclick="createFamilyRoom()" style="width:100%;padding:11px;background:var(--gr);color:#fff;border:none;border-radius:12px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;margin-bottom:8px">👩 ママとして家族ルームを作成する</button>'
+      +'<button onclick="showJoinRoom()" style="width:100%;padding:11px;background:var(--bg);color:var(--t1);border:1.5px solid var(--bdr);border-radius:12px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit">👨 招待コードで参加する（パパ用）</button>'
+      +'</div>';
+  }
+
+  // 家族ID取得済み
+  const short = fid.slice(0,6).toUpperCase();
+  const role  = sync.role || 'mama';
+  return '<div style="padding:16px 14px">'
+    +'<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">'
+    +'<div style="width:10px;height:10px;border-radius:50%;background:#22C55E;flex-shrink:0"></div>'
+    +'<div style="font-size:13px;font-weight:700;color:var(--t1)">同期中 — '+( role==='mama'?'ママ':'パパ' )+'アカウント</div>'
+    +'</div>'
+    +'<div style="background:var(--bg);border-radius:12px;padding:12px 14px;margin-bottom:12px">'
+    +'<div style="font-size:11px;color:var(--t3);margin-bottom:4px">招待コード（パパにこのコードを伝えてください）</div>'
+    +'<div style="font-size:28px;font-weight:900;letter-spacing:6px;color:var(--t1);text-align:center;padding:4px 0">'+short+'</div>'
+    +'<div style="font-size:10px;color:var(--t3);text-align:center">タップでコピー</div>'
+    +'</div>'
+    +'<button onclick="copyInviteCode(''+short+'')" style="width:100%;padding:10px;background:var(--t1);color:#fff;border:none;border-radius:12px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;margin-bottom:8px">📋 招待コードをコピーする</button>'
+    +'<button onclick="disconnectSync()" style="width:100%;padding:10px;background:var(--bg);color:var(--re);border:1.5px solid var(--re);border-radius:12px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">同期を解除する</button>'
+    +'</div>';
+}
+
+// Firebase設定モーダル
+function showFbSetup() {
+  const modal = document.getElementById('fb-setup-modal');
+  if(modal) modal.classList.add('on');
+}
+
+function hideFbSetup() {
+  const modal = document.getElementById('fb-setup-modal');
+  if(modal) modal.classList.remove('on');
+}
+
+async function saveFbConfig() {
+  const apiKey      = document.getElementById('fb-apikey').value.trim();
+  const authDomain  = document.getElementById('fb-authdomain').value.trim();
+  const dbURL       = document.getElementById('fb-dburl').value.trim();
+  const projectId   = document.getElementById('fb-projectid').value.trim();
+
+  if(!apiKey || !dbURL || !projectId) { toast('必須項目を入力してください'); return; }
+  const cfg = { apiKey, authDomain, databaseURL: dbURL, projectId };
+  fbConfigSave(cfg);
+  const ok = await window.initFirebase(cfg);
+  if(ok) {
+    toast('✓ Firebase接続しました！');
+    hideFbSetup();
+    ST = null; // STリセットして再ロード
+    await loadST();
+    renderSettings();
+  } else {
+    toast('接続に失敗しました。設定を確認してください');
+  }
+}
+
+// 家族ルーム作成（ママ用）
+async function createFamilyRoom() {
+  const s = await loadST();
+  // ランダム6文字IDを生成
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let fid = '';
+  for(let i=0;i<6;i++) fid += chars[Math.floor(Math.random()*chars.length)];
+
+  s.sync = { familyId: fid, role: 'mama', fbConfigured: true };
+  ST = s;
+  await saveST();
+
+  // Firebaseにも保存
+  if(window._fbReady) await window.fbSave(fid, s);
+
+  // リアルタイム購読開始
+  window.fbSubscribe(fid, (data)=>{
+    ST = mergeState(data);
+    lsSave(ST);
+    if(document.getElementById('s-home')?.classList.contains('on')) renderHome();
+  });
+
+  toast('✓ 家族ルームを作成しました！コード: '+fid);
+  renderSettings();
+}
+
+// 招待コード入力モーダル表示
+function showJoinRoom() {
+  const modal = document.getElementById('join-modal');
+  if(modal) modal.classList.add('on');
+}
+function hideJoinRoom() {
+  const modal = document.getElementById('join-modal');
+  if(modal) modal.classList.remove('on');
+}
+
+// 招待コードで参加（パパ用）
+async function joinFamilyRoom() {
+  const code = document.getElementById('join-code').value.trim().toUpperCase();
+  if(code.length !== 6) { toast('6文字のコードを入力してください'); return; }
+
+  if(!window._fbReady) { toast('Firebase未設定です。先に設定してください'); return; }
+
+  const remote = await window.fbLoad(code);
+  if(!remote) { toast('コードが見つかりません。確認してください'); return; }
+
+  // パパとしてデータを引き継ぐ
+  const s = mergeState(remote);
+  s.sync = { familyId: code, role: 'papa', fbConfigured: true };
+  s.user = Object.assign({}, s.user, { role: 'papa' });
+  ST = s;
+  await saveST();
+
+  // リアルタイム購読開始
+  window.fbSubscribe(code, (data)=>{
+    ST = mergeState(data);
+    lsSave(ST);
+    if(document.getElementById('s-home')?.classList.contains('on')) renderHome();
+  });
+
+  hideJoinRoom();
+  toast('✓ 家族ルームに参加しました！');
+  navTo('home');
+}
+
+// 招待コードコピー
+function copyInviteCode(code) {
+  if(navigator.clipboard) {
+    navigator.clipboard.writeText(code).then(()=>toast('📋 コードをコピーしました: '+code));
+  } else {
+    toast('コード: '+code);
+  }
+}
+
+// 同期解除
+async function disconnectSync() {
+  if(!confirm('同期を解除しますか？データはこの端末に残ります。')) return;
+  window.fbUnsubscribe();
+  const s = await loadST();
+  s.sync = { familyId: null, role: 'mama', fbConfigured: false };
+  ST = s;
+  await saveST();
+  toast('同期を解除しました');
+  renderSettings();
 }
 
 function togglePapaGood(btn, val){
@@ -2546,7 +3073,7 @@ async function toggleNotif(btn, key){
 
 let chatReady=false, chatCtxKey='', chatHistory=[], ingSelected=[], micOn=false;
 
-function resetChat(){ chatReady=false; chatCtxKey=''; chatHistory=[]; ingSelected=[]; document.getElementById('chat-body').innerHTML=''; openChat(); }
+function resetChat(){ chatCtx=null; chatReady=false; chatCtxKey=''; chatHistory=[]; ingSelected=[]; document.getElementById('chat-body').innerHTML=''; openChat(); }
 
 async function openChat(){
   const key=JSON.stringify(chatCtx||null);
@@ -2569,10 +3096,10 @@ async function openChat(){
       const p2=pct(proj); const nx=proj.tasks.find(t=>!t.done);
       addAI(`「${proj.name}」を確認しました ${proj.icon}\n\n現在 ${p2}% 完了。${nx?`\n次：「${nx.name}」（${nx.who==='mama'?'ママ':nx.who==='papa'?'パパ':'二人で'}担当）`:'\nすべて完了済みです！'}\n\n何をしますか？`);
       setTimeout(()=>addChoices([
-        {icon:'▶️',text:'今すぐ次のタスクを整理する', key:'proj_next'},
-        {icon:'📨',text:'パパへの依頼LINEを作る',     key:'proj_papa'},
-        {icon:'🤖',text:'AIに全部計画してもらう',     key:'proj_all'},
-        {icon:'🔄',text:'別の相談をする',              key:'restart'},
+        {icon:'play',text:'今すぐ次のタスクを整理する', key:'proj_next'},
+        {icon:'send',text:'パパへの依頼LINEを作る',     key:'proj_papa'},
+        {icon:'sparkles',text:'AIに全部計画してもらう',     key:'proj_all'},
+        {icon:'refresh-cw',text:'別の相談をする',              key:'restart'},
       ]),400);
     }
   }else if(action==='invisible'){
@@ -2580,9 +3107,9 @@ async function openChat(){
     const list=items.map((it,i)=>`${i+1}. ${it.icon} ${it.name}`).join('\n');
     addAI(`名もなき家事を ${items.length} 件検出しました 👁\n\n${list}\n\nどうしますか？`);
     setTimeout(()=>addChoices([
-      {icon:'✅',text:'全部タスクに追加する',key:'inv_add'},
-      {icon:'👨',text:'パパに割り振れるものを選ぶ', key:'inv_papa'},
-      {icon:'🤖',text:'AIに優先順位をつけてもらう', key:'inv_sort'},
+      {icon:'check-square',text:'全部タスクに追加する',key:'inv_add'},
+      {icon:'user',text:'パパに割り振れるものを選ぶ', key:'inv_papa'},
+      {icon:'sparkles',text:'AIに優先順位をつけてもらう', key:'inv_sort'},
     ]),400);
   }else if(action==='balance'){
     addAI(`家事バランスを分析しました ⚖️\n\nママ 72%：パパ 28%\n\nパパに今週できるタスクを提案します。`);
@@ -2604,11 +3131,11 @@ async function openChat(){
     const urg=allTasks(s).find(t=>!t.done&&t.urgent);
     addAI(`こんにちは！${s.family.name}さん 👋\n\n今日は${dow}曜日${isWe?'、パパも在宅ですね':''}。`+(urg?`\n\n⚠️「${urg.name}」が期限に近づいています。`:'')+'\n\n今日は何を一緒に解決しますか？');
     setTimeout(()=>addChoices([
-      {icon:'🍽️',text:'今夜の献立を食材から決める',key:'kondate'},
-      {icon:'📋',text:'プロジェクトを前進させたい',key:'proj_menu'},
-      {icon:'👁', text:'名もなき家事を整理したい', key:'invisible'},
-      {icon:'⚖️',text:'パパへのタスクを作りたい', key:'balance'},
-      {icon:'💬',text:'その他・なんでも相談したい',key:'free'},
+      {icon:'utensils',text:'今夜の献立を食材から決める',key:'kondate'},
+      {icon:'clipboard-list',text:'プロジェクトを前進させたい',key:'proj_menu'},
+      {icon:'eye', text:'名もなき家事を整理したい', key:'invisible'},
+      {icon:'scale',text:'パパへのタスクを作りたい', key:'balance'},
+      {icon:'message-circle',text:'その他・なんでも相談したい',key:'free'},
     ]),400);
   }
 }
@@ -2679,14 +3206,24 @@ async function handleChoice(key, extraData, wrapEl, choiceText){
           .map(l=>l.replace(/^[\d\s.・\-*]+/,'').trim())
           .filter(l=>l.length>4 && l.length<50);
         const today = new Date().toISOString().split('T')[0];
+        if(!st.singleTasks) st.singleTasks=[];
         lines.slice(0,5).forEach(line=>{
-          st.tasks.push({id:Date.now()+Math.random(),name:line,who:'both',date:today,done:false,projId:null});
+          st.singleTasks.push({
+            id:'t'+Date.now()+Math.floor(Math.random()*1000),
+            title:line, name:line,
+            type:'single', projectId:null,
+            dueDate:today, due:today,
+            assignee:'both', who:'both',
+            isCompleted:false, done:false,
+            urgent:false, isUrgent:false,
+            createdAt:new Date().toISOString(),
+          });
         });
         await saveST(st); ST=st;
         toast('✅ タスクに追加しました（'+lines.slice(0,5).length+'件）');
       }
       addAI('タスクに追加しました！他に何かありますか？');
-      setTimeout(()=>addChoices([{icon:'🔄',text:'別の相談をする',key:'restart'},{icon:'🏠',text:'ホームに戻る',key:'home'}]),400);
+      setTimeout(()=>addChoices([{icon:'refresh-cw',text:'別の相談をする',key:'restart'},{icon:'house',text:'ホームに戻る',key:'home'}]),400);
     })();
     return;
   }
@@ -2694,21 +3231,52 @@ async function handleChoice(key, extraData, wrapEl, choiceText){
     (async()=>{
       const st=await loadST();
       const lastAI = [...chatHistory].reverse().find(m=>m.role==='assistant');
-      if(lastAI && st.projects.length>0){
+      if(!lastAI){
+        toast('追加するタスクが見つかりません');
+        setTimeout(()=>addChoices([{icon:'refresh-cw',text:'別の相談をする',key:'restart'},{icon:'house',text:'ホームに戻る',key:'home'}]),400);
+        return;
+      }
+      if(st.projects.length===0){
+        toast('プロジェクトを先に作成してください');
+        setTimeout(()=>addChoices([{icon:'refresh-cw',text:'別の相談をする',key:'restart'},{icon:'house',text:'ホームに戻る',key:'home'}]),400);
+        return;
+      }
+      addAI('どのプロジェクトに追加しますか？');
+      setTimeout(()=>addChoices(st.projects.map(p=>({icon:p.icon||'folder',text:p.name,key:'proj_task_add',extra:{projectId:p.id}}))),400);
+    })();
+    return;
+  }
+  if(key==='proj_task_add'&&extraData){
+    (async()=>{
+      const st=await loadST();
+      const lastAI = [...chatHistory].reverse().find(m=>m.role==='assistant');
+      const proj = st.projects.find(p=>p.id===extraData.projectId);
+      if(lastAI && proj){
         const lines = lastAI.content.split('\n')
           .map(l=>l.replace(/^[\d\s.・\-*]+/,'').trim())
           .filter(l=>l.length>4 && l.length<50);
-        // 最近のプロジェクトに追加
-        const proj = st.projects[0];
+        const today = new Date().toISOString().split('T')[0];
+        if(!proj.tasks) proj.tasks=[];
         lines.slice(0,5).forEach(line=>{
-          proj.tasks.push({id:Date.now()+Math.random(),name:line,who:'both',done:false});
+          proj.tasks.push({
+            id:'t'+Date.now()+Math.floor(Math.random()*1000),
+            title:line, name:line,
+            type:'project', projectId:proj.id,
+            dueDate:proj.goalDate||today, due:proj.goalDate||today,
+            assignee:'both', who:'both',
+            isCompleted:false, done:false,
+            urgent:false, isUrgent:false,
+            createdAt:new Date().toISOString(),
+          });
         });
         await saveST(st); ST=st;
-        toast('📋 「'+proj.name+'」に追加しました');
+        toast('📋 「'+proj.name+'」に追加しました（'+lines.slice(0,5).length+'件）');
+        addAI('「'+proj.name+'」にタスクを追加しました！他に何かありますか？');
       } else {
-        toast('プロジェクトを先に作成してください');
+        toast('追加できませんでした');
+        addAI('タスクの追加に失敗しました。もう一度お試しください。');
       }
-      setTimeout(()=>addChoices([{icon:'🔄',text:'別の相談をする',key:'restart'},{icon:'🏠',text:'ホームに戻る',key:'home'}]),400);
+      setTimeout(()=>addChoices([{icon:'refresh-cw',text:'別の相談をする',key:'restart'},{icon:'house',text:'ホームに戻る',key:'home'}]),400);
     })();
     return;
   }
@@ -2726,7 +3294,7 @@ async function handleChoice(key, extraData, wrapEl, choiceText){
         await saveST(st); ST=st;
         toast('🛒 買い物リストに追加しました（'+lines.slice(0,5).length+'件）');
       }
-      setTimeout(()=>addChoices([{icon:'🔄',text:'別の相談をする',key:'restart'},{icon:'🏠',text:'ホームに戻る',key:'home'}]),400);
+      setTimeout(()=>addChoices([{icon:'refresh-cw',text:'別の相談をする',key:'restart'},{icon:'house',text:'ホームに戻る',key:'home'}]),400);
     })();
     return;
   }
@@ -2750,12 +3318,21 @@ function addChoices(choices){
   const w=document.createElement('div'); w.className='cwrap anim';
   choices.forEach(c=>{
     const btn=document.createElement('button'); btn.className='cbtn';
-    const ic=document.createElement('span'); ic.className='cicon'; ic.textContent=c.icon;
-    btn.append(ic,c.text);
-    btn.addEventListener('click',()=>handleChoice(c.key,c.extra||null,w,c.text));
+    const isLucide=/^[a-z][a-z0-9-]+$/.test(c.icon||'');
+    const ic=document.createElement('span'); ic.className='cicon';
+    if(isLucide){
+      ic.innerHTML=`<i data-lucide="${c.icon}" style="width:14px;height:14px;display:inline-flex;vertical-align:middle"></i>`;
+    } else {
+      ic.textContent=c.icon||'';
+    }
+    btn.append(ic,' '+c.text);
+    btn.addEventListener('click',()=>{
+      handleChoice(c.key,c.extra||null,w,c.text);
+    });
     w.appendChild(btn);
   });
   cb.appendChild(w); scrollChat();
+  if(typeof lucide!=='undefined') setTimeout(()=>lucide.createIcons(),30);
 }
 
 async function buildSys(){
@@ -2813,6 +3390,17 @@ async function callAI(){
   document.getElementById('lveil').classList.add('on');
   document.getElementById('send-btn').disabled=true;
   try{
+    const _st = await loadST();
+    if(!_st.prefs.isPro){
+      document.getElementById('lveil').classList.remove('on');
+      document.getElementById('send-btn').disabled=false;
+      addAI('Proプランを有効にすると、家族の状況に合わせたAI提案が届きます ✨');
+      setTimeout(()=>addChoices([
+        {icon:'settings', text:'設定でProプランを有効にする', key:'open_settings'},
+        {icon:'house',    text:'ホームに戻る', key:'home'},
+      ]),400);
+      return;
+    }
     const sys = await buildSys();
     const raw = chatHistory.filter(m=>m&&m.role&&m.content);
     const msgs = [];
@@ -2827,15 +3415,19 @@ async function callAI(){
     addAI(reply);
     chatHistory.push({role:'assistant', content:reply});
     setTimeout(()=>addChoices([
-      {icon:'✅',text:'タスクに追加する',key:'add_to_tasks'},{icon:'📋',text:'プロジェクトに追加する',key:'add_to_proj'},{icon:'🛒',text:'買い物リストに追加',key:'add_to_kaji'},
-      {icon:'🔄',text:'別の提案をしてほしい',   key:'free'},
-      {icon:'🏠',text:'ホームに戻る',           key:'home'},
+      {icon:'check-square',   text:'タスクに追加',        key:'add_to_tasks'},
+      {icon:'clipboard-list', text:'プロジェクトに追加',  key:'add_to_proj'},
+      {icon:'shopping-basket',text:'買い物リストに追加',  key:'add_to_kaji'},
     ]),500);
+    setTimeout(()=>addChoices([
+      {icon:'refresh-cw', text:'別の提案をしてほしい', key:'free'},
+      {icon:'house',      text:'ホームに戻る',         key:'home'},
+    ]),650);
   }catch(e){
     addAI('エラー: '+e.message);
     setTimeout(()=>addChoices([
-      {icon:'🔄',text:'もう一度試す',key:'restart'},
-      {icon:'🏠',text:'ホームに戻る',key:'home'},
+      {icon:'refresh-cw',text:'もう一度試す',key:'restart'},
+      {icon:'house',text:'ホームに戻る',key:'home'},
     ]),400);
   }finally{
     document.getElementById('lveil').classList.remove('on');
@@ -2986,6 +3578,7 @@ function renderPcmTemplateList(){
       row.addEventListener('click',()=>{
         _pcmData = {
           name: tpl.title, icon: tpl.icon, color: tpl.color,
+          _fromTemplate: true,
           tasks: tpl.tasks.map((t,i)=>({name:t, _id:'pt'+Date.now()+i}))
         };
         renderPcmStep3(); pcmShowStep('step3');
@@ -3304,7 +3897,7 @@ async function bootPcmEvents(){
     renderPcmTemplateList(); pcmShowStep('step2a');
   });
   document.getElementById('pcm-from-scratch')?.addEventListener('click',()=>{
-    _pcmData={name:'',icon:'📋',color:'var(--gr)',tasks:[]};
+    _pcmData={name:'',icon:'clipboard-list',color:'var(--gr)',tasks:[]};
     pcmShowStep('step2b');
   });
   // Step2a 戻る
@@ -3329,7 +3922,7 @@ async function bootPcmEvents(){
   });
   // Step3 戻る
   document.getElementById('pcm-back2')?.addEventListener('click',()=>{
-    if(_pcmData._fromTemplate) pcmShowStep('step2a'); else pcmShowStep('step2b');
+    if(_pcmData._fromTemplate){ renderPcmTemplateList(); pcmShowStep('step2a'); } else pcmShowStep('step2b');
   });
   // pcm-new-who-chips
   document.querySelectorAll('.pcm-nw-chip').forEach(ch=>{
