@@ -259,6 +259,7 @@ html,body{height:100%;background:#E8E4D0;font-family:'Noto Sans JP',sans-serif;}
 .cchip.mama{background:var(--mama2);color:var(--mama);}
 .cchip.papa{background:var(--papa2);color:var(--papa);}
 .cchip.both{background:var(--gr3);color:var(--gr2);}
+.cchip.proj{background:#EBF5FF;color:#1A7FDB;}
 .cchip.done{opacity:.4;}
 /* project detail card */
 .pjcard{background:var(--sur);border-radius:var(--r2);box-shadow:var(--sh);overflow:hidden;margin-bottom:10px;}
@@ -1449,15 +1450,41 @@ const HOLIDAY_MASTER = [
 ];
 
 // ── 祝日ユーティリティ ──────────────────────────────────────────────────────
-// 「ポツン祝日」= 前日(日曜除く)・翌日(土曜除く)が平日の1日のみの祝日
-function isIsolatedHoliday(evDate) {
-  const prev = new Date(evDate); prev.setDate(prev.getDate()-1);
-  const next = new Date(evDate); next.setDate(next.getDate()+1);
-  const prevDow = prev.getDay(); // 0=日,6=土
-  const nextDow = next.getDay();
-  // 前が平日 かつ 後が平日 → ポツン祝日
-  return (prevDow >= 1 && prevDow <= 5) && (nextDow >= 1 && nextDow <= 5);
+// 有休チャンス判定：前後4日以内に別の休日(土日or祝日)があり、間に平日の穴がある
+function isVacationOpportunity(evDate) {
+  function isRestDay(d) {
+    const dow = d.getDay();
+    if(dow === 0 || dow === 6) return true;
+    const m = d.getMonth()+1, day = d.getDate();
+    return HOLIDAY_MASTER.some(h => h.month === m && h.day === day);
+  }
+  // 前後2〜4日に別の休日があり、間に平日がある = 穴あき有休チャンス
+  for(let gap = 2; gap <= 4; gap++) {
+    // 後方チェック
+    const later = new Date(evDate); later.setDate(later.getDate()+gap);
+    if(isRestDay(later)) {
+      let hasGap = false;
+      for(let k=1; k<gap; k++) {
+        const mid = new Date(evDate); mid.setDate(mid.getDate()+k);
+        if(!isRestDay(mid)) { hasGap = true; break; }
+      }
+      if(hasGap) return true;
+    }
+    // 前方チェック
+    const earlier = new Date(evDate); earlier.setDate(earlier.getDate()-gap);
+    if(isRestDay(earlier)) {
+      let hasGap = false;
+      for(let k=1; k<gap; k++) {
+        const mid = new Date(evDate); mid.setDate(mid.getDate()-k);
+        if(!isRestDay(mid)) { hasGap = true; break; }
+      }
+      if(hasGap) return true;
+    }
+  }
+  return false;
 }
+// 後方互換エイリアス
+function isIsolatedHoliday(evDate) { return isVacationOpportunity(evDate); }
 
 const EVENT_TEMPLATES = HOLIDAY_MASTER;
 
@@ -1646,6 +1673,67 @@ function getPapaCard(s) {
   };
 }
 
+// ── 提案カード日程範囲ピッカー ───────────────────────────────────────────────
+// hasFixedDate=true のとき終了日を祝日日付で初期化、開始日は7日前
+function openEventDateRangePicker(ev, hasFixedDate, onConfirm) {
+  const ex = document.getElementById('ev-date-picker'); if(ex) ex.remove();
+  const localFmt = d => d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+
+  // 初期値
+  let defEnd = '';
+  let defStart = '';
+  if(hasFixedDate && ev.evDate) {
+    defEnd = localFmt(ev.evDate);
+    const s = new Date(ev.evDate); s.setDate(s.getDate()-7);
+    defStart = localFmt(s);
+  }
+
+  const ov = document.createElement('div'); ov.id = 'ev-date-picker';
+  ov.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:300;display:flex;align-items:flex-end';
+  const sh = document.createElement('div');
+  sh.style.cssText = 'background:#fff;width:100%;border-radius:24px 24px 0 0;padding:20px 18px 32px;box-sizing:border-box';
+
+  const title = document.createElement('div');
+  title.style.cssText = 'font-size:16px;font-weight:800;color:var(--t1);margin-bottom:6px';
+  title.textContent = (ev.icon||'📅') + ' ' + ev.name + ' — 期間を設定';
+
+  const hint = document.createElement('div');
+  hint.style.cssText = 'font-size:12px;color:var(--t2);margin-bottom:18px';
+  hint.textContent = hasFixedDate ? '準備開始日〜イベント当日を設定してください' : '取り組む期間（開始〜終了）を設定してください';
+
+  const row = document.createElement('div');
+  row.style.cssText = 'display:flex;align-items:center;gap:10px;margin-bottom:20px';
+
+  const startInp = document.createElement('input'); startInp.type='date'; startInp.value=defStart;
+  startInp.style.cssText = 'flex:1;padding:10px;border:1.5px solid var(--bdr);border-radius:12px;font-size:14px;font-family:inherit;color:var(--t1)';
+  const dash = document.createElement('span'); dash.textContent='〜'; dash.style.cssText='font-size:15px;font-weight:700;color:var(--t2);flex-shrink:0';
+  const endInp = document.createElement('input'); endInp.type='date'; endInp.value=defEnd;
+  endInp.style.cssText = 'flex:1;padding:10px;border:1.5px solid var(--bdr);border-radius:12px;font-size:14px;font-family:inherit;color:var(--t1)';
+
+  row.append(startInp, dash, endInp);
+
+  const confirmBtn = document.createElement('button');
+  confirmBtn.textContent = 'この期間でプロジェクトに追加 →';
+  confirmBtn.style.cssText = 'width:100%;padding:14px;background:var(--gr);color:#fff;border:none;border-radius:14px;font-size:14px;font-weight:800;cursor:pointer;font-family:inherit;margin-bottom:10px';
+  confirmBtn.addEventListener('click', ()=>{
+    const sv = startInp.value, ev2 = endInp.value;
+    if(!sv || !ev2) { toast('開始日と終了日を両方入力してください'); return; }
+    const sd = new Date(sv), ed = new Date(ev2);
+    if(sd > ed) { toast('開始日は終了日より前にしてください'); return; }
+    ov.remove();
+    onConfirm(sd, ed);
+  });
+  const cancelBtn = document.createElement('button');
+  cancelBtn.textContent = 'キャンセル';
+  cancelBtn.style.cssText = 'width:100%;padding:12px;background:none;border:1.5px solid var(--bdr);border-radius:14px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;color:var(--t2)';
+  cancelBtn.addEventListener('click', ()=>ov.remove());
+  ov.addEventListener('click', e=>{ if(e.target===ov) ov.remove(); });
+
+  sh.append(title, hint, row, confirmBtn, cancelBtn);
+  ov.appendChild(sh);
+  document.body.appendChild(ov);
+}
+
 function renderEventProposals(s) {
   // 祝日イベント＋季節メンテ＋パパ振り分け＋週次カードを合わせたカードリスト
   const holidayCards = getUpcomingEvents(s);
@@ -1657,7 +1745,12 @@ function renderEventProposals(s) {
   const restHoliday  = holidayCards.slice(2);
   const dismissed = new Set(s.dismissedEventIds||[]);
   const events = [...firstHoliday, ...weeklyCards, seasonCard, papaCard, ...restHoliday]
-    .filter(e => e && !dismissed.has(e.id));
+    .filter(e => e && !dismissed.has(e.id))
+    .filter(e => {
+      // 既にプロジェクトに追加済みの祝日カードは非表示
+      if(e.type==='papa' || e.type==='seasonal' || e.type==='weekly') return true;
+      return !s.projects.find(p => p.name === e.name || p.id === e.id+'_proj');
+    });
 
   const container = document.getElementById('prop-card');
   if(!container) return;
@@ -1825,59 +1918,32 @@ function renderEventProposals(s) {
     const actBtn = document.createElement('button');
     actBtn.style.cssText = 'width:100%;padding:12px;border:none;font-family:inherit;font-size:13px;font-weight:800;cursor:pointer;'
       +'background:'+ev.color+';color:#fff;display:flex;align-items:center;justify-content:center;gap:6px';
-    if(ev.type==='seasonal'){
-      actBtn.textContent = '+ 季節メンテをプロジェクトに追加する';
-      actBtn.addEventListener('click', async ()=>{
-        const st = await loadST();
-        const sid = 'seasonal_'+( new Date().getMonth()+1)+'_proj';
-        if(st.projects.find(p=>p.id===sid)){ toast('既に追加済みです'); return; }
-        ProjectService.createProject(st, {
-          id: sid, name: ev.name, icon: ev.icon, color: ev.color,
-          bg: ev.color+'22', goalDate: null,
-          steps: ev.tasks.map(t=>({name:t,who:'both'})),
-        });
-        await saveST();
-        toast('✓「'+ev.name+'」をプロジェクトに追加しました！');
-        renderHome();
-      });
-    } else if(ev.type==='papa'){
+    if(ev.type==='papa'){
       actBtn.textContent = '👨 パパにタスクを振り分けるAIに相談する';
       actBtn.addEventListener('click', ()=>{ navTo('chat',{action:'balance'}); });
-    } else if(ev.type==='weekly'){
-      actBtn.textContent = '+ 今週のリストに追加する';
-      actBtn.addEventListener('click', async ()=>{
-        const st = await loadST();
-        if(st.projects.find(p=>p.name===ev.name)){ toast('既に追加済みです'); return; }
-        _pcmData = {
-          name: ev.name, icon: ev.icon||'📋', color: ev.color||'var(--gr)',
-          _fromProposal: true, _evId: ev.id, _goalDate: '',
-          tasks: (ev.tasks||[]).map((t,i)=>({name:typeof t==='string'?t:t.name, _id:'pt'+Date.now()+i, who:'both'}))
-        };
-        const pcmDateEl = document.getElementById('pcm-date');
-        if(pcmDateEl) pcmDateEl.value = '';
-        renderPcmStep3();
-        pcmShowStep('step3');
-        document.getElementById('proj-create-modal').classList.add('on');
-      });
     } else {
-      actBtn.textContent = '+ チェックリストを確認して追加する';
+      // 祝日/季節/週次: 全て日付範囲ピッカー経由でプロジェクト追加
+      const hasFixedDate = ev.evDate && ev.daysUntil != null && ev.type !== 'seasonal' && ev.type !== 'weekly';
+      actBtn.textContent = '+ 日程を決めてプロジェクトに追加する';
       actBtn.addEventListener('click', async ()=>{
         const st = await loadST();
         if(st.projects.find(p=>p.name===ev.name)){ toast('既に追加済みです'); return; }
-        const localFmt = d => d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
-        // Step3 のチェックリストを先に見せてから作成
-        _pcmData = {
-          name: ev.name, icon: ev.icon||'📋', color: ev.color||'var(--gr)',
-          _fromProposal: true, _evId: ev.id,
-          _goalDate: localFmt(ev.evDate),
-          tasks: (ev.tasks||[]).map((t,i)=>({name:typeof t==='string'?t:t.name, _id:'pt'+Date.now()+i, who:'both'}))
-        };
-        // pcm-date をセット
-        const pcmDateEl = document.getElementById('pcm-date');
-        if(pcmDateEl) pcmDateEl.value = localFmt(ev.evDate);
-        renderPcmStep3();
-        pcmShowStep('step3');
-        document.getElementById('proj-create-modal').classList.add('on');
+        // 日付範囲ピッカーを表示
+        openEventDateRangePicker(ev, hasFixedDate, async (startDate, endDate) => {
+          const localFmt = d => d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+          _pcmData = {
+            name: ev.name, icon: ev.icon||'📋', color: ev.color||'var(--gr)',
+            _fromProposal: true, _evId: ev.id,
+            _goalDate: localFmt(endDate),
+            _startDate: localFmt(startDate),
+            tasks: (ev.tasks||[]).map((t,i)=>({name:typeof t==='string'?t:t.name, _id:'pt'+Date.now()+i, who:'both', due:localFmt(endDate)}))
+          };
+          const pcmDateEl = document.getElementById('pcm-date');
+          if(pcmDateEl) pcmDateEl.value = localFmt(endDate);
+          renderPcmStep3();
+          pcmShowStep('step3');
+          document.getElementById('proj-create-modal').classList.add('on');
+        });
       });
     }
     panel.appendChild(actBtn);
@@ -2429,7 +2495,8 @@ async function renderCal(){
       return !isNaN(td.getTime()) && td.toDateString()===colDateStr;
     }).slice(0,3).forEach(t=>{
       const chip=document.createElement('div');
-      chip.className='cchip '+t.who+(t.done?' done':'');
+      // プロジェクトタスクは青、単発は担当者色
+      chip.className='cchip '+(t.projId?'proj':t.who)+(t.done?' done':'');
       chip.textContent=(t.projIcon||'📌')+' '+t.name.slice(0,6);
       chip.addEventListener('click',()=>toast(t.name));
       col.appendChild(chip);
@@ -2877,12 +2944,13 @@ function renderTasksByCalendar(s, el){
     dayTasks.slice(0, MAX_PILLS).forEach(t => {
       const pill = document.createElement('div');
       const isDone = t.isCompleted||t.done;
-      const color  = isDone ? '#ccc' : (t.projColor || 'var(--gr)');
+      // プロジェクトタスクは青、単発タスクは緑
+      const color  = isDone ? '#ccc' : (t.projId ? '#1A7FDB' : 'var(--gr)');
       pill.style.cssText = 'border-radius:4px;padding:1px 4px;font-size:9px;font-weight:700;'
         + 'white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:1px;'
-        + 'background:' + color + '22' + ';'  // 薄い背景
+        + 'background:' + (isDone ? '#ccc22' : (t.projId ? '#EBF5FF' : 'var(--gr3)')) + ';'
         + 'border-left:3px solid ' + color + ';'
-        + 'color:' + (isDone ? '#999' : 'var(--t1)') + ';'
+        + 'color:' + (isDone ? '#999' : (t.projId ? '#1A7FDB' : 'var(--gr2)')) + ';'
         + 'text-decoration:' + (isDone ? 'line-through' : 'none') + ';';
       const _fn=t.name||t.title||''; pill.textContent=_fn.length>6?_fn.slice(0,5)+'…':_fn;
       cell.appendChild(pill);
@@ -4066,6 +4134,56 @@ function pcmShowStep(step){
     el.style.display = s===step ? 'block' : 'none';
   });
 }
+// テンプレ選択後の目標日ピッカー（開始日〜目標日）
+function openTemplateDatePicker(tpl, onConfirm) {
+  const ex = document.getElementById('tpl-date-picker'); if(ex) ex.remove();
+  const ov = document.createElement('div'); ov.id = 'tpl-date-picker';
+  ov.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:400;display:flex;align-items:flex-end';
+  const sh = document.createElement('div');
+  sh.style.cssText = 'background:#fff;width:100%;border-radius:24px 24px 0 0;padding:20px 18px 32px;box-sizing:border-box';
+
+  const title = document.createElement('div');
+  title.style.cssText = 'font-size:16px;font-weight:800;color:var(--t1);margin-bottom:6px';
+  title.textContent = (tpl.icon||'📋') + ' ' + tpl.title + ' — 期間を設定';
+  const hint = document.createElement('div');
+  hint.style.cssText = 'font-size:12px;color:var(--t2);margin-bottom:18px';
+  hint.textContent = '取り組む期間を設定してください（任意）';
+
+  const row = document.createElement('div');
+  row.style.cssText = 'display:flex;align-items:center;gap:10px;margin-bottom:8px';
+  const startInp = document.createElement('input'); startInp.type='date';
+  startInp.style.cssText = 'flex:1;padding:10px;border:1.5px solid var(--bdr);border-radius:12px;font-size:14px;font-family:inherit;color:var(--t1)';
+  startInp.placeholder='開始日';
+  const dash = document.createElement('span'); dash.textContent='〜'; dash.style.cssText='font-size:15px;font-weight:700;color:var(--t2);flex-shrink:0';
+  const endInp = document.createElement('input'); endInp.type='date';
+  endInp.style.cssText = 'flex:1;padding:10px;border:1.5px solid var(--bdr);border-radius:12px;font-size:14px;font-family:inherit;color:var(--t1)';
+  endInp.placeholder='目標日';
+  row.append(startInp, dash, endInp);
+
+  const skipHint = document.createElement('div');
+  skipHint.style.cssText = 'font-size:11px;color:var(--t3);margin-bottom:16px;text-align:right';
+  skipHint.textContent = '未設定のままでも追加できます';
+
+  const confirmBtn = document.createElement('button');
+  confirmBtn.textContent = 'タスクを設定する →';
+  confirmBtn.style.cssText = 'width:100%;padding:14px;background:var(--gr);color:#fff;border:none;border-radius:14px;font-size:14px;font-weight:800;cursor:pointer;font-family:inherit;margin-bottom:10px';
+  confirmBtn.addEventListener('click', ()=>{
+    const sv = startInp.value, ev2 = endInp.value;
+    if(sv && ev2 && new Date(sv) > new Date(ev2)) { toast('開始日は目標日より前にしてください'); return; }
+    ov.remove();
+    onConfirm(ev2||'', sv||'');
+  });
+  const cancelBtn = document.createElement('button');
+  cancelBtn.textContent = 'キャンセル';
+  cancelBtn.style.cssText = 'width:100%;padding:12px;background:none;border:1.5px solid var(--bdr);border-radius:14px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;color:var(--t2)';
+  cancelBtn.addEventListener('click', ()=>ov.remove());
+  ov.addEventListener('click', e=>{ if(e.target===ov) ov.remove(); });
+
+  sh.append(title, hint, row, skipHint, confirmBtn, cancelBtn);
+  ov.appendChild(sh);
+  document.body.appendChild(ov);
+}
+
 function renderPcmTemplateList(){
   const el=document.getElementById('pcm-template-list');
   if(!el) return; el.innerHTML='';
@@ -4082,12 +4200,19 @@ function renderPcmTemplateList(){
         +'<div style="font-size:11px;color:var(--t2);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+tpl.overview.slice(0,28)+'</div></div>'
         +'<div style="font-size:11px;color:var(--t3);flex-shrink:0">'+tpl.tasks.length+'件›</div>';
       row.addEventListener('click',()=>{
-        _pcmData = {
-          name: tpl.title, icon: tpl.icon, color: tpl.color,
-          _fromTemplate: true,
-          tasks: tpl.tasks.map((t,i)=>({name:t, _id:'pt'+Date.now()+i}))
-        };
-        renderPcmStep3(); pcmShowStep('step3');
+        // 目標日入力ピッカーを先に表示してからstep3へ
+        openTemplateDatePicker(tpl, (goalDate, startDate) => {
+          _pcmData = {
+            name: tpl.title, icon: tpl.icon, color: tpl.color,
+            _fromTemplate: true,
+            _goalDate: goalDate,
+            _startDate: startDate,
+            tasks: tpl.tasks.map((t,i)=>({name:t, _id:'pt'+Date.now()+i, due:goalDate||''}))
+          };
+          const pcmDateEl = document.getElementById('pcm-date');
+          if(pcmDateEl) pcmDateEl.value = goalDate||'';
+          renderPcmStep3(); pcmShowStep('step3');
+        });
       });
       el.appendChild(row);
     });
