@@ -578,7 +578,7 @@ window.fbUnsubscribe = function() {
     <div class="hdr">
       <div class="hdr-row">
         <div class="hdr-title">プロジェクト</div>
-        <button id="proj-add-btn" style="width:32px;height:32px;background:var(--t1);border:none;border-radius:10px;font-size:18px;color:var(--yel);cursor:pointer;display:flex;align-items:center;justify-content:center"><i data-lucide="chevron-left" style="width:20px;height:20px;display:inline-flex;vertical-align:middle" ></i></button>
+        <button id="proj-add-btn" style="padding:7px 14px;background:var(--gr);border:none;border-radius:20px;font-size:13px;font-weight:700;color:#fff;cursor:pointer;display:flex;align-items:center;gap:4px"><i data-lucide="plus" style="width:16px;height:16px;display:inline-flex;vertical-align:middle" ></i>追加</button>
       </div>
     </div>
     <div class="proj-list" id="proj-list"></div>
@@ -599,7 +599,6 @@ window.fbUnsubscribe = function() {
       <div class="type-tabs">
         <button class="type-tab on" data-type="cal">カレンダー</button>
         <button class="type-tab" data-type="single">単発</button>
-        <button class="type-tab" data-type="project">プロジェクト</button>
       </div>
     </div>
     <div class="task-cal-grid" id="task-screen-list"></div>
@@ -1404,6 +1403,43 @@ const HOLIDAY_MASTER = [
   { id:'checkup_baby', month:0,  day:0,  name:'乳幼児健診',     icon:'👶', color:'#00695C', bg:'linear-gradient(135deg,#004D40,#00695C)',
     hint:'健診・予防接種の予約', childPhase:'baby',
     tasks:['かかりつけ医に予約を入れる','母子手帳の記録を最新にする','健診当日の持ち物を準備する','予防接種のスケジュールを確認する','子供の成長記録（身長・体重）をつける','授乳・食事の記録を整理する','健診結果を夫婦で共有する','次回の健診日程を手帳に記録する','離乳食・幼児食の進み具合を確認する','小児科・かかりつけ医の連絡先を更新する'] },
+  // ── 追加イベント ────────────────────────────────────────────────────────────
+  { id:'haha',         month:5,  day:11, name:'母の日',         icon:'🌹', color:'#E91E8C', bg:'linear-gradient(135deg,#C2185B,#E91E8C)',
+    hint:'5月第2日曜日・ママへの感謝を家族で表す日',
+    tasks:['ママへのプレゼントをパパ・子どもで一緒に決める（花・スイーツ・体験など）','子どもと手作りカード・似顔絵を作る','ママの好きな料理・スイーツを調べて準備する','いつもの家事をその日は全部パパが引き受ける','外食・テイクアウトの予約をする','ママに「ゆっくりできる時間」をプレゼントする','家族写真を撮影して思い出を残す','ネット注文のプレゼントは1週間前までに手配する','子どもから「ありがとうメッセージ」を準備させる','義母（父方の祖母）へのご挨拶・贈り物も忘れずに'] },
+  { id:'chichi',       month:6,  day:15, name:'父の日',         icon:'👔', color:'#1565C0', bg:'linear-gradient(135deg,#0D47A1,#1565C0)',
+    hint:'6月第3日曜日・パパへの感謝を伝える日',
+    tasks:['パパへのプレゼントをみんなで決める','子どもに「パパへの手紙・似顔絵」を書かせる','パパの好きな食事・お酒・スイーツを準備する','パパが喜ぶ「家族時間」の過ごし方を計画する','パパに感謝の言葉を直接伝える機会を作る','父方の祖父へのプレゼント・ご挨拶の手配をする','パパの趣味・やりたいことを叶える1日にする','家族みんなで記念写真を撮る','プレゼントのネット注文は1週間前までに','パパへの日頃の感謝を家族で話し合う機会にする'] },
+  { id:'tsuyu',        month:6,  day:1,  name:'梅雨入り準備',   icon:'☔', color:'#0277BD', bg:'linear-gradient(135deg,#01579B,#0277BD)',
+    hint:'梅雨前に済ませたいカビ・湿気対策まとめ',
+    tasks:['除湿剤をクローゼット・押し入れ・靴箱に設置する','浴室のカビ防止スプレーをかける（乾燥時に）','エアコン除湿モードの動作確認をする','室内干しのスペースと乾燥機・サーキュレーターを準備する','梅雨時の洗濯ルール（干す場所・時間帯）を家族で決める','傘・レインコート・長靴のサイズを家族全員確認する','食料品の保存方法（冷蔵・防湿）を見直す','網戸の掃除・補修をする','梅雨明けのエアコン本格稼働に向け設定確認をする','カビが生えやすい場所をチェックリスト化する'] },
+  { id:'tanabata',     month:7,  day:7,  name:'七夕',           icon:'⭐', color:'#4527A0', bg:'linear-gradient(135deg,#311B92,#4527A0)',
+    hint:'短冊・笹飾り・子どもの願い事を叶える日',
+    tasks:['笹・七夕飾りセットを購入または準備する','家族みんなで短冊に願い事を書く','子どもと一緒に飾り付けを楽しむ','七夕にちなんだ料理（そうめんなど）を準備する','七夕伝説を子どもにわかりやすく話す','保育園・幼稚園・学校の七夕行事を確認する','子どもの「将来の夢」を記録しておく','記念写真・動画を撮影する','地域の七夕まつりイベントを調べる','飾りの後片付けと笹の処分方法を確認する'] },
+  { id:'hanami',       month:3,  day:25, name:'お花見',         icon:'🌸', color:'#E91E8C', bg:'linear-gradient(135deg,#AD1457,#E91E8C)',
+    hint:'桜の開花に合わせた花見計画を立てよう',
+    tasks:['近所・人気の花見スポットの開花情報を調べる','花見の日程と参加メンバーを確定する','お弁当・おにぎりのメニューと買い出しリストを作る','レジャーシート・ゴミ袋・ウェットティッシュを準備する','子供用の飲み物・おやつを準備する','防寒対策（カーディガン・ブランケット）を用意する','カメラ・スマホの充電・容量を確認する','近くのトイレ場所を事前に確認する','混雑を避ける時間帯・曜日を検討する','花見の思い出を写真・動画でしっかり残す'] },
+  { id:'halloween',    month:10, day:31, name:'ハロウィン',     icon:'🎃', color:'#D4611A', bg:'linear-gradient(135deg,#BF360C,#D4611A)',
+    hint:'衣装・お菓子・飾り付けの準備を始めよう',
+    tasks:['子どもの衣装を決めて購入または手作りする（早めに）','玄関・部屋のハロウィン飾り付けをする','配るお菓子の準備をする（個包装・アレルギー対応）','地域のハロウィンイベント・仮装パレードを確認する','子どもと仮装の練習・写真撮影を楽しむ','パパ・ママの仮装も検討する','ハロウィンにちなんだ料理・スイーツを作る','記念写真・動画を撮影する','翌日の飾りの片付け計画をしておく','子どもにハロウィンの由来をわかりやすく話す'] },
+  { id:'shichigosan',  month:11, day:15, name:'七五三',         icon:'🎌', color:'#7B1FA2', bg:'linear-gradient(135deg,#6A1B9A,#7B1FA2)',
+    hint:'衣装・写真館・千歳飴の準備', childPhase:'school',
+    tasks:['写真館・フォトスタジオを予約する（人気店は2ヶ月前）','着物・スーツのレンタルまたは購入を決める','子供の着付け・ヘアセットの予約を入れる','参拝する神社を決めて祈祷の予約をする','千歳飴・お守りを準備する','親のフォーマル服・美容院の予約をする','お祝いの食事会の店を予約する（個室がおすすめ）','祖父母への参拝・食事の招待連絡をする','記念写真の背景・小物を準備する','お祝いのご祝儀・内祝いの準備をする'] },
+  { id:'otsukimi',     month:9,  day:20, name:'お月見',         icon:'🌙', color:'#B45309', bg:'linear-gradient(135deg,#92400E,#B45309)',
+    hint:'中秋の名月・月見団子・すすき飾りの準備',
+    tasks:['お月見の日程（中秋の名月）を月齢カレンダーで確認する','月見団子を購入または手作りする','すすき・秋の七草を飾る準備をする','縁側・ベランダ・窓辺のお月見スポットを整える','子どもに月の満ち欠け・お月見の由来を話す','お月見にちなんだ料理（里芋・栗ごはん）を作る','記念写真・月の撮影を楽しむ','近所のお月見イベントを調べる','秋の夜長に家族でゆっくり過ごす計画を立てる','翌日の片付けも計画しておく'] },
+  { id:'omisoka',      month:12, day:31, name:'大晦日',         icon:'🎆', color:'#1A237E', bg:'linear-gradient(135deg,#0D47A1,#1A237E)',
+    hint:'年越しそば・除夜の鐘・1年の振り返り',
+    tasks:['年越しそばの材料・具材を準備する（天ぷらそばなど）','近所の神社・除夜の鐘スポットを調べておく','1年間の家族の思い出を振り返る時間を作る','子どもと「今年頑張ったこと・来年の目標」を話し合う','年越しに向けた部屋の最終整理をする','正月飾り（門松・しめ縄）を飾る','テレビ番組・カウントダウンイベントを計画する','お雑煮・おせちの最終確認をする','初詣の参拝時間・場所を確定する','家族みんなで年越しの瞬間を一緒に迎える'] },
+  { id:'kakutei',      month:3,  day:10, name:'確定申告',       icon:'💴', color:'#2E7D32', bg:'linear-gradient(135deg,#1B5E20,#2E7D32)',
+    hint:'2〜3月15日締切・医療費控除・ふるさと納税整理',
+    tasks:['医療費の領収書・明細をすべてまとめる','ふるさと納税のワンストップ特例申請書を確認する','生命保険・地震保険の控除証明書を探す','源泉徴収票をすべて揃える','マイナンバーカード・e-Taxの準備をする','医療費控除の対象か計算する（年10万円超が目安）','国税庁の確定申告書等作成コーナーにアクセスする','還付金の振込先口座を確認する','住宅ローン控除がある場合は必要書類を確認する','3月15日の締切を手帳・スマホにリマインドする'] },
+  { id:'nigakki',      month:8,  day:25, name:'2学期準備',      icon:'🏫', color:'#00695C', bg:'linear-gradient(135deg,#004D40,#00695C)',
+    hint:'夏休み明け・持ち物・生活リズムの立て直し', childPhase:'school',
+    tasks:['学校の持ち物リストをチェックして不足品を購入する','上履き・体操服・給食袋のサイズ・状態を確認する','夏休みの宿題の最終仕上げをサポートする','夏休みの自由研究・工作を完成させる','2学期の時間割・行事カレンダーを確認する','早寝早起きの生活リズムを1週間前から立て直す','学童・習い事のスケジュールを再確認する','教科書・ノートに名前書きをする','パパも「2学期の子どもサポート分担」を決める','健康診断・歯科検診の予約を入れる'] },
+  { id:'yobosesshu',   month:10, day:1,  name:'予防接種シーズン', icon:'💉', color:'#00838F', bg:'linear-gradient(135deg,#006064,#00838F)',
+    hint:'インフルエンザ・子どものワクチンスケジュール確認',
+    tasks:['かかりつけ医にインフルエンザ予防接種を予約する','子どもの予防接種スケジュールを母子手帳で確認する','家族全員の接種日程を調整する','接種後の副反応・発熱時の対応を確認する','常備薬（解熱剤・鼻水薬）の在庫を補充する','手洗い・うがいの徹底を家族で確認する','マスクのストックを確認・補充する','子どもの学校・保育園の感染症情報を確認する','接種記録を母子手帳・アプリに記録する','次のワクチンスケジュールを事前に確認しておく'] },
 ];
 
 // ── 祝日ユーティリティ ──────────────────────────────────────────────────────
@@ -1514,11 +1550,63 @@ function getSeasonalMainteCard() {
           tasks:['大掃除の役割分担をパパと決めて書き出す','エアコン・換気扇・レンジフードを掃除する','冷蔵庫の中身を整理して年末食材計画を立てる','クローゼット・押し入れを断捨離する','不用品を粗大ゴミ申し込みまたはフリマ出品する','お正月飾り・おせちの準備・予約をする','年賀状の最終作成・投函をする','帰省の持ち物リストを作成する','子供の冬休みの生活リズムプランを立てる','来年のカレンダー・手帳に家族の予定を転記する'] },
   };
   // 該当月なければ直近の季節メンテを返す
-  if(cards[m]) return cards[m];
+  if(cards[m]) return {...cards[m], id:'seasonal_'+m};
   // 春(3)夏(6)秋(9)冬(12)の直近
   const seasons=[3,6,9,12];
   const next=seasons.find(s=>s>m)||3;
-  return {...cards[next], hint:'次の季節メンテ（'+next+'月）の準備を始めましょう'};
+  return {...cards[next], id:'seasonal_'+next, hint:'次の季節メンテ（'+next+'月）の準備を始めましょう'};
+}
+
+// ── 週次ローテーション提案カード ─────────────────────────────────────────────
+function getRotatingWeeklyCards() {
+  const now = new Date();
+  // 年内の週番号（0始まり）でカードセットをローテーション
+  const startOfYear = new Date(now.getFullYear(), 0, 1);
+  const weekNum = Math.floor((now - startOfYear) / (7 * 24 * 60 * 60 * 1000));
+
+  const ALL_WEEKLY = [
+    { id:'weekly_meal', name:'今週の献立計画', icon:'🍽️', type:'weekly',
+      color:'#E65100', bg:'linear-gradient(135deg,#BF360C,#E65100)',
+      hint:'メニューを先に決めると買い物・調理が格段にラクになる',
+      tasks:['今週の夕食7日分のメニューを書き出す','買い出しリストを食材別にまとめる','作り置きできるおかずを2品決める','パパが担当できる料理の日を決める','子どもが好きなメニューを最低2日入れる','食材の使いまわしを考えてロスを減らす','冷凍庫の在庫を先に確認してから買い物する','今週使い切りたい食材を先にリストアップする','子どもと一緒に献立を決める日を作る','平日の時短メニューを2日確保する'] },
+    { id:'weekly_budget', name:'今週の家計チェック', icon:'💰', type:'weekly',
+      color:'#2E7D32', bg:'linear-gradient(135deg,#1B5E20,#2E7D32)',
+      hint:'週1回の振り返りで月末の赤字を防ぐ',
+      tasks:['今週の食費・日用品費のレシートを確認する','キャッシュレス決済の明細をアプリで確認する','予算オーバーのカテゴリを把握する','今週の外食回数・金額を振り返る','次週の買い物予算の上限を決める','固定費（サブスク等）で解約できるものを確認する','パパと今週の支出を共有する','子どもの習い事・学用品費を把握する','今月残りの予算を計算する','来週節約できる項目を1つ決める'] },
+    { id:'weekly_chore', name:'週末の家事分担確認', icon:'📋', type:'weekly',
+      color:'#1565C0', bg:'linear-gradient(135deg,#0D47A1,#1565C0)',
+      hint:'週末の動き方を金曜中に決めておくとスムーズ',
+      tasks:['今週末パパが担当する家事を3つ決める','土日の掃除機がけ・床拭き担当を決める','週末の買い物をどちらが行くか決める','子どもの習い事の送迎担当を確認する','まとめ洗濯（シーツ・タオル）の担当を決める','週末の料理当番を決める','子どもの入浴・寝かしつけ担当を決める','不用品・ゴミまとめ担当を決める','週末の片付け・整理整頓エリアを決める','週末終わりに来週の分担も決める習慣をつける'] },
+    { id:'weekly_outing', name:'週末お出かけプラン', icon:'🏕️', type:'weekly',
+      color:'#00695C', bg:'linear-gradient(135deg,#004D40,#00695C)',
+      hint:'今週末の家族時間を充実させるアイデア',
+      tasks:['週末の天気予報を確認する','近所の公園・お出かけスポットを調べる','地域のイベント・マルシェ・体験教室を調べる','子どもが行きたい場所を聞いてみる','お弁当・お菓子の準備が必要か確認する','移動手段と所要時間を確認する','混雑しにくい時間帯を調べる','週末の写真・動画撮影の準備をする','雨の場合の室内プランも考えておく','出かけ先の近くのランチ場所も調べておく'] },
+    { id:'weekly_kids', name:'子どもの学習サポート', icon:'📚', type:'weekly',
+      color:'#4527A0', bg:'linear-gradient(135deg,#311B92,#4527A0)',
+      hint:'今週の宿題・提出物・テストをまとめて確認',
+      tasks:['今週の宿題の量・締め切りを子どもと確認する','連絡帳・保護者アプリを確認する','提出が必要なプリント・書類を確認する','今週テスト・発表がある科目を把握する','苦手科目を15分だけ一緒に取り組む','図書館の本の返却期限を確認する','習い事の持ち物・予習を確認する','子どもの「今週やりたいこと」を聞く','読み聞かせ・一緒に本を読む時間を作る','週末に1つ「できた！」体験を作ってあげる'] },
+    { id:'monthly_paper', name:'書類・プリント整理', icon:'📄', type:'weekly',
+      color:'#37474F', bg:'linear-gradient(135deg,#263238,#37474F)',
+      hint:'溜まりがちな紙モノをまとめてスッキリさせる',
+      tasks:['学校・園からのプリントを全部出して仕分けする','期限切れ・不要なプリントを処分する','重要書類（保険・契約など）をファイリングする','未処理の郵便物・請求書を確認する','子どもの作品・思い出プリントを整理する','デジタル化できる書類をスキャンする','行事カレンダーをスマホに入力する','学校の引き落とし日・金額を確認する','ファイルボックスのラベルを更新する','処分する書類をシュレッダーにかける'] },
+    { id:'monthly_photo', name:'家族写真を撮ろう', icon:'📸', type:'weekly',
+      color:'#C2185B', bg:'linear-gradient(135deg,#880E4F,#C2185B)',
+      hint:'子どもの成長は写真に残さないと後悔する',
+      tasks:['今月の家族写真を最低1枚撮る','子どもの身長・体重を測って記録する','子どもの「今のマイブーム」を動画に残す','スマホの写真をクラウド・アルバムに整理する','家族みんなで写っている写真を選ぶ','祖父母に写真・動画を送る','子どもの成長記録アプリを更新する','誕生日・記念日の写真を振り返る','今月一番の思い出シーンを選ぶ','来月撮りたいシーンを決めておく'] },
+    { id:'monthly_clean', name:'今月の集中掃除ポイント', icon:'🧹', type:'weekly',
+      color:'#455A64', bg:'linear-gradient(135deg,#263238,#455A64)',
+      hint:'毎月1箇所だけ徹底的にやるとキレイが続く',
+      tasks:['今月の集中掃除エリアを1箇所決める','必要な掃除グッズを揃えておく','パパと役割分担して取り組む','掃除前後の写真を撮って達成感を記録する','普段手が届かない高い場所・棚の上を拭く','家電の裏・隙間のほこりを取る','排水口・フィルターをまとめてメンテする','不用品・使っていないものを処分する','掃除後の状態をキープするルールを決める','来月の集中エリアを今月中に決める'] },
+  ];
+
+  // 週番号で2枚ずつローテーション（週が変わるたびに違う組み合わせ）
+  const groupSize = 2;
+  const startIdx = (weekNum * groupSize) % ALL_WEEKLY.length;
+  const cards = [];
+  for(let i=0; i<groupSize; i++){
+    cards.push(ALL_WEEKLY[(startIdx+i) % ALL_WEEKLY.length]);
+  }
+  return cards;
 }
 
 // ── パパ振り分け提案カード生成 ───────────────────────────────────────────────
@@ -1553,14 +1641,17 @@ function getPapaCard(s) {
 }
 
 function renderEventProposals(s) {
-  // 祝日イベント＋季節メンテ＋パパ振り分けを合わせたカードリスト
+  // 祝日イベント＋季節メンテ＋パパ振り分け＋週次カードを合わせたカードリスト
   const holidayCards = getUpcomingEvents(s);
   const seasonCard   = getSeasonalMainteCard();
   const papaCard     = getPapaCard(s);
-  // 順番: 直近祝日 → 季節メンテ → パパ振り分け → 残り祝日
+  const weeklyCards  = getRotatingWeeklyCards();
+  // 順番: 直近祝日2枚 → 週次カード → 季節メンテ → パパ振り分け → 残り祝日
   const firstHoliday = holidayCards.slice(0,2);
   const restHoliday  = holidayCards.slice(2);
-  const events = [...firstHoliday, seasonCard, papaCard, ...restHoliday];
+  const dismissed = new Set(s.dismissedEventIds||[]);
+  const events = [...firstHoliday, ...weeklyCards, seasonCard, papaCard, ...restHoliday]
+    .filter(e => e && !dismissed.has(e.id));
 
   const container = document.getElementById('prop-card');
   if(!container) return;
@@ -1660,6 +1751,8 @@ function renderEventProposals(s) {
       urgBadge.textContent = '🌡️ 今月の季節メンテ';
     } else if(ev.type==='papa'){
       urgBadge.textContent = '👨 今週のパパ振り分け';
+    } else if(ev.type==='weekly'){
+      urgBadge.textContent = '📅 今週のおすすめ';
     } else {
       const dateStr = (ev.evDate.getMonth()+1)+'月'+ev.evDate.getDate()+'日';
       urgBadge.textContent = urg.label + ' · ' + dateStr + (ev.isolated?' 🗓️有休チャンス':'');
@@ -1744,18 +1837,34 @@ function renderEventProposals(s) {
     } else if(ev.type==='papa'){
       actBtn.textContent = '👨 パパにタスクを振り分けるAIに相談する';
       actBtn.addEventListener('click', ()=>{ navTo('chat',{action:'balance'}); });
+    } else if(ev.type==='weekly'){
+      actBtn.textContent = '+ 今週のリストに追加する';
+      actBtn.addEventListener('click', async ()=>{
+        const st = await loadST();
+        if(st.projects.find(p=>p.name===ev.name)){ toast('既に追加済みです'); return; }
+        _pcmData = {
+          name: ev.name, icon: ev.icon||'📋', color: ev.color||'var(--gr)',
+          _fromProposal: true, _evId: ev.id, _goalDate: '',
+          tasks: (ev.tasks||[]).map((t,i)=>({name:typeof t==='string'?t:t.name, _id:'pt'+Date.now()+i, who:'both'}))
+        };
+        const pcmDateEl = document.getElementById('pcm-date');
+        if(pcmDateEl) pcmDateEl.value = '';
+        renderPcmStep3();
+        pcmShowStep('step3');
+        document.getElementById('proj-create-modal').classList.add('on');
+      });
     } else {
       actBtn.textContent = '+ チェックリストを確認して追加する';
       actBtn.addEventListener('click', async ()=>{
         const st = await loadST();
-        if(st.projects.find(p=>p.id===ev.id+'_proj')){ toast('既に追加済みです'); return; }
+        if(st.projects.find(p=>p.name===ev.name)){ toast('既に追加済みです'); return; }
         const localFmt = d => d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
         // Step3 のチェックリストを先に見せてから作成
         _pcmData = {
-          name: ev.name, icon: ev.icon, color: ev.color,
-          _fromTemplate: true, _evId: ev.id,
+          name: ev.name, icon: ev.icon||'📋', color: ev.color||'var(--gr)',
+          _fromProposal: true, _evId: ev.id,
           _goalDate: localFmt(ev.evDate),
-          tasks: ev.tasks.map((t,i)=>({name:t, _id:'pt'+Date.now()+i, who:'both'}))
+          tasks: (ev.tasks||[]).map((t,i)=>({name:typeof t==='string'?t:t.name, _id:'pt'+Date.now()+i, who:'both'}))
         };
         // pcm-date をセット
         const pcmDateEl = document.getElementById('pcm-date');
@@ -2229,6 +2338,7 @@ async function renderCal(){
   }
 
   let selectedDateStr = null; // 選択日付の状態
+  const tasks2=allTasks(s); // クロージャで参照するためdowEl構築前に宣言
 
   const dowEl=document.getElementById('cal-dow');
   dowEl.innerHTML='';
@@ -2290,7 +2400,6 @@ async function renderCal(){
     dowEl.appendChild(cell);
   });
 
-  const tasks2=allTasks(s);
   const gridEl=document.getElementById('cal-grid');
   gridEl.innerHTML='';
   dates.forEach((d,di)=>{
@@ -2300,10 +2409,16 @@ async function renderCal(){
     const col=document.createElement('div'); col.className='ccol';
     if(isHolidayCol||isSun) col.style.background='rgba(192,57,43,.04)';
     else if(isSat)           col.style.background='rgba(30,94,168,.04)';
-    tasks2.filter((_2,ti)=>ti%7===di).slice(0,3).forEach(t=>{
+    const colDateStr = dates[di].toDateString();
+    tasks2.filter(t=>{
+      const due = t.dueDate||t.due;
+      if(!due) return false;
+      const td = new Date(due);
+      return !isNaN(td.getTime()) && td.toDateString()===colDateStr;
+    }).slice(0,3).forEach(t=>{
       const chip=document.createElement('div');
       chip.className='cchip '+t.who+(t.done?' done':'');
-      chip.textContent=t.projIcon+' '+t.name.slice(0,7);
+      chip.textContent=(t.projIcon||'📌')+' '+t.name.slice(0,6);
       chip.addEventListener('click',()=>toast(t.name));
       col.appendChild(chip);
     });
@@ -2452,7 +2567,7 @@ async function renderProjScreen(){
     iconEl.style.cssText = 'width:40px;height:40px;border-radius:14px;background:'+(proj.bg||'#F3F6F3')+';display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0';
     iconEl.textContent = proj.icon||'📁';
 
-    const info = document.createElement('div'); info.style.flex='1;min-width:0';
+    const info = document.createElement('div'); info.style.cssText='flex:1;min-width:0';
     info.innerHTML = '<div style="font-size:14px;font-weight:700;color:var(--t1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+proj.name+'</div>'
       +'<div style="font-size:11px;color:var(--t2);margin-top:2px">'+done+'/'+total+' 完了</div>';
 
@@ -2501,7 +2616,7 @@ async function renderProjScreen(){
     chevron.style.cssText='font-size:20px;color:var(--t3);transition:transform .2s;flex-shrink:0';
     if(shouldExpand) chevron.style.transform='rotate(90deg)';
 
-    summary.append(iconEl, info, delProjBtn, chevron);
+    summary.append(iconEl, info, chevron, delProjBtn);
 
     // ── タスク一覧（展開時） ──────────────────────
     const taskList = document.createElement('div');
@@ -2600,12 +2715,10 @@ async function renderProjScreen(){
     summary.addEventListener('click', ()=>{
       const expanded = card.classList.toggle('expanded');
       chevron.style.transform = expanded ? 'rotate(90deg)' : '';
-      if(expanded){ card.appendChild(barWrap); if(expanded && !window._expandProjId) window._expandProjId=null; }
-      else barWrap.remove();
     });
 
-    card.append(summary, taskList);
-    if(shouldExpand) card.appendChild(barWrap);
+    // 進捗バーは常時表示
+    card.append(summary, barWrap, taskList);
     el.appendChild(card);
   });
 
@@ -4292,7 +4405,9 @@ async function bootPcmEvents(){
   });
   // Step3 戻る
   document.getElementById('pcm-back2')?.addEventListener('click',()=>{
-    if(_pcmData._fromTemplate){ renderPcmTemplateList(); pcmShowStep('step2a'); } else pcmShowStep('step2b');
+    if(_pcmData._fromProposal){ closeProjCreateModal(); }
+    else if(_pcmData._fromTemplate){ renderPcmTemplateList(); pcmShowStep('step2a'); }
+    else pcmShowStep('step2b');
   });
   // pcm-new-who-chips
   document.querySelectorAll('.pcm-nw-chip').forEach(ch=>{
