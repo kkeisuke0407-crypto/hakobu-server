@@ -361,7 +361,7 @@ html,body{height:100%;background:#E8E4D0;font-family:'Noto Sans JP',sans-serif;}
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
 import { getDatabase, ref, set, get, onValue, off } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
-import { getAuth, signInAnonymously, GoogleAuthProvider, OAuthProvider, signInWithPopup } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+import { getAuth, signInAnonymously, GoogleAuthProvider, OAuthProvider, signInWithPopup, getIdToken } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
 
 window._fbReady = false;
 window._fbApp = null;
@@ -405,6 +405,12 @@ window.fbSignInApple = async function() {
     const cred = await signInWithPopup(window._fbAuth, provider);
     return { uid: cred.user.uid, name: cred.user.displayName, email: cred.user.email };
   } catch(e) { console.error('[Firebase] Apple signIn error', e); return null; }
+};
+
+window.fbGetToken = async function() {
+  if (!window._fbAuth?.currentUser) return null;
+  try { return await getIdToken(window._fbAuth.currentUser, false); }
+  catch(e) { return null; }
 };
 
 window.fbSave = async function(familyId, data) {
@@ -2449,7 +2455,9 @@ function openDateTaskOverlay(date, tasks, holidayName) {
   });
 
   const ov = document.createElement('div'); ov.id='cal-date-overlay';
-  ov.style.cssText='position:absolute;inset:0;z-index:500;display:flex;flex-direction:column;background:var(--bg)';
+  const _phone = document.getElementById('phone');
+  const _pr = _phone ? _phone.getBoundingClientRect() : {top:0,left:0,width:'100%',height:'100%'};
+  ov.style.cssText='position:fixed;top:'+Math.round(_pr.top)+'px;left:'+Math.round(_pr.left)+'px;width:'+Math.round(_pr.width)+'px;height:'+Math.round(_pr.height)+'px;z-index:500;display:flex;flex-direction:column;background:var(--bg)';
 
   // ハンドル（フリック用）
   const handle = document.createElement('div');
@@ -2827,10 +2835,15 @@ function renderTasksByCalendar(s, el){
     const dayTasks = taskMap[key]||[];
     const dow      = day.getDay(); // 0=日
     const isSat    = dow===6, isSun=dow===0;
+    // 祝日判定
+    const hm = day.getMonth()+1, hd = day.getDate();
+    const holidayEntry = HOLIDAY_MASTER.find(h => h.month===hm && h.day===hd);
+    const holidayName  = holidayEntry ? holidayEntry.name : null;
+    const isHoliday    = !!holidayName;
 
     const cell = document.createElement('div');
     cell.style.cssText = 'height:72px;min-height:72px;max-height:72px;overflow:hidden;border-radius:8px;padding:3px 2px;cursor:pointer;'
-      + 'background:' + (isSel ? '#E8F5E9' : 'transparent') + ';'
+      + 'background:' + (isSel ? '#E8F5E9' : isHoliday ? 'rgba(192,57,43,.07)' : 'transparent') + ';'
       + 'border:' + (isSel ? '1.5px solid var(--gr)' : '1px solid transparent') + ';'
       + 'transition:background .1s';
 
@@ -2841,10 +2854,17 @@ function renderTasksByCalendar(s, el){
     numEl.style.cssText = 'width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;'
       + 'font-size:12px;font-weight:' + (isToday ? '800' : '600') + ';'
       + 'background:' + (isToday ? 'var(--gr)' : 'transparent') + ';'
-      + 'color:' + (isToday ? '#fff' : isSun ? '#C0392B' : isSat ? '#1E5EA8' : isPast ? 'var(--t3)' : 'var(--t1)') + ';';
+      + 'color:' + (isToday ? '#fff' : (isHoliday||isSun) ? '#C0392B' : isSat ? '#1E5EA8' : isPast ? 'var(--t3)' : 'var(--t1)') + ';';
     numEl.textContent = day.getDate();
     numWrap.appendChild(numEl);
     cell.appendChild(numWrap);
+    // 祝日名ラベル
+    if(isHoliday){
+      const hlbl = document.createElement('div');
+      hlbl.style.cssText = 'font-size:7px;color:#C0392B;font-weight:700;text-align:center;line-height:1.2;overflow:hidden;white-space:nowrap;padding:0 2px;margin-bottom:1px';
+      hlbl.textContent = holidayName.slice(0,4);
+      cell.appendChild(hlbl);
+    }
 
     // タスクピル（色付きバー）
     const MAX_PILLS = 3;
@@ -2869,8 +2889,15 @@ function renderTasksByCalendar(s, el){
     }
 
     cell.addEventListener('click', () => {
-      window._selDay = day;
-      renderTasksScreen();
+      if(isSel){
+        // 2回目タップ → 全画面オーバーレイ
+        openDateTaskOverlay(day, allT, holidayName);
+      } else {
+        // 1回目タップ → 選択・ハイライト
+        window._selDay = day;
+        renderTasksScreen();
+        if(isHoliday) toast('🎌 '+holidayName);
+      }
     });
     grid.appendChild(cell);
   }
@@ -2922,15 +2949,6 @@ function renderTasksByCalendar(s, el){
     selTasks.forEach(t => listWrap.appendChild(makeCalItem(t, window.ST)));
   }
 
-  // 期限なし（今日選択時のみ）
-  const noDue = allT.filter(t=>!parseDue(t.dueDate||t.due));
-  if(noDue.length && isSelToday){
-    const ndHdr = document.createElement('div');
-    ndHdr.style.cssText = 'font-size:11px;font-weight:700;color:var(--t3);letter-spacing:.5px;padding:12px 2px 6px';
-    ndHdr.textContent = '期限なし';
-    listWrap.appendChild(ndHdr);
-    noDue.forEach(t => listWrap.appendChild(makeCalItem(t, window.ST)));
-  }
   el.appendChild(listWrap);
 }
 
@@ -3738,9 +3756,12 @@ const aiService = {
   },
 
   async _anthropic(messages, system) {
+    const headers = {'Content-Type': 'application/json'};
+    const token = window.fbGetToken ? await window.fbGetToken() : null;
+    if (token) headers['Authorization'] = 'Bearer ' + token;
     const res = await fetch('/api/chat', {
       method: 'POST',
-      headers: {'Content-Type': 'application/json'},
+      headers,
       body: JSON.stringify({messages, system})
     });
     const data = await res.json();
