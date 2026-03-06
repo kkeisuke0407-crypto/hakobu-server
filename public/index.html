@@ -2057,15 +2057,21 @@ async function renderTodayTasks(s){
   const lbl = el.closest('.sec')?.querySelector('.sec-lbl');
   if(lbl) lbl.textContent = '今日これだけ';
 
-  // 全タスクをスコアリングして取得（上限なし）
-  const user = UserRepository.get(s);
+  // 当日（＋期限切れ）のタスクのみ表示
   const allT = TaskRepository.getAll(s);
-  const role = user?.role||'mom';
-  const scored = taskService.getTodayTopTasks(allT, role); // 上位3件
-  // 残り（未完了・スコア外）
-  const scoredIds = new Set(scored.map(t=>t.id));
-  const rest = allT.filter(t=>!t.isCompleted&&!t.done&&!scoredIds.has(t.id));
-  const todayTasks = [...scored, ...rest];
+  const todayMidnight = new Date(); todayMidnight.setHours(0,0,0,0);
+  const parseDue = due => { if(!due) return null; const d=new Date(due); d.setHours(0,0,0,0); return isNaN(d.getTime())?null:d; };
+  const todayTasks = allT
+    .filter(t => {
+      if(t.isCompleted||t.done) return false;
+      const due = parseDue(t.dueDate||t.due);
+      return due && due <= todayMidnight; // 期日あり かつ 今日以前のみ
+    })
+    .sort((a,b) => {
+      const da=parseDue(a.dueDate||a.due), db=parseDue(b.dueDate||b.due);
+      if(da&&db&&+da!==+db) return da-db; // 古い期日が上
+      return (b.isUrgent||b.urgent?1:0)-(a.isUrgent||a.urgent?1:0); // urgent優先
+    });
 
   el.innerHTML = '';
   let expanded = false;
