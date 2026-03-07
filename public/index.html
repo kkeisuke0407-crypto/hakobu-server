@@ -6,13 +6,13 @@
 <title>ハコぶ</title>
 <link rel="icon" type="image/svg+xml" href="icon.svg">
 <link rel="apple-touch-icon" href="icon.svg">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,600;0,700;0,800;0,900;1,800&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-html,body{height:100%;background:#D8D0C4;font-family:'Noto Sans JP',sans-serif;}
+html,body{height:100%;background:#D8D0C4;font-family:'Nunito','Noto Sans JP',sans-serif;}
 :root{
   --bg:#F5F0EB;--sur:#FFFFFF;--bdr:#E2EDF5;
-  --navy:#1D3D5C;
+  --navy:#1D3D5C;--navy-l:#EEF3F8;
   --teal:#3EC9C0;--teal-d:#1D8F8A;--teal-l:#E8FAF9;
   --salmon:#E8694A;--salmon-d:#C04A2E;--salmon-l:#FFF0EC;
   --t1:#1D3D5C;--t2:#5A7A99;--t3:#99B5CC;
@@ -89,22 +89,18 @@ html,body{height:100%;background:#D8D0C4;font-family:'Noto Sans JP',sans-serif;}
 .anim{animation:fadeUp .25s ease both;}
 
 /* ════ SPLASH ════ */
-#s-splash{background:var(--navy);}
+#s-splash{background:var(--bg);}
 #s-home .scroll{background:var(--bg);}
-.sp{height:100%;display:flex;flex-direction:column;padding:65px 26px 36px;}
-.sp-logo{width:64px;height:64px;background:var(--teal);border-radius:18px;display:flex;align-items:center;justify-content:center;font-size:30px;margin-bottom:20px;}
-.sp-h{font-size:34px;font-weight:900;color:#fff;line-height:1.2;margin-bottom:8px;}
-.sp-p{font-size:13px;color:rgba(255,255,255,.6);line-height:1.7;margin-bottom:26px;}
-.sp-feats{display:flex;flex-direction:column;gap:9px;margin-bottom:26px;}
-.sp-feat{display:flex;gap:11px;background:rgba(255,255,255,.08);border-radius:13px;padding:11px 12px;align-items:flex-start;}
-.sp-feat-icon{font-size:17px;flex-shrink:0;margin-top:1px;}
-.sp-feat-text{font-size:12.5px;color:rgba(255,255,255,.7);line-height:1.55;}
-.sp-feat-text strong{color:#fff;}
-.sp-start{width:100%;padding:16px;border-radius:var(--r3);background:var(--teal);color:#fff;font-size:16px;font-weight:900;border:none;font-family:inherit;cursor:pointer;margin-bottom:9px;}
-.sp-login{width:100%;padding:12px;border-radius:var(--r3);background:transparent;color:rgba(255,255,255,.5);font-size:13px;border:none;font-family:inherit;cursor:pointer;}
-.sp-login-lbl{text-align:center;font-size:11px;color:rgba(255,255,255,.4);margin-bottom:12px;font-weight:500;}
-.sp-google{width:100%;padding:14px;border-radius:var(--r3);background:#fff;color:#111;font-size:15px;font-weight:700;border:2px solid rgba(255,255,255,.2);font-family:inherit;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:10px;box-shadow:0 1px 4px rgba(0,0,0,.15);}
-.sp-apple{width:100%;padding:14px;border-radius:var(--r3);background:rgba(255,255,255,.12);color:#fff;font-size:15px;font-weight:700;border:1px solid rgba(255,255,255,.2);font-family:inherit;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:10px;}
+.sp{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 32px 48px;gap:0;}
+.sp-icon-wrap{width:88px;height:88px;background:var(--navy);border-radius:24px;display:flex;align-items:center;justify-content:center;margin-bottom:20px;box-shadow:0 8px 28px rgba(29,61,92,.30);}
+.sp-name{font-size:28px;font-weight:900;letter-spacing:3px;color:var(--navy);margin-bottom:5px;}
+.sp-tagline{font-size:10px;font-weight:700;color:var(--t3);letter-spacing:1.5px;text-transform:uppercase;text-align:center;margin-bottom:36px;line-height:1.8;}
+.sp-btns{width:100%;display:flex;flex-direction:column;gap:0;}
+.sp-start{width:100%;padding:16px;border-radius:var(--r2);background:var(--teal);color:#fff;font-size:16px;font-weight:900;border:none;font-family:inherit;cursor:pointer;margin-bottom:10px;}
+.sp-login{width:100%;padding:12px;border-radius:var(--r2);background:transparent;color:var(--t3);font-size:13px;font-weight:600;border:none;font-family:inherit;cursor:pointer;}
+.sp-login-lbl{display:none;}
+.sp-google{width:100%;padding:14px;border-radius:var(--r2);background:var(--sur);color:var(--t1);font-size:15px;font-weight:700;border:2px solid var(--bdr);font-family:inherit;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:10px;box-shadow:var(--sh);}
+.sp-apple{width:100%;padding:14px;border-radius:var(--r2);background:var(--navy);color:#fff;font-size:15px;font-weight:700;border:none;font-family:inherit;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:10px;}
 /* ════ ONBOARD ════ */
 #s-onboard{background:var(--bg);}
 .ob-hdr{background:var(--navy);padding:52px 20px 18px;flex-shrink:0;}
@@ -203,7 +199,7 @@ html,body{height:100%;background:#D8D0C4;font-family:'Noto Sans JP',sans-serif;}
 .msg.user{align-self:flex-end;}
 .bub{padding:11px 14px;font-size:14px;line-height:1.65;white-space:pre-wrap;word-break:break-word;}
 .msg.ai .bub{background:var(--sur);color:var(--t1);border-radius:4px var(--r2) var(--r2) var(--r2);box-shadow:var(--sh);}
-.msg.user .bub{background:var(--t1);color:#fff;border-radius:var(--r2) var(--r2) 4px var(--r2);}
+.msg.user .bub{background:var(--teal);color:#fff;border-radius:var(--r2) var(--r2) 4px var(--r2);}
 .mtime{font-size:10px;color:var(--t3);margin-top:3px;padding:0 4px;}
 .msg.user .mtime{text-align:right;}
 .typing{align-self:flex-start;background:var(--sur);border-radius:4px var(--r2) var(--r2) var(--r2);padding:13px 16px;display:flex;gap:5px;box-shadow:var(--sh);}
@@ -448,29 +444,26 @@ window.fbUnsubscribe = function() {
 <div class="shell">
 <div class="phone" id="phone">
   <div class="notch"></div>
-  <div class="sbar"><span id="clk">9:41</span><span>●●● ⚡</span></div>
+  <div class="sbar"><span id="clk">9:41</span><span>●●● <i data-lucide="zap" style="width:11px;height:11px;display:inline-flex;vertical-align:middle"></i></span></div>
 
   <!-- SPLASH -->
   <div class="scr on" id="s-splash">
     <div class="sp">
-      <div class="sp-logo"><i data-lucide="check-square" style="width:36px;height:36px;display:inline-flex;vertical-align:middle" ></i></div>
-      <div class="sp-h">家族の決断を、<br>ぜんぶ任せて。</div>
-      <div class="sp-p">献立・家事・旅行・育児。毎日の「どうしよう」をAIが解決します。</div>
-      <div class="sp-feats">
-        <div class="sp-feat"><span class="sp-feat-icon">🍽️</span><div class="sp-feat-text"><strong>今ある食材から献立</strong>を決める。毎日の「何にしよう」をゼロに</div></div>
-        <div class="sp-feat"><span class="sp-feat-icon">👁</span><div class="sp-feat-text"><strong>名もなき家事を可視化</strong>。AIが自動検出しパパのカレンダーへ</div></div>
-        <div class="sp-feat"><span class="sp-feat-icon">📅</span><div class="sp-feat-text"><strong>AIが先回り提案</strong>。タスク・買い物・プロジェクトに即追加</div></div>
+      <div class="sp-icon-wrap">
+        <svg width="52" height="52" viewBox="0 0 100 100" fill="none">
+          <path d="M15 58 L50 76 L85 58 L85 36 L50 56 L15 36 Z" fill="#3EC9C0" stroke="#1D8F8A" stroke-width="2"/>
+          <path d="M15 36 L50 18 L50 56 L15 56 Z" fill="#3EC9C0" stroke="#1D8F8A" stroke-width="2"/>
+          <path d="M85 36 L50 18 L50 56 L85 56 Z" fill="#2aaea6" stroke="#1D8F8A" stroke-width="2"/>
+          <path d="M15 36 L32 26 L50 36 L50 18 L32 8 L15 18 Z" fill="#E8694A" opacity=".95"/>
+          <path d="M50 51 C50 51 39 43 39 36.5 C39 32.5 42.5 29.5 46.5 29.5 C48.5 29.5 50 31.5 50 31.5 C50 31.5 51.5 29.5 53.5 29.5 C57.5 29.5 61 32.5 61 36.5 C61 43 50 51 50 51 Z" fill="#fff" opacity=".95"/>
+        </svg>
       </div>
-      <div class="sp-login-lbl">ログインして始める</div>
-      <button class="sp-google" id="sp-google-btn">
-        <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.08 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-3.59-13.46-8.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
-        Googleでログイン
-      </button>
-      <button class="sp-apple" id="sp-apple-btn">
-        <svg width="20" height="20" viewBox="0 0 814 1000" fill="white"><path d="M788.1 340.9c-5.8 4.5-108.2 62.2-108.2 190.5 0 148.4 130.3 200.9 134.2 202.2-.6 3.2-20.7 71.9-68.7 141.9-42.8 61.6-87.5 123.1-155.5 123.1s-85.5-39.5-164-39.5c-76.5 0-103.7 40.8-165.9 40.8s-105-42.8-155.5-115.7c-43.4-62.9-82.7-157.3-82.7-247.2 0-168.7 109.6-257.9 217.7-257.9 75.5 0 130.9 49.5 161.9 49.5 29.8 0 88.7-52 172.6-52 33.5 0 135.9 3.9 203.6 96.6zm-234-181.5c31.1-36.9 53.1-88.1 53.1-139.3 0-7.1-.6-14.3-1.9-20.1-50.6 1.9-110.8 33.7-147.1 75.8-28.5 32.4-55.1 83.6-55.1 135.5 0 7.8 1.3 15.6 1.9 18.1 3.2.6 8.4 1.3 13.6 1.3 45.4 0 102.5-30.4 135.5-71.3z"/></svg>
-        Appleでログイン
-      </button>
-      <button class="sp-login" id="sp-login-btn">ゲストとして試す</button>
+      <div class="sp-name">HAKOBU</div>
+      <div class="sp-tagline">Family Task Manager<br>for Busy Moms &amp; Papas</div>
+      <div class="sp-btns">
+        <button class="sp-start" id="sp-login-btn">はじめる</button>
+        <button class="sp-login" id="sp-guest-btn">すでにアカウントをお持ちの方</button>
+      </div>
     </div>
   </div>
 
@@ -485,12 +478,12 @@ window.fbUnsubscribe = function() {
       <div class="ob-sec">
         <div class="ob-sec-lbl">あなたは誰ですか？</div>
         <div class="role-grid" id="ob-role-grid">
-          <div class="role-card on" data-role="mama" data-em="👩" data-label="ママ"><div class="role-card-em">👩</div><div class="role-card-lbl">ママ</div></div>
-          <div class="role-card" data-role="papa" data-em="👨" data-label="パパ"><div class="role-card-em">👨</div><div class="role-card-lbl">パパ</div></div>
-          <div class="role-card" data-role="obachan" data-em="👵" data-label="おばあちゃん"><div class="role-card-em">👵</div><div class="role-card-lbl">おばあちゃん</div></div>
-          <div class="role-card" data-role="ojichan" data-em="👴" data-label="おじいちゃん"><div class="role-card-em">👴</div><div class="role-card-lbl">おじいちゃん</div></div>
-          <div class="role-card" data-role="child" data-em="🧒" data-label="子ども"><div class="role-card-em">🧒</div><div class="role-card-lbl">子ども</div></div>
-          <div class="role-card" data-role="other" data-em="😊" data-label="その他"><div class="role-card-em">😊</div><div class="role-card-lbl">その他</div></div>
+          <div class="role-card on" data-role="mama" data-em="mama" data-label="ママ"><div class="role-card-em"><i data-lucide="user" style="width:28px;height:28px;display:inline-flex;color:var(--mama)"></i></div><div class="role-card-lbl">ママ</div></div>
+          <div class="role-card" data-role="papa" data-em="papa" data-label="パパ"><div class="role-card-em"><i data-lucide="user" style="width:28px;height:28px;display:inline-flex;color:var(--papa)"></i></div><div class="role-card-lbl">パパ</div></div>
+          <div class="role-card" data-role="obachan" data-em="grandma" data-label="おばあちゃん"><div class="role-card-em"><i data-lucide="user" style="width:28px;height:28px;display:inline-flex;color:var(--t2)"></i></div><div class="role-card-lbl">おばあちゃん</div></div>
+          <div class="role-card" data-role="ojichan" data-em="grandpa" data-label="おじいちゃん"><div class="role-card-em"><i data-lucide="user" style="width:28px;height:28px;display:inline-flex;color:var(--t2)"></i></div><div class="role-card-lbl">おじいちゃん</div></div>
+          <div class="role-card" data-role="child" data-em="baby" data-label="子ども"><div class="role-card-em"><i data-lucide="baby" style="width:28px;height:28px;display:inline-flex;color:var(--t2)"></i></div><div class="role-card-lbl">子ども</div></div>
+          <div class="role-card" data-role="other" data-em="user" data-label="その他"><div class="role-card-em"><i data-lucide="user-round" style="width:28px;height:28px;display:inline-flex;color:var(--t2)"></i></div><div class="role-card-lbl">その他</div></div>
         </div>
       </div>
       <!-- ニックネーム -->
@@ -504,18 +497,18 @@ window.fbUnsubscribe = function() {
       <div class="ob-sec">
         <div class="ob-sec-lbl">アバター</div>
         <div class="av-grid" id="ob-av-grid">
-          <div class="av-chip on" data-av="👩">👩</div>
-          <div class="av-chip" data-av="👨">👨</div>
-          <div class="av-chip" data-av="🧑">🧑</div>
-          <div class="av-chip" data-av="👧">👧</div>
-          <div class="av-chip" data-av="👦">👦</div>
-          <div class="av-chip" data-av="🧒">🧒</div>
-          <div class="av-chip" data-av="👵">👵</div>
-          <div class="av-chip" data-av="👴">👴</div>
-          <div class="av-chip" data-av="🐱">🐱</div>
-          <div class="av-chip" data-av="🐶">🐶</div>
-          <div class="av-chip" data-av="🦊">🦊</div>
-          <div class="av-chip" data-av="🐻">🐻</div>
+          <div class="av-chip on" data-av="mama"><i data-lucide="user" style="width:22px;height:22px;display:inline-flex;color:var(--mama)"></i></div>
+          <div class="av-chip" data-av="papa"><i data-lucide="user" style="width:22px;height:22px;display:inline-flex;color:var(--papa)"></i></div>
+          <div class="av-chip" data-av="user"><i data-lucide="user" style="width:22px;height:22px;display:inline-flex"></i></div>
+          <div class="av-chip" data-av="girl"><i data-lucide="user" style="width:22px;height:22px;display:inline-flex;color:var(--salmon)"></i></div>
+          <div class="av-chip" data-av="boy"><i data-lucide="user" style="width:22px;height:22px;display:inline-flex;color:var(--teal)"></i></div>
+          <div class="av-chip" data-av="baby"><i data-lucide="baby" style="width:22px;height:22px;display:inline-flex"></i></div>
+          <div class="av-chip" data-av="grandma"><i data-lucide="user" style="width:22px;height:22px;display:inline-flex;color:var(--t3)"></i></div>
+          <div class="av-chip" data-av="grandpa"><i data-lucide="user" style="width:22px;height:22px;display:inline-flex;color:var(--t3)"></i></div>
+          <div class="av-chip" data-av="cat"><i data-lucide="cat" style="width:22px;height:22px;display:inline-flex"></i></div>
+          <div class="av-chip" data-av="dog"><i data-lucide="dog" style="width:22px;height:22px;display:inline-flex"></i></div>
+          <div class="av-chip" data-av="rabbit"><i data-lucide="rabbit" style="width:22px;height:22px;display:inline-flex"></i></div>
+          <div class="av-chip" data-av="paw"><i data-lucide="paw-print" style="width:22px;height:22px;display:inline-flex"></i></div>
         </div>
       </div>
       <!-- 家族名 -->
@@ -548,7 +541,7 @@ window.fbUnsubscribe = function() {
   <div class="scr" id="s-home">
     <div class="hdr" id="home-hdr" style="display:flex;align-items:center;justify-content:space-between">
       <div style="display:flex;align-items:center;gap:10px">
-        <button id="ai-chat-btn" data-nav="chat" style="width:36px;height:36px;background:var(--t1);border:none;border-radius:10px;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center">🤖</button>
+        <button id="ai-chat-btn" data-nav="chat" style="width:36px;height:36px;background:var(--t1);border:none;border-radius:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#fff"><i data-lucide="sparkles" style="width:20px;height:20px;display:inline-flex"></i></button>
         <div>
           <div style="font-size:22px;font-weight:900;color:var(--t1)" id="home-title">田中家のOS</div>
           <div style="font-size:11px;color:rgba(0,0,0,.5);margin-top:1px" id="home-sub">今日も一緒に乗り越えよう</div>
@@ -557,7 +550,7 @@ window.fbUnsubscribe = function() {
       <div style="position:relative">
         <button id="menu-btn" style="width:36px;height:36px;background:rgba(0,0,0,.1);border:none;border-radius:10px;cursor:pointer"><i data-lucide="chevron-left" style="width:20px;height:20px;display:inline-flex;vertical-align:middle" ></i></button>
         <div id="dropdown-menu" style="display:none;position:absolute;right:0;top:40px;background:#fff;border-radius:16px;box-shadow:0 8px 30px rgba(0,0,0,.15);overflow:hidden;min-width:140px;z-index:999">
-          <div class="dmenu-item" data-action="settings">⚙️ 設定</div>
+          <div class="dmenu-item" data-action="settings"><i data-lucide="settings" style="width:15px;height:15px;display:inline-flex;vertical-align:middle;margin-right:6px"></i>設定</div>
         </div>
       </div>
     </div>
@@ -668,9 +661,9 @@ window.fbUnsubscribe = function() {
       </div>
     </div>
     <div class="cal-leg">
-      <div class="cl-item"><div class="cl-dot" style="background:var(--or)"></div>👩ママ</div>
-      <div class="cl-item"><div class="cl-dot" style="background:var(--bl)"></div>👨パパ</div>
-      <div class="cl-item"><div class="cl-dot" style="background:var(--gr2)"></div>👫二人</div>
+      <div class="cl-item"><div class="cl-dot" style="background:var(--or)"></div><i data-lucide="user" style="width:12px;height:12px;display:inline-flex;vertical-align:middle;margin-right:2px"></i>ママ</div>
+      <div class="cl-item"><div class="cl-dot" style="background:var(--bl)"></div><i data-lucide="user" style="width:12px;height:12px;display:inline-flex;vertical-align:middle;margin-right:2px"></i>パパ</div>
+      <div class="cl-item"><div class="cl-dot" style="background:var(--gr2)"></div><i data-lucide="users" style="width:12px;height:12px;display:inline-flex;vertical-align:middle;margin-right:2px"></i>二人</div>
     </div>
     <div class="cal-dow" id="cal-dow"></div>
     <div class="cal-grid" id="cal-grid"></div>
@@ -708,9 +701,9 @@ window.fbUnsubscribe = function() {
         <div class="field">
           <label>担当者</label>
           <div class="chips" id="td-who-chips">
-            <button class="chip" data-val="mama">👩 ママ</button>
-            <button class="chip" data-val="papa">👨 パパ</button>
-            <button class="chip" data-val="both">👫 二人で</button>
+            <button class="chip" data-val="mama"><i data-lucide="user" style="width:14px;height:14px;display:inline-flex;vertical-align:middle;margin-right:3px"></i>ママ</button>
+            <button class="chip" data-val="papa"><i data-lucide="user" style="width:14px;height:14px;display:inline-flex;vertical-align:middle;margin-right:3px"></i>パパ</button>
+            <button class="chip" data-val="both"><i data-lucide="users" style="width:14px;height:14px;display:inline-flex;vertical-align:middle;margin-right:3px"></i>二人で</button>
           </div>
         </div>
         <div class="field">
@@ -731,7 +724,7 @@ window.fbUnsubscribe = function() {
       <div class="mhandle"></div>
       <div class="minner">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
-          <div class="mtitle">🔥 Firebase設定</div>
+          <div class="mtitle"><i data-lucide="flame" style="width:20px;height:20px;display:inline-flex;vertical-align:middle;margin-right:6px;color:var(--salmon)"></i>Firebase設定</div>
           <button onclick="hideFbSetup()" style="border:none;background:none;font-size:22px;cursor:pointer;color:var(--t2)">×</button>
         </div>
         <div style="background:#FFF8E1;border-radius:12px;padding:12px 14px;margin-bottom:16px;font-size:12px;color:#B45309;line-height:1.7">
@@ -765,7 +758,7 @@ window.fbUnsubscribe = function() {
       <div class="mhandle"></div>
       <div class="minner">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
-          <div class="mtitle">👨 招待コードで参加</div>
+          <div class="mtitle"><i data-lucide="user-plus" style="width:20px;height:20px;display:inline-flex;vertical-align:middle;margin-right:6px;color:var(--papa)"></i>招待コードで参加</div>
           <button onclick="hideJoinRoom()" style="border:none;background:none;font-size:22px;cursor:pointer;color:var(--t2)">×</button>
         </div>
         <div style="font-size:13px;color:var(--t2);margin-bottom:20px">ママから受け取った6文字のコードを入力してください</div>
@@ -785,8 +778,8 @@ window.fbUnsubscribe = function() {
         <div class="minner" style="padding-bottom:8px">
           <div class="mtitle">プロジェクトを追加</div>
           <p style="font-size:13px;color:var(--t2);margin-bottom:16px">テンプレートから選ぶか、ゼロから作ることができます</p>
-          <button class="btn btn-g" id="pcm-use-template" style="margin-bottom:10px">📋 テンプレートから選ぶ</button>
-          <button class="btn btn-sub" id="pcm-from-scratch">✏️ ゼロから作る</button>
+          <button class="btn btn-g" id="pcm-use-template" style="margin-bottom:10px"><i data-lucide="layout-template" style="width:16px;height:16px;display:inline-flex;vertical-align:middle;margin-right:6px"></i>テンプレートから選ぶ</button>
+          <button class="btn btn-sub" id="pcm-from-scratch"><i data-lucide="pencil" style="width:16px;height:16px;display:inline-flex;vertical-align:middle;margin-right:6px"></i>ゼロから作る</button>
         </div>
       </div>
       <!-- Step2a: テンプレ一覧 -->
@@ -828,9 +821,9 @@ window.fbUnsubscribe = function() {
             <input id="pcm-new-task" placeholder="タスク名を入力…" style="width:100%;padding:8px 10px;border:1.5px solid var(--bdr);border-radius:10px;font-family:inherit;font-size:13px;margin-bottom:8px;box-sizing:border-box">
             <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
               <div style="display:flex;gap:4px" id="pcm-new-who-chips">
-                <button class="pcm-nw-chip" data-val="both" style="border:none;border-radius:20px;padding:3px 10px;font-size:10px;font-weight:700;cursor:pointer;background:var(--gr);color:#fff">👫 二人</button>
-                <button class="pcm-nw-chip" data-val="mama" style="border:none;border-radius:20px;padding:3px 10px;font-size:10px;font-weight:700;cursor:pointer;background:var(--bg);color:var(--t2)">👩 ママ</button>
-                <button class="pcm-nw-chip" data-val="papa" style="border:none;border-radius:20px;padding:3px 10px;font-size:10px;font-weight:700;cursor:pointer;background:var(--bg);color:var(--t2)">👨 パパ</button>
+                <button class="pcm-nw-chip" data-val="both" style="border:none;border-radius:20px;padding:3px 10px;font-size:10px;font-weight:700;cursor:pointer;background:var(--gr);color:#fff;display:inline-flex;align-items:center;gap:3px"><i data-lucide="users" style="width:11px;height:11px;display:inline-flex"></i>二人</button>
+                <button class="pcm-nw-chip" data-val="mama" style="border:none;border-radius:20px;padding:3px 10px;font-size:10px;font-weight:700;cursor:pointer;background:var(--bg);color:var(--t2);display:inline-flex;align-items:center;gap:3px"><i data-lucide="user" style="width:11px;height:11px;display:inline-flex"></i>ママ</button>
+                <button class="pcm-nw-chip" data-val="papa" style="border:none;border-radius:20px;padding:3px 10px;font-size:10px;font-weight:700;cursor:pointer;background:var(--bg);color:var(--t2);display:inline-flex;align-items:center;gap:3px"><i data-lucide="user" style="width:11px;height:11px;display:inline-flex"></i>パパ</button>
               </div>
               <input type="date" id="pcm-new-due" style="border:1px solid var(--bdr);border-radius:8px;padding:2px 7px;font-size:10px;color:var(--t1);background:#fff;font-family:inherit;flex:1;min-width:110px">
               <button id="pcm-add-task-btn" style="padding:6px 14px;background:var(--gr);color:#fff;border:none;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap">＋ 追加</button>
@@ -850,8 +843,8 @@ window.fbUnsubscribe = function() {
     <div class="hdr">
       <div class="hdr-row"><div class="hdr-title">家事管理</div></div>
       <div style="display:flex;border-bottom:2px solid var(--bdr)">
-        <button class="kaji-tab on" data-tab="shop" style="flex:1;border:none;background:none;padding:10px 0;font-size:13px;font-weight:700;cursor:pointer;color:var(--t1);border-bottom:3px solid var(--t1);margin-bottom:-2px">🛒 お買い物</button>
-        <button class="kaji-tab" data-tab="chore" style="flex:1;border:none;background:none;padding:10px 0;font-size:13px;font-weight:700;cursor:pointer;color:var(--t3);border-bottom:3px solid transparent;margin-bottom:-2px">🧹 家事</button>
+        <button class="kaji-tab on" data-tab="shop" style="flex:1;border:none;background:none;padding:10px 0;font-size:13px;font-weight:700;cursor:pointer;color:var(--t1);border-bottom:3px solid var(--t1);margin-bottom:-2px"><i data-lucide="shopping-cart" style="width:14px;height:14px;display:inline-flex;vertical-align:middle;margin-right:4px"></i>お買い物</button>
+        <button class="kaji-tab" data-tab="chore" style="flex:1;border:none;background:none;padding:10px 0;font-size:13px;font-weight:700;cursor:pointer;color:var(--t3);border-bottom:3px solid transparent;margin-bottom:-2px"><i data-lucide="brush" style="width:14px;height:14px;display:inline-flex;vertical-align:middle;margin-right:4px"></i>家事</button>
       </div>
     </div>
     <div class="scr-body" id="kaji-body" style="padding:0"></div>
@@ -876,9 +869,9 @@ window.fbUnsubscribe = function() {
         <div class="field">
           <label>担当者</label>
           <div class="chips" id="who-chips">
-            <button class="chip on">👩 ママ</button>
-            <button class="chip">👨 パパ</button>
-            <button class="chip">👫 二人で</button>
+            <button class="chip on"><i data-lucide="user" style="width:14px;height:14px;display:inline-flex;vertical-align:middle;margin-right:3px"></i>ママ</button>
+            <button class="chip"><i data-lucide="user" style="width:14px;height:14px;display:inline-flex;vertical-align:middle;margin-right:3px"></i>パパ</button>
+            <button class="chip"><i data-lucide="users" style="width:14px;height:14px;display:inline-flex;vertical-align:middle;margin-right:3px"></i>二人で</button>
           </div>
         </div>
         <div class="field">
@@ -1268,7 +1261,7 @@ const taskService = {
     return scored.slice(0, 3);
   },
   getTodayMeal() {
-    const meals = ['外食OK 🍣','鶏肉の日 🍗','魚の日 🐟','丼の日 🍚','麺の日 🍜','カレーの日 🍛','冷凍OK 🧊'];
+    const meals = ['外食OK','鶏肉の日','魚の日','丼の日','麺の日','カレーの日','冷凍OK'];
     const hints = [
       '週末はゆっくり外食を楽しんで',
       'から揚げ・チキンソテーなど定番に',
@@ -1286,8 +1279,19 @@ const taskService = {
 /* ═══════════════════════════════════════════════════════
    NAVIGATION  (onclick属性なし)
 ═══════════════════════════════════════════════════════ */
-const PROJ_LUCIDE_MAP={"🌸":"flower","✈️":"plane","🎄":"tree-pine","🎂":"cake","📋":"clipboard-list","🧹":"brush","🏠":"house","💰":"wallet","🎒":"backpack","🏖️":"umbrella","🎎":"users","🛡️":"shield","🚗":"car","📱":"smartphone","🔨":"hammer","🐾":"paw-print","🥂":"glass-water","⛩️":"landmark","🍚":"utensils","👘":"shirt","🎭":"theater","🎋":"tree-deciduous","👹":"angry","🤒":"thermometer","🌀":"wind","🎃":"ghost","🍫":"candy","👨‍👩‍👧":"heart","🎠":"ferris-wheel","📦":"package","🏃":"run","🎤":"mic","default":"clipboard-list"};
-function projIcon(em){const name=PROJ_LUCIDE_MAP[em]||"clipboard-list";return `<i data-lucide="__NAME__" style="width:22px;height:22px;display:inline-flex;vertical-align:middle" ></i>`.replace("__NAME__",name);}
+const PROJ_LUCIDE_MAP={"🌸":"flower","✈️":"plane","🎄":"tree-pine","🎂":"cake","📋":"clipboard-list","🧹":"brush","🏠":"house","💰":"wallet","🎒":"backpack","🏖️":"umbrella","🎎":"users","🛡️":"shield","🚗":"car","📱":"smartphone","🔨":"hammer","🐾":"paw-print","🥂":"glass-water","⛩️":"landmark","🍚":"utensils","👘":"shirt","🎭":"theater","🎋":"tree-deciduous","👹":"angry","🤒":"thermometer","🌀":"wind","🎃":"ghost","🍫":"candy","👨‍👩‍👧":"heart","🎠":"ferris-wheel","📦":"package","🏃":"run","🎤":"mic",
+  "🎍":"tree-pine","🎌":"flag","🗾":"map","🌿":"leaf","📜":"scroll-text","🌱":"sprout","🎏":"flag","🌊":"waves","⛰️":"mountain","🏮":"lamp-desk","👴":"user","🍁":"leaf","🎨":"palette","🙏":"heart-handshake","🎆":"sparkles","💴":"banknote","🏫":"school","💉":"syringe","🌹":"flower-2","👔":"shirt","☔":"cloud-rain","⭐":"star","🌙":"moon","👶":"baby","📅":"calendar","🌻":"sun","🍱":"box","📌":"map-pin","🛒":"shopping-cart","✏️":"pencil","⚡":"zap","🎏":"flag",
+  "default":"clipboard-list"};
+function projIcon(em,size){const name=PROJ_LUCIDE_MAP[em]||"clipboard-list";const s=size||22;return `<i data-lucide="${name}" style="width:${s}px;height:${s}px;display:inline-flex;vertical-align:middle"></i>`;}
+
+/* ── 担当者ラベル用インラインSVG（data-lucide不要、innerHTML直書き用） ── */
+const _SVG_USER=`<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline-flex;vertical-align:middle;margin-right:2px;flex-shrink:0"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`;
+const _SVG_USERS=`<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline-flex;vertical-align:middle;margin-right:2px;flex-shrink:0"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>`;
+/* whoLbl(who, opt?) → "user icon + ママ/パパ/二人" HTML */
+function whoLbl(who,opt){return who==='mama'?_SVG_USER+'ママ':who==='papa'?_SVG_USER+'パパ':_SVG_USERS+(opt||'二人');}
+/* avSvg(size) → avatar display用インラインSVG */
+function avSvg(size){size=size||28;return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`;}
+
 let curScr = 'splash';
 let chatCtx = null;
 
@@ -1323,14 +1327,8 @@ document.querySelectorAll('.tb[data-nav]').forEach(btn=>{
 });
 if(typeof lucide!=='undefined') lucide.createIcons();
 document.getElementById('sp-login-btn').addEventListener('click', ()=>navTo('home'));
-document.getElementById('sp-google-btn').addEventListener('click', async ()=>{
-  const result = await doSocialLogin('google');
-  if(result) await afterLogin(result);
-});
-document.getElementById('sp-apple-btn').addEventListener('click', async ()=>{
-  const result = await doSocialLogin('apple');
-  if(result) await afterLogin(result);
-});
+const spGuestBtn = document.getElementById('sp-guest-btn');
+if(spGuestBtn) spGuestBtn.addEventListener('click', ()=>navTo('home'));
 document.getElementById('chat-back').addEventListener('click',  ()=>navTo('home'));
 document.getElementById('chat-reset').addEventListener('click', ()=>resetChat());
 document.getElementById('cal-prev').addEventListener('click',   ()=>{calOff--;renderCal();});
@@ -1655,7 +1653,7 @@ function getPapaCard(s) {
   const dow = ['日','月','火','水','木','金','土'][today.getDay()];
   // パパ担当タスクの候補（未アサイン or 両方担当から）
   const candidates = [
-    ...bothT.map(t=>'👨 【振り分け候補】'+t.name),
+    ...bothT.map(t=>'【振り分け候補】'+t.name),
     ...papaT.map(t=>'✅ 【パパ担当確認】'+t.name),
   ];
   // 固定の振り分けTips
@@ -1669,7 +1667,7 @@ function getPapaCard(s) {
   ];
   const tasks = [...candidates.slice(0,4), ...tips].slice(0,10);
   return {
-    id:'papa_balance', name:'パパへの振り分け提案', icon:'👨', type:'papa',
+    id:'papa_balance', name:'パパへの振り分け提案', icon:'user', type:'papa',
     color:'#1E5EA8', bg:'linear-gradient(135deg,#1E5EA8,#2980B9)',
     hint:dow+'曜日・今週パパに頼めることをまとめました',
     tasks, evDate: today, daysUntil:0, isolated:false,
@@ -1698,7 +1696,8 @@ function openEventDateRangePicker(ev, hasFixedDate, onConfirm) {
 
   const title = document.createElement('div');
   title.style.cssText = 'font-size:16px;font-weight:800;color:var(--t1);margin-bottom:6px';
-  title.textContent = (ev.icon||'📅') + ' ' + ev.name + ' — 期間を設定';
+  title.innerHTML = projIcon(ev.icon||'📅',18)+' '+ev.name+' — 期間を設定';
+  if(typeof lucide!=='undefined') lucide.createIcons({root:title});
 
   const hint = document.createElement('div');
   hint.style.cssText = 'font-size:12px;color:var(--t2);margin-bottom:18px';
@@ -1815,7 +1814,8 @@ function renderEventProposals(s) {
 
     const navTitle = document.createElement('div');
     navTitle.style.cssText = 'color:#fff;font-size:13px;font-weight:800;flex:1;text-align:center;';
-    navTitle.textContent = ev.icon+' '+ev.name+'  '+(idx+1)+'/'+ total;
+    navTitle.innerHTML = projIcon(ev.icon,16)+' '+ev.name+'  '+(idx+1)+'/'+total;
+    if(typeof lucide!=='undefined') lucide.createIcons({root:navTitle});
 
     const nextBtn = document.createElement('button');
     nextBtn.style.cssText = 'border:none;background:rgba(255,255,255,.2);color:#fff;border-radius:8px;width:28px;height:28px;cursor:pointer;font-size:18px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;';
@@ -1850,14 +1850,17 @@ function renderEventProposals(s) {
     const urgBadge = document.createElement('span');
     urgBadge.style.cssText = 'display:inline-block;background:rgba(255,255,255,.25);color:#fff;font-size:10px;font-weight:800;border-radius:6px;padding:2px 7px;margin-bottom:4px';
     if(ev.type==='seasonal'){
-      urgBadge.textContent = '🌡️ 今月の季節メンテ';
+      urgBadge.innerHTML = '<i data-lucide="thermometer" style="width:10px;height:10px;display:inline-flex;vertical-align:middle;margin-right:2px"></i> 今月の季節メンテ';
+      if(typeof lucide!=='undefined') lucide.createIcons({root:urgBadge});
     } else if(ev.type==='papa'){
-      urgBadge.textContent = '👨 今週のパパ振り分け';
+      urgBadge.textContent = '今週のパパ振り分け';
     } else if(ev.type==='weekly'){
-      urgBadge.textContent = '📅 今週のおすすめ';
+      urgBadge.textContent = '今週のおすすめ';
     } else {
       const dateStr = (ev.evDate.getMonth()+1)+'月'+ev.evDate.getDate()+'日';
-      urgBadge.textContent = urg.label + ' · ' + dateStr + (ev.isolated?' 🗓️有休チャンス':'');
+      const vacHtml = ev.isolated ? ' <i data-lucide="calendar" style="width:10px;height:10px;display:inline-flex;vertical-align:middle;margin-right:1px"></i>有休チャンス' : '';
+      urgBadge.innerHTML = urg.label + ' · ' + dateStr + vacHtml;
+      if(typeof lucide!=='undefined') lucide.createIcons({root:urgBadge});
     }
     const hintEl = document.createElement('div');
     hintEl.style.cssText = 'font-size:11px;color:rgba(255,255,255,.82);margin-top:2px';
@@ -1922,7 +1925,7 @@ function renderEventProposals(s) {
     actBtn.style.cssText = 'width:100%;padding:12px;border:none;font-family:inherit;font-size:13px;font-weight:800;cursor:pointer;'
       +'background:'+ev.color+';color:#fff;display:flex;align-items:center;justify-content:center;gap:6px';
     if(ev.type==='papa'){
-      actBtn.textContent = '👨 パパにタスクを振り分けるAIに相談する';
+      actBtn.textContent = 'パパにタスクを振り分けるAIに相談する';
       actBtn.addEventListener('click', ()=>{ navTo('chat',{action:'balance'}); });
     } else {
       // 祝日/季節/週次: 全て日付範囲ピッカー経由でプロジェクト追加
@@ -2009,13 +2012,14 @@ function renderProjRow(s){
     pill.className = 'proj-pill';
     pill.dataset.projId = proj.id;
 
-    const em = document.createElement('div'); em.className='pp-em'; em.textContent=proj.icon;
+    const em = document.createElement('div'); em.className='pp-em'; em.innerHTML=projIcon(proj.icon);
+    if(typeof lucide!=='undefined') lucide.createIcons({root:em});
     const nm = document.createElement('div'); nm.className='pp-name'; nm.textContent=proj.name;
     const br = document.createElement('div'); br.className='pp-bar';
     const bf = document.createElement('div'); bf.className='pp-fill'; bf.style.cssText=`width:${p2}%;background:${proj.color};`;
     br.appendChild(bf);
     const mt = document.createElement('div');
-    if(u){ mt.className='pp-urg'; mt.textContent='⚠️ '+u.name.slice(0,12)+'…'; }
+    if(u){ mt.className='pp-urg'; mt.textContent=u.name.slice(0,12)+'…'; }
     else { mt.className='pp-meta'; mt.textContent=p2+'%完了'; }
     [em,nm,br,mt].forEach(el=>pill.appendChild(el));
     pill.addEventListener('click',()=>{ window._expandProjId=proj.id; navTo('proj'); });
@@ -2055,7 +2059,8 @@ function renderInv(s){
   const hdr = document.createElement('div'); hdr.className='inv-hdr';
   const dot = document.createElement('div'); dot.className='inv-dot';
   const ttl = document.createElement('div'); ttl.className='inv-title';
-  ttl.textContent = holiday.icon+' 次の連休 — '+holiday.name;
+  ttl.innerHTML = projIcon(holiday.icon,15)+' 次の連休 — '+holiday.name;
+  if(typeof lucide!=='undefined') lucide.createIcons({root:ttl});
   const cnt = document.createElement('div'); cnt.className='inv-cnt';
   cnt.textContent = label;
   cnt.style.color = urg.color;
@@ -2065,7 +2070,8 @@ function renderInv(s){
 
   (holiday.tasks||[]).slice(0,3).forEach(task=>{
     const row=document.createElement('div'); row.className='inv-row';
-    const em=document.createElement('span'); em.className='inv-em'; em.textContent='📋';
+    const em=document.createElement('span'); em.className='inv-em'; em.innerHTML=projIcon('📋',14);
+    if(typeof lucide!=='undefined') lucide.createIcons({root:em});
     const nm=document.createElement('span'); nm.textContent=task;
     row.append(em,nm); el.appendChild(row);
   });
@@ -2105,7 +2111,7 @@ function renderMealBanner(){
   const {meal, hint} = taskService.getTodayMeal();
   const inner = document.createElement('div');
   inner.style.cssText = 'background:var(--sur);border-radius:16px;border-left:4px solid var(--yel);padding:14px 16px;display:flex;align-items:center;gap:12px;cursor:pointer';
-  inner.innerHTML = '<div style="font-size:28px;flex-shrink:0">&#127869;&#65039;</div>'
+  inner.innerHTML = '<div style="width:36px;height:36px;flex-shrink:0;display:flex;align-items:center;justify-content:center"><i data-lucide="utensils" style="width:28px;height:28px;color:var(--yel)"></i></div>'
     +'<div style="flex:1">'
     +'<div style="font-size:11px;font-weight:700;color:rgba(255,255,255,.7);margin-bottom:3px">今日の献立テーマ</div>'
     +'<div style="font-size:16px;font-weight:800;color:#fff">'+meal+'</div>'
@@ -2115,6 +2121,7 @@ function renderMealBanner(){
   inner.addEventListener('click', function(){ navTo('chat',{action:'kondate'}); });
   banner.innerHTML = '';
   banner.appendChild(inner);
+  if(typeof lucide!=='undefined') lucide.createIcons({root:inner});
 }
 
 // ─── 今日やるべきタスク（プラン分岐） ─────────────
@@ -2156,10 +2163,9 @@ async function renderTodayTasks(s){
     const nm=document.createElement('div'); nm.className='tname'+(t.done?' done':''); nm.textContent=t.name||t.title;
     const mt=document.createElement('div'); mt.className='tmeta';
     const wc=t.who==='mama'?'wt-m':t.who==='papa'?'wt-p':'wt-b';
-    const wl=t.who==='mama'?'👩ママ':t.who==='papa'?'👨パパ':'👫二人';
-    const wt=document.createElement('span'); wt.className='wtag '+wc; wt.textContent=wl;
+    const wt=document.createElement('span'); wt.className='wtag '+wc; wt.innerHTML=whoLbl(t.who);
     mt.appendChild(wt);
-    if((t.urgent||t.isUrgent)&&!t.done){ const dt=document.createElement('span'); dt.className='dtag urg'; dt.textContent='⚠️ '+(t.due||'緊急'); mt.appendChild(dt); }
+    if((t.urgent||t.isUrgent)&&!t.done){ const dt=document.createElement('span'); dt.className='dtag urg'; dt.textContent=(t.due||'緊急'); mt.appendChild(dt); }
     const pt=document.createElement('span'); pt.className='dtag'; pt.textContent=t.projIcon+' '+t.projName;
     mt.appendChild(pt);
     bd.append(nm,mt);
@@ -2174,7 +2180,8 @@ async function renderTodayTasks(s){
     if(!todayTasks.length){
       const empty=document.createElement('div'); empty.className='trow';
       empty.style.cssText='color:var(--t2);font-size:14px;padding:18px 14px;text-align:center;flex-direction:column;gap:6px';
-      empty.innerHTML='<div style="font-size:24px">🌿</div><div>今日は余白の日です</div><div style="font-size:12px;color:var(--t3)">ゆっくり休んでください</div>';
+      empty.innerHTML='<div style="display:flex;align-items:center;justify-content:center;height:32px"><i data-lucide="leaf" style="width:28px;height:28px;color:var(--gr)"></i></div><div>今日は余白の日です</div><div style="font-size:12px;color:var(--t3)">ゆっくり休んでください</div>';
+      if(typeof lucide!=='undefined') lucide.createIcons({root:empty});
       el.appendChild(empty); return;
     }
     const showing = expanded ? todayTasks : todayTasks.slice(0, SHOW);
@@ -2204,7 +2211,8 @@ function renderTaskList(s){
   if(!sorted.length){
     const empty=document.createElement('div'); empty.className='trow';
     empty.style.color='var(--t2)'; empty.style.fontSize='14px';
-    empty.textContent='今日のタスクはありません 🎉';
+    empty.innerHTML='今日のタスクはありません <i data-lucide="party-popper" style="width:14px;height:14px;display:inline-flex;vertical-align:middle"></i>';
+    if(typeof lucide!=='undefined') lucide.createIcons({root:empty});
     el.appendChild(empty);
   }else{
     sorted.forEach(t=>{
@@ -2219,10 +2227,9 @@ function renderTaskList(s){
       const nm=document.createElement('div'); nm.className='tname'+(t.done?' done':''); nm.textContent=t.name;
       const mt=document.createElement('div'); mt.className='tmeta';
       const wc=t.who==='mama'?'wt-m':t.who==='papa'?'wt-p':'wt-b';
-      const wl=t.who==='mama'?'👩ママ':t.who==='papa'?'👨パパ':'👫二人';
-      const wt=document.createElement('span'); wt.className='wtag '+wc; wt.textContent=wl;
+      const wt=document.createElement('span'); wt.className='wtag '+wc; wt.innerHTML=whoLbl(t.who);
       mt.appendChild(wt);
-      if(t.urgent&&!t.done){ const dt=document.createElement('span'); dt.className='dtag urg'; dt.textContent='⚠️ '+(t.due||'緊急'); mt.appendChild(dt); }
+      if(t.urgent&&!t.done){ const dt=document.createElement('span'); dt.className='dtag urg'; dt.textContent=(t.due||'緊急'); mt.appendChild(dt); }
       const pt=document.createElement('span'); pt.className='dtag'; pt.textContent=t.projIcon+' '+t.projName;
       mt.appendChild(pt);
       bd.append(nm,mt);
@@ -2338,7 +2345,7 @@ document.getElementById('add-save').addEventListener('click', async()=>{
   const title=document.getElementById('new-name').value.trim();
   if(!title){ toast('タスク名を入力してください'); return; }
   const onChip=document.querySelector('#who-chips .chip.on');
-  const whoText=onChip?onChip.textContent:'👩 ママ';
+  const whoText=onChip?onChip.textContent:'ママ';
   const assignee=whoText.includes('パパ')?'papa':whoText.includes('二人')?'both':'mama';
   const dueVal=document.getElementById('new-due')?.value||'';
   const dueDate=dueVal||null;
@@ -2552,7 +2559,7 @@ function openDateTaskOverlay(date, tasks, holidayName) {
   const body=document.createElement('div');
   body.style.cssText='flex:1;overflow-y:auto;padding:0 16px 40px';
   if(!dateTasks.length){
-    body.innerHTML='<div style="text-align:center;padding:40px 0;color:var(--t2)"><div style="font-size:36px;margin-bottom:10px">📅</div><div>この日のタスクはありません</div></div>';
+    body.innerHTML='<div style="text-align:center;padding:40px 0;color:var(--t2)"><div style="margin-bottom:10px;display:flex;justify-content:center"><i data-lucide="calendar" style="width:36px;height:36px"></i></div><div>この日のタスクはありません</div></div>';
   } else {
     dateTasks.forEach(t=>{
       const row=document.createElement('div');
@@ -2564,8 +2571,7 @@ function openDateTaskOverlay(date, tasks, holidayName) {
       const nm=document.createElement('div'); nm.style.cssText='font-size:14px;font-weight:500;color:var(--t1)'+(t.done?';text-decoration:line-through;color:var(--t3)':'');
       nm.textContent=t.name||t.title;
       const meta=document.createElement('div'); meta.style.cssText='font-size:11px;color:var(--t2);margin-top:3px';
-      const wl=t.who==='mama'?'👩ママ':t.who==='papa'?'👨パパ':'👫二人';
-      meta.textContent=wl+(t.projName?' · '+t.projIcon+' '+t.projName:'');
+      meta.innerHTML=whoLbl(t.who)+(t.projName?' · '+t.projIcon+' '+t.projName:'');
       info.append(nm,meta);
       row.append(chk,info);
       row.addEventListener('click',()=>{ ov.remove(); openTaskModal(t.id,t.projId); });
@@ -2618,7 +2624,8 @@ async function renderProjScreen(){
 
   const allProjs = ProjectRepository.getAll(s);
   if(!allProjs.length){
-    el.innerHTML = '<div style="text-align:center;padding:40px 20px;color:var(--t2)"><div style="font-size:40px;margin-bottom:12px">📋</div><div style="font-weight:600">プロジェクトがありません</div></div>';
+    el.innerHTML = '<div style="text-align:center;padding:40px 20px;color:var(--t2)"><div style="display:flex;justify-content:center;margin-bottom:12px"><i data-lucide="clipboard-list" style="width:40px;height:40px;color:var(--t3)"></i></div><div style="font-weight:600">プロジェクトがありません</div></div>';
+    if(typeof lucide!=='undefined') lucide.createIcons({root:el});
     return;
   }
 
@@ -2661,10 +2668,10 @@ async function renderProjScreen(){
     let daysLabel = '';
     if(goalDate){
       const diff = Math.ceil((new Date(goalDate) - new Date()) / (1000*60*60*24));
-      if(diff < 0) daysLabel = '⚠️ 期限超過';
-      else if(diff === 0) daysLabel = '⚠️ 今日が期限';
-      else if(diff <= 7) daysLabel = '⚠️ あと'+diff+'日';
-      else daysLabel = '📅 '+goalDate.replace(/-/g,'/');
+      if(diff < 0) daysLabel = '期限超過';
+      else if(diff === 0) daysLabel = '今日が期限';
+      else if(diff <= 7) daysLabel = 'あと'+diff+'日';
+      else daysLabel = goalDate.replace(/-/g,'/');
     } else {
       daysLabel = '期限未設定';
     }
@@ -2672,8 +2679,7 @@ async function renderProjScreen(){
     barWrap.style.cssText = 'padding:0 14px 10px';
     let nextHtml = '';
     if(nextTask) {
-      const wl = nextTask.who==='mama'?'👩':nextTask.who==='papa'?'👨':'👫';
-      nextHtml = '<div style="margin-top:6px;font-size:11px;background:var(--yel3);border-left:3px solid var(--yel);border-radius:6px;padding:5px 9px;color:var(--t1);font-weight:600">▶ 次: '+wl+' '+nextTask.name+'</div>';
+      nextHtml = '<div style="margin-top:6px;font-size:11px;background:var(--yel3);border-left:3px solid var(--yel);border-radius:6px;padding:5px 9px;color:var(--t1);font-weight:600">▶ 次: '+whoLbl(nextTask.who)+' '+nextTask.name+'</div>';
     }
     barWrap.innerHTML = '<div class="prog-bar"><div class="prog-fill" style="width:'+progress+'%;background:'+proj.color+'"></div></div>'
       +'<div class="prog-label"><span>'+daysLabel+'</span><span>'+progress+'%（'+done+'/'+total+'件）</span></div>'
@@ -2720,8 +2726,8 @@ async function renderProjScreen(){
       nm.textContent=t.name||t.title;
       const who=t.who||t.assignee;
       const wl=document.createElement('span');
-      wl.textContent=who==='mama'?'👩':who==='papa'?'👨':'👫';
-      wl.style.cssText='font-size:14px;flex-shrink:0';
+      wl.innerHTML=whoLbl(who);
+      wl.style.cssText='font-size:12px;flex-shrink:0;display:flex;align-items:center';
       const del=document.createElement('button');
       del.textContent='✕'; del.style.cssText='border:none;background:none;color:var(--t3);font-size:14px;cursor:pointer;padding:4px;flex-shrink:0';
       del.addEventListener('click', async e=>{
@@ -2752,10 +2758,10 @@ async function renderProjScreen(){
     addMeta.style.cssText='display:flex;align-items:center;gap:6px;flex-wrap:wrap';
     // 担当チップ
     const whoWrap = document.createElement('div'); whoWrap.style.cssText='display:flex;gap:4px';
-    const whoOpts=[{v:'both',l:'👫 二人'},{v:'mama',l:'👩 ママ'},{v:'papa',l:'👨 パパ'}];
+    const whoOpts=[{v:'both',l:'both'},{v:'mama',l:'mama'},{v:'papa',l:'papa'}];
     whoOpts.forEach(opt=>{
       const ch=document.createElement('button');
-      ch.textContent=opt.l; ch.dataset.val=opt.v;
+      ch.innerHTML=whoLbl(opt.l); ch.dataset.val=opt.v;
       const isOn=opt.v==='both';
       ch.style.cssText='border:none;border-radius:20px;padding:3px 9px;font-size:11px;font-weight:700;cursor:pointer;'
         +'background:'+(isOn?proj.color:'var(--bg2,#f0f0f0)')+';color:'+(isOn?'#fff':'var(--t2)');
@@ -3033,7 +3039,8 @@ function renderTasksByCalendar(s, el){
 async function renderTasksByProject(s, el){
   const projs = ProjectRepository.getAll(s);
   if(!projs.length){
-    el.innerHTML='<div style="text-align:center;padding:40px 20px;color:var(--t2)"><div style="font-size:36px;margin-bottom:10px">📋</div><div style="font-weight:600">プロジェクトがありません</div></div>';
+    el.innerHTML='<div style="text-align:center;padding:40px 20px;color:var(--t2)"><div style="display:flex;justify-content:center;margin-bottom:10px"><i data-lucide="clipboard-list" style="width:36px;height:36px;color:var(--t3)"></i></div><div style="font-weight:600">プロジェクトがありません</div></div>';
+    if(typeof lucide!=='undefined') lucide.createIcons({root:el});
     return;
   }
   projs.forEach(proj=>{
@@ -3097,7 +3104,8 @@ function renderTasksBySingle(s, el){
   if(!singles.length){
     const emp=document.createElement('div');
     emp.style.cssText='text-align:center;padding:32px 20px;color:var(--t2)';
-    emp.innerHTML='<div style="font-size:36px;margin-bottom:10px">📌</div><div style="font-weight:600">単発タスクがありません</div>';
+    emp.innerHTML='<div style="display:flex;justify-content:center;margin-bottom:10px"><i data-lucide="map-pin" style="width:36px;height:36px;color:var(--t3)"></i></div><div style="font-weight:600">単発タスクがありません</div>';
+    if(typeof lucide!=='undefined') lucide.createIcons({root:emp});
     el.appendChild(emp);
     return;
   }
@@ -3129,8 +3137,8 @@ function makeCalItem(t,s){
   const mt=document.createElement('div'); mt.style.cssText='font-size:11px;color:var(--t2);margin-top:2px;display:flex;gap:6px;align-items:center;flex-wrap:wrap';
   const who=t.who||t.assignee;
   const _pl=(t.projId&&t.projId!=='__single__'&&t.projName)?'<span style="background:var(--bg);border-radius:4px;padding:1px 5px;font-weight:600;color:var(--t2)">'+t.projIcon+' '+t.projName+'</span> · ':'';
-  mt.innerHTML=_pl+(who==='mama'?'👩 ママ':who==='papa'?'👨 パパ':'👫 二人')
-    +(t.isUrgent||t.urgent?' · <span style="color:var(--re);font-weight:700">⚠️ 緊急</span>':'');
+  mt.innerHTML=_pl+whoLbl(who)
+    +(t.isUrgent||t.urgent?' · <span style="color:var(--re);font-weight:700">緊急</span>':'');
   body.append(nm,mt);
   item.append(chk,body);
   item.addEventListener('click',()=>openTaskModal(t.id,t.projId||'__single__'));
@@ -3165,10 +3173,11 @@ async function renderMem(){
 
   // ── バランスカード
   const bc = document.createElement('div'); bc.className='mem-card';
-  bc.innerHTML = '<div style="font-size:13px;font-weight:900;color:var(--t1);margin-bottom:12px">⚖️ 今月の家事バランス</div>';
+  bc.innerHTML = '<div style="font-size:13px;font-weight:900;color:var(--t1);margin-bottom:12px;display:flex;align-items:center;gap:5px"><i data-lucide="scale" style="width:14px;height:14px;display:inline-flex"></i> 今月の家事バランス</div>';
+  if(typeof lucide!=='undefined') lucide.createIcons({root:bc});
   [
-    [mamaLoad, 'var(--mama)', '👩 '+(s.family?.mama||'ママ')],
-    [papaLoad, 'var(--papa)', '👨 '+(s.family?.papa||'パパ')],
+    [mamaLoad, 'var(--mama)', _SVG_USER+(s.family?.mama||'ママ')],
+    [papaLoad, 'var(--papa)', _SVG_USER+(s.family?.papa||'パパ')],
   ].forEach(([load,color,label])=>{
     const w=document.createElement('div'); w.className='bwrap';
     w.innerHTML = `<div class="blabel"><span>${label}</span><span style="font-weight:700;color:${color}">${load}%</span></div>`
@@ -3186,12 +3195,13 @@ async function renderMem(){
   const doneTasks  = done.length;
   const sc = document.createElement('div'); sc.className='mem-card';
   sc.style.marginBottom='10px';
-  sc.innerHTML = '<div style="font-size:13px;font-weight:900;color:var(--t1);margin-bottom:12px">📊 今月の実績</div>'
+  sc.innerHTML = '<div style="font-size:13px;font-weight:900;color:var(--t1);margin-bottom:12px;display:flex;align-items:center;gap:5px"><i data-lucide="bar-chart-2" style="width:14px;height:14px;display:inline-flex"></i> 今月の実績</div>'
     + `<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;text-align:center">`
     + `<div style="background:var(--bg);border-radius:12px;padding:10px 6px"><div style="font-size:24px;font-weight:900;color:var(--t1)">${totalTasks}</div><div style="font-size:10px;color:var(--t3)">総タスク</div></div>`
     + `<div style="background:var(--bg);border-radius:12px;padding:10px 6px"><div style="font-size:24px;font-weight:900;color:var(--gr)">${doneTasks}</div><div style="font-size:10px;color:var(--t3)">完了</div></div>`
     + `<div style="background:var(--bg);border-radius:12px;padding:10px 6px"><div style="font-size:24px;font-weight:900;color:var(--mama)">${(s.projects||[]).length}</div><div style="font-size:10px;color:var(--t3)">プロジェクト</div></div>`
     + '</div>';
+  if(typeof lucide!=='undefined') lucide.createIcons({root:sc});
   el.appendChild(sc);
 
   // ── メンバーカード
@@ -3199,17 +3209,17 @@ async function renderMem(){
   const childAge  = s.family?.childAge || 5;
   const members = [
     {
-      name: (s.family?.mama||'ママ'), av:'👩', avBg:'var(--mama2)', load:mamaLoad,
+      name: (s.family?.mama||'ママ'), av:'user', avBg:'var(--mama2)', load:mamaLoad,
       loadColor:'var(--mama)', role:'献立・スケジュール管理',
       tags:['献立','送り迎え','保育園対応','名もなき家事'], action:'member_mama'
     },
     {
-      name: (s.family?.papa||'パパ'), av:'👨', avBg:'var(--papa2)', load:papaLoad,
+      name: (s.family?.papa||'パパ'), av:'user', avBg:'var(--papa2)', load:papaLoad,
       loadColor:'var(--papa)', role:'ゴミ出し・週末担当',
       tags:['ゴミ出し','週末料理'], action:'member_papa'
     },
     {
-      name: `${childName}（${childAge}歳）`, av:'👧', avBg:'var(--yel3)',
+      name: `${childName}（${childAge}歳）`, av:'baby', avBg:'var(--yel3)',
       load:0, loadColor:'', role:'入園準備中',
       tags:['お片付け','あいさつ練習'], action:null
     },
@@ -3217,8 +3227,11 @@ async function renderMem(){
   members.forEach(m=>{
     const card = document.createElement('div'); card.className='mem-card'; card.style.marginBottom='10px';
     // アバター行
+    const _avSvg = m.av==='baby'
+      ? `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12h.01"/><path d="M15 12h.01"/><path d="M10 16c.5.3 1.2.5 2 .5s1.5-.2 2-.5"/><path d="M19 6.3a9 9 0 0 1 1.8 3.9 2 2 0 0 1 0 3.6 9 9 0 0 1-17.6 0 2 2 0 0 1 0-3.6A9 9 0 0 1 12 3c2 0 3.5 1.1 3.5 2.5s-.9 2.5-2 2.5c-.8 0-1.5-.4-1.5-1"/></svg>`
+      : `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`;
     card.innerHTML = `<div class="mem-top">`
-      + `<div class="mem-av" style="background:${m.avBg}">${m.av}</div>`
+      + `<div class="mem-av" style="background:${m.avBg}">${_avSvg}</div>`
       + `<div><div class="mem-name">${m.name}</div><div class="mem-role">${m.role}</div></div>`
       + '</div>';
     // バー
@@ -3235,7 +3248,7 @@ async function renderMem(){
     // AIボタン
     if(m.action){
       const btn = document.createElement('button'); btn.className='btn btn-g'; btn.style.marginTop='10px';
-      btn.textContent = `${m.av} へのタスクをAIに提案してもらう →`;
+      btn.textContent = `へのタスクをAIに提案してもらう →`;
       btn.onclick = ()=>navTo('chat',{action:m.action});
       card.appendChild(btn);
     }
@@ -3360,8 +3373,8 @@ function renderSyncCard(s) {
     // Firebase設定済み・家族IDなし → 新規作成 or 参加
     return '<div style="padding:16px 14px">'
       +'<div style="font-size:13px;font-weight:700;color:var(--t1);margin-bottom:12px">✅ Firebase接続済み</div>'
-      +'<button onclick="createFamilyRoom()" style="width:100%;padding:11px;background:var(--gr);color:#fff;border:none;border-radius:12px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;margin-bottom:8px">👩 ママとして家族ルームを作成する</button>'
-      +'<button onclick="showJoinRoom()" style="width:100%;padding:11px;background:var(--bg);color:var(--t1);border:1.5px solid var(--bdr);border-radius:12px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit">👨 招待コードで参加する（パパ用）</button>'
+      +'<button onclick="createFamilyRoom()" style="width:100%;padding:11px;background:var(--gr);color:#fff;border:none;border-radius:12px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;margin-bottom:8px">ママとして家族ルームを作成する</button>'
+      +'<button onclick="showJoinRoom()" style="width:100%;padding:11px;background:var(--bg);color:var(--t1);border:1.5px solid var(--bdr);border-radius:12px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit">招待コードで参加する（パパ用）</button>'
       +'</div>';
   }
 
@@ -3589,7 +3602,7 @@ async function openChat(){
   }else if(action&&action.startsWith('member_')){
     const who=action.replace('member_','');
     const name=who==='mama'?s.family.mama+'さん（ママ）':s.family.papa+'さん（パパ）';
-    addAI(`${name}へのタスク提案を作ります 🤖`);
+    addAI(`${name}へのタスク提案を作ります`);
     setTimeout(async()=>{
       chatHistory.push({role:'user',content:`${name}に合ったタスクを今週3件提案してください。`});
       await callAI();
@@ -3761,7 +3774,7 @@ async function handleChoice(key, extraData, wrapEl, choiceText){
           st.kaji.shop.push({id:Date.now()+Math.random(),name:line,who:'both',done:false,selected:false});
         });
         await saveST(st); ST=st;
-        toast('🛒 買い物リストに追加しました（'+lines.slice(0,5).length+'件）');
+        toast('買い物リストに追加しました（'+lines.slice(0,5).length+'件）');
       }
       setTimeout(()=>addChoices([{icon:'refresh-cw',text:'別の相談をする',key:'restart'},{icon:'house',text:'ホームに戻る',key:'home'}]),400);
     })();
@@ -3853,7 +3866,7 @@ const aiService = {
       return '🍽️ デモ提案：鶏肉と野菜の炒め物\n\n材料：鶏もも肉200g、キャベツ1/4、にんじん1/2\n調理時間：20分\n担当：ママ';
     if(last.includes('タスク') || last.includes('パパ'))
       return '📋 デモ提案：今週のパパタスク\n\n1. ゴミ出し（月・木）\n2. 週末の買い物\n3. お風呂担当（週末）\n\n※Proプランで家族情報に基づいた提案になります。';
-    return '🤖 AIが考え中です…少し待ってからもう一度お試しください。';
+    return 'AIが考え中です…少し待ってからもう一度お試しください。';
   }
 };
 
@@ -4043,7 +4056,7 @@ function initOnboard() {
       const role = roleCard?.dataset.role || 'mama';
       const roleLabel = roleCard?.dataset.label || 'ママ';
       const nameVal = (document.getElementById('ob-name')?.value.trim()) || roleLabel;
-      const av = document.querySelector('#ob-av-grid .av-chip.on')?.dataset.av || roleCard?.dataset.em || '👩';
+      const av = document.querySelector('#ob-av-grid .av-chip.on')?.dataset.av || roleCard?.dataset.em || 'mama';
       const family = (document.getElementById('ob-family')?.value.trim()) || '田中';
       const wake = document.querySelector('#ob-wake-chips .chip.on')?.dataset.wake || '7:00';
 
@@ -4198,10 +4211,11 @@ function renderPcmTemplateList(){
     PROJECT_TEMPLATES.filter(t=>t.category===cat).forEach(tpl=>{
       const row=document.createElement('div');
       row.style.cssText='display:flex;align-items:center;gap:12px;padding:12px;background:#fff;border-radius:14px;margin-bottom:8px;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.07)';
-      row.innerHTML='<div style="font-size:24px;width:40px;text-align:center;flex-shrink:0">'+tpl.icon+'</div>'
+      row.innerHTML='<div style="width:40px;height:40px;display:flex;align-items:center;justify-content:center;flex-shrink:0">'+projIcon(tpl.icon,28)+'</div>'
         +'<div style="flex:1;min-width:0"><div style="font-size:14px;font-weight:700;color:var(--t1)">'+tpl.title+'</div>'
         +'<div style="font-size:11px;color:var(--t2);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+tpl.overview.slice(0,28)+'</div></div>'
         +'<div style="font-size:11px;color:var(--t3);flex-shrink:0">'+tpl.tasks.length+'件›</div>';
+      if(typeof lucide!=='undefined') lucide.createIcons({root:row});
       row.addEventListener('click',()=>{
         // 目標日入力ピッカーを先に表示してからstep3へ
         openTemplateDatePicker(tpl, (goalDate, startDate) => {
@@ -4247,9 +4261,9 @@ function renderPcmStep3(){
     // 行2: 担当者チップ + 日付
     const row2=document.createElement('div');
     row2.style.cssText='display:flex;align-items:center;gap:6px;flex-wrap:wrap';
-    [{v:'both',l:'👫 二人'},{v:'mama',l:'👩 ママ'},{v:'papa',l:'👨 パパ'}].forEach(opt=>{
+    [{v:'both'},{v:'mama'},{v:'papa'}].forEach(opt=>{
       const ch=document.createElement('button');
-      ch.textContent=opt.l;
+      ch.innerHTML=whoLbl(opt.v);
       const on=(t.who||'both')===opt.v;
       ch.style.cssText='border:none;border-radius:20px;padding:3px 10px;font-size:10px;font-weight:700;cursor:pointer;'
         +'background:'+(on?'var(--gr)':'var(--bg)')+';color:'+(on?'#fff':'var(--t2)');
@@ -4426,7 +4440,7 @@ async function renderKajiScreen() {
     const papaB = document.createElement('button');
     const myRole = ST?.user?.role || 'mama';
     const isPapa = myRole === 'papa';
-    papaB.innerHTML = isPapa ? '👩 ママに依頼' : '👨 パパに依頼';
+    papaB.innerHTML = isPapa ? whoLbl('mama')+'に依頼' : whoLbl('papa')+'に依頼';
     papaB.style.cssText = 'padding:8px 14px;background:var(--bl);color:#fff;border:none;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer';
     papaB.addEventListener('click', () => openPapaRequest(sel, tab, isPapa));
 
@@ -4489,7 +4503,6 @@ async function openKajiTplModal(cat, tab) {
 function openPapaRequest(items, tab, fromPapa=false) {
   const ex = document.getElementById('papa-req-modal'); if (ex) ex.remove();
   const targetName = fromPapa ? 'ママ' : 'パパ';
-  const targetEmoji = fromPapa ? '👩' : '👨';
   const verb = tab === 'shop' ? 'これ買ってきてね' : 'これやっておいてね';
   const listTxt = items.map((x, i) => (i + 1) + '. ' + x.name).join('\n');
   const msg = verb + '\n\n' + listTxt + '\n\nよろしくね！';
@@ -4501,7 +4514,7 @@ function openPapaRequest(items, tab, fromPapa=false) {
 
   const hdr = document.createElement('div');
   hdr.style.cssText = 'padding:16px;border-bottom:1px solid var(--bdr);display:flex;align-items:center;gap:8px';
-  hdr.innerHTML = '<span style="font-size:22px">'+targetEmoji+'</span><div style="font-size:15px;font-weight:800;flex:1">'+targetName+'に依頼</div>';
+  hdr.innerHTML = whoLbl(fromPapa?'mama':'papa')+'<div style="font-size:15px;font-weight:800;flex:1;margin-left:4px">'+targetName+'に依頼</div>';
   const xb2 = document.createElement('button'); xb2.textContent = '\u2715';
   xb2.style.cssText = 'border:none;background:none;font-size:18px;cursor:pointer;color:var(--t2)';
   xb2.addEventListener('click', () => ov.remove()); hdr.appendChild(xb2);
