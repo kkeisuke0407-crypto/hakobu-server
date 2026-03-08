@@ -294,7 +294,10 @@ html,body{height:100%;background:#D8D0C4;font-family:'Nunito','Noto Sans JP',san
 .bfill{height:100%;border-radius:4px;}
 .tpill{display:inline-block;background:var(--bg);color:var(--t2);border-radius:10px;padding:3px 8px;font-size:11px;margin:2px;}
 /* burst */
-.burst{position:absolute;pointer-events:none;font-size:16px;z-index:999;animation:hpop .65s ease forwards;}
+.burst{position:fixed;pointer-events:none;font-size:16px;z-index:999;animation:hpop .65s ease forwards;}
+/* heart button */
+.heart-btn:hover{transform:scale(1.2)!important;}
+.heart-btn:active{transform:scale(0.9)!important;}
 
 /* ── ドロップダウンメニュー ── */
 .dmenu-item{padding:12px 18px;font-size:14px;font-weight:600;color:var(--t1);cursor:pointer;border-bottom:1px solid var(--bdr);}
@@ -935,10 +938,11 @@ function mkState(){
     family: { name:'田中', mama:'さくら', papa:'けんじ', childAge:5, childEvent:'4月から入園' },
     prefs:  { liked:[], rejected:[], papaReturn:'21時以降', shopDay:'週末', papaGood:['ゴミ出し','週末料理'], isPro:false },
     dismissedEventIds: [],
+    thanks: [],
     // 単発タスク（type:'single'、projectIdなし）
     singleTasks: [
-      {id:'s1', title:'シャンプー補充を買う',  assignee:'mama', isCompleted:false, dueDate:null, createdAt:new Date().toISOString(), type:'single'},
-      {id:'s2', title:'宅急便の受け取り',      assignee:'both', isCompleted:false, dueDate:null, createdAt:new Date().toISOString(), type:'single'},
+      {id:'s1', title:'シャンプー補充を買う',  assignee:'mama', isCompleted:false, status:'pending', dueDate:null, createdAt:new Date().toISOString(), type:'single'},
+      {id:'s2', title:'宅急便の受け取り',      assignee:'both', isCompleted:false, status:'pending', dueDate:null, createdAt:new Date().toISOString(), type:'single'},
     ],
     // プロジェクトタスク（type:'project'、projectId付き）
     projects: [
@@ -995,11 +999,21 @@ function mergeState(saved) {
     kaji:         { shop:  Array.isArray(saved.kaji?.shop)  ? saved.kaji.shop  : [],
                     chore: Array.isArray(saved.kaji?.chore) ? saved.kaji.chore : [] },
     dismissedEventIds: Array.isArray(saved.dismissedEventIds) ? saved.dismissedEventIds : [],
+    thanks:       Array.isArray(saved.thanks) ? saved.thanks : [],
     sync:         Object.assign({ familyId:null, role:'mama', fbConfigured:false }, saved.sync||{}),
   };
   if(!Array.isArray(st.prefs.liked))    st.prefs.liked    = [];
   if(!Array.isArray(st.prefs.rejected)) st.prefs.rejected = [];
   if(!Array.isArray(st.prefs.papaGood)) st.prefs.papaGood = def.prefs.papaGood;
+  // タスクステータスマイグレーション（後方互換）
+  const migrateTaskStatus = (t) => {
+    if(!t.status) {
+      if(t.isCompleted || t.done) t.status = 'done';
+      else t.status = 'pending';
+    }
+  };
+  st.singleTasks.forEach(migrateTaskStatus);
+  st.projects.forEach(p => (p.tasks||[]).forEach(migrateTaskStatus));
   return st;
 }
 
@@ -1412,10 +1426,10 @@ const HOLIDAY_MASTER = [
     hint:'健診・予防接種の予約', childPhase:'baby',
     tasks:['かかりつけ医に予約を入れる','母子手帳の記録を最新にする','健診当日の持ち物を準備する','予防接種のスケジュールを確認する','子供の成長記録（身長・体重）をつける','授乳・食事の記録を整理する','健診結果を夫婦で共有する','次回の健診日程を手帳に記録する','離乳食・幼児食の進み具合を確認する','小児科・かかりつけ医の連絡先を更新する'] },
   // ── 追加イベント ────────────────────────────────────────────────────────────
-  { id:'haha',         month:5,  day:11, name:'母の日',         icon:'🌹', color:'#E91E8C', bg:'linear-gradient(135deg,#C2185B,#E91E8C)',
+  { id:'haha',         month:5,  day:11, name:'母の日',         icon:'🌹', color:'#E91E8C', bg:'linear-gradient(135deg,#C2185B,#E91E8C)', visibleTo:'papa',
     hint:'5月第2日曜日・ママへの感謝を家族で表す日',
     tasks:['ママへのプレゼントをパパ・子どもで一緒に決める（花・スイーツ・体験など）','子どもと手作りカード・似顔絵を作る','ママの好きな料理・スイーツを調べて準備する','いつもの家事をその日は全部パパが引き受ける','外食・テイクアウトの予約をする','ママに「ゆっくりできる時間」をプレゼントする','家族写真を撮影して思い出を残す','ネット注文のプレゼントは1週間前までに手配する','子どもから「ありがとうメッセージ」を準備させる','義母（父方の祖母）へのご挨拶・贈り物も忘れずに'] },
-  { id:'chichi',       month:6,  day:15, name:'父の日',         icon:'👔', color:'#1565C0', bg:'linear-gradient(135deg,#0D47A1,#1565C0)',
+  { id:'chichi',       month:6,  day:15, name:'父の日',         icon:'👔', color:'#1565C0', bg:'linear-gradient(135deg,#0D47A1,#1565C0)', visibleTo:'mama',
     hint:'6月第3日曜日・パパへの感謝を伝える日',
     tasks:['パパへのプレゼントをみんなで決める','子どもに「パパへの手紙・似顔絵」を書かせる','パパの好きな食事・お酒・スイーツを準備する','パパが喜ぶ「家族時間」の過ごし方を計画する','パパに感謝の言葉を直接伝える機会を作る','父方の祖父へのプレゼント・ご挨拶の手配をする','パパの趣味・やりたいことを叶える1日にする','家族みんなで記念写真を撮る','プレゼントのネット注文は1週間前までに','パパへの日頃の感謝を家族で話し合う機会にする'] },
   { id:'tsuyu',        month:6,  day:1,  name:'梅雨入り準備',   icon:'☔', color:'#0277BD', bg:'linear-gradient(135deg,#01579B,#0277BD)',
@@ -1528,8 +1542,8 @@ function getUpcomingEvents(s) {
       let finalTasks = [...(ev.tasks||[])];
       const isolated = isIsolatedHoliday(evDate);
       if(isolated && finalTasks.length > 0){
-        finalTasks.unshift('📅 有休を取って3連休にする検討をする');
-        finalTasks.unshift('📝 パパ・ママ双方の会社の有休申請を確認する');
+        finalTasks.unshift('【有休】有休を取って3連休にする検討をする');
+        finalTasks.unshift('【申請】パパ・ママ双方の会社の有休申請を確認する');
         // 末尾2件を削除して合計10件を維持
         if(finalTasks.length > 10) finalTasks = finalTasks.slice(0, 10);
       }
@@ -1654,7 +1668,7 @@ function getPapaCard(s) {
   // パパ担当タスクの候補（未アサイン or 両方担当から）
   const candidates = [
     ...bothT.map(t=>'【振り分け候補】'+t.name),
-    ...papaT.map(t=>'✅ 【パパ担当確認】'+t.name),
+    ...papaT.map(t=>'【パパ担当確認】'+t.name),
   ];
   // 固定の振り分けTips
   const tips = [
@@ -1672,6 +1686,164 @@ function getPapaCard(s) {
     hint:dow+'曜日・今週パパに頼めることをまとめました',
     tasks, evDate: today, daysUntil:0, isolated:false,
   };
+}
+
+// ── TASK 3: ママ大変だね提案カード（パパ用）────────────────────────────────
+function getPapaEmpathyCard(s) {
+  const role = s.user?.role || 'mama';
+  if(role!=='papa' && role!=='dad') return null;
+  const allT = [
+    ...(s.singleTasks||[]).filter(t=>!t.isCompleted && t.status!=='thanked'),
+    ...(s.projects||[]).flatMap(p=>(p.tasks||[]).filter(t=>!t.done && t.status!=='thanked'))
+  ];
+  const mamaTasks = allT.filter(t=>(t.who||t.assignee)==='mama');
+  const papaTasks = allT.filter(t=>(t.who||t.assignee)==='papa');
+  if(mamaTasks.length < papaTasks.length*2 || mamaTasks.length < 5) return null;
+  const papaGood = s.prefs?.papaGood || [];
+  const candidates = allT.filter(t=>{
+    const who=t.who||t.assignee;
+    if(who==='both') return true;
+    if(who==='mama'){ const name=t.name||t.title||''; return papaGood.some(g=>name.includes(g)); }
+    return false;
+  }).slice(0,3);
+  const taskNames = candidates.map(t=>t.name||t.title);
+  const tasks = [
+    'ママの今日のタスク: '+mamaTasks.length+'件',
+    'パパのタスク: '+papaTasks.length+'件',
+    '---',
+    ...taskNames.map(n=>'引き受けられそう: '+n),
+    '「何か手伝おうか？」とLINEで聞いてみる',
+    'ママの好きなドリンクを買って帰る',
+  ].slice(0,8);
+  return {
+    id:'empathy_papa', name:'ママ、今日も頑張ってるよ', icon:'heart', type:'empathy',
+    color:'#E8694A', bg:'linear-gradient(135deg,#C04A2E,#E8694A)',
+    hint:'ママのタスクが'+mamaTasks.length+'件。何か1つ手伝ってあげない？',
+    tasks, evDate:new Date(), daysUntil:0, isolated:false, visibleTo:'papa',
+  };
+}
+
+// ── TASK 4: 「ちょっと話そう」仲直りカード ───────────────────────────────────
+function getReconcileCard(s) {
+  if((s.stats?.sessions||0) < 7) return null;
+  const now = new Date();
+  const daysSince = (dateStr) => { if(!dateStr) return 999; const d=new Date(dateStr); return Math.floor((now-d)/86400000); };
+  const recentThanks = (s.thanks||[]).filter(t=>daysSince(t.date)<7);
+  const allT = [
+    ...(s.singleTasks||[]),
+    ...(s.projects||[]).flatMap(p=>p.tasks||[])
+  ];
+  const recentComplete = allT.filter(t=>{
+    if(!t.isCompleted&&!t.done) return false;
+    const d=t.completedAt||t.createdAt;
+    return daysSince(d)<3;
+  });
+  const thanksExisted = (s.thanks||[]).length>0;
+  const showCard = (thanksExisted && recentThanks.length===0) || recentComplete.length===0;
+  if(!showCard) return null;
+  const isWeekend = [0,6].includes(now.getDay());
+  return {
+    id:'reconcile', name:'最近お互い忙しそうですね', icon:'message-circle', type:'reconcile',
+    color:'#7C3AED', bg:'linear-gradient(135deg,#6A1B9A,#9C27B0)',
+    hint: isWeekend ? '今日少しだけ、家事の分担を見直してみませんか？' : '今週末、30分だけ二人で話す時間を作りませんか？',
+    tasks:[
+      '最近大変だったことをお互い1つずつ話す',
+      '「ありがとう」を1つずつ伝え合う',
+      '来週パパが引き受けることを1つ決める',
+      '来週ママが引き受けることを1つ決める',
+      '子どものことで共有したいことを話す',
+      '週末に家族で楽しいことを1つ計画する',
+    ],
+    evDate:now, daysUntil:0, isolated:false, visibleTo:'all',
+  };
+}
+
+// ── TASK 5: サプライズ提案カード（パパ用）───────────────────────────────────
+function getSurpriseCard(s) {
+  const role = s.user?.role||'mama';
+  if(role!=='papa' && role!=='dad') return null;
+  const now = new Date();
+  const hour = now.getHours(), dow2 = now.getDay();
+  const isFriEve = dow2===5 && hour>=18;
+  const isSat = dow2===6;
+  const isSunMorn = dow2===0 && hour<12;
+  if(!isFriEve && !isSat && !isSunMorn) return null;
+  const month = now.getMonth()+1;
+  const weekNum = Math.floor((now-new Date(now.getFullYear(),0,1))/(7*86400000));
+  const ALL_SURPRISES = [
+    {text:'帰りにコンビニスイーツを買って帰りませんか？', season:'all'},
+    {text:'午前中ママをゆっくり寝かせてあげませんか？', season:'all'},
+    {text:'ママの好きなドリンクをテイクアウトしてきませんか？', season:'all'},
+    {text:'今週のママの頑張りに花を1本買って帰りませんか？', season:'all'},
+    {text:'子供の面倒を2時間見て、ママに自由時間をプレゼントしませんか？', season:'all'},
+    {text:'ママの好きな映画やドラマを一緒に見ませんか？', season:'all'},
+    {text:'ママの肩を5分だけ揉んであげませんか？', season:'all'},
+    {text:'今夜の夕食、パパが全部作ってみませんか？', season:'all'},
+    {text:'ママに「いつもありがとう」って直接言ってみませんか？', season:'all'},
+    {text:'子供と一緒にママへのお手紙を書いてみませんか？', season:'all'},
+    {text:'桜が綺麗な季節。ママを散歩に誘ってみませんか？', season:'spring'},
+    {text:'かき氷やアイスを買って帰りませんか？', season:'summer'},
+    {text:'焼き芋を買って帰って、家族でホクホク食べませんか？', season:'autumn'},
+    {text:'ホットチョコを淹れて、ママと一緒に温まりませんか？', season:'winter'},
+    {text:'週末ママを美容院に行かせてあげませんか？', season:'all'},
+    {text:'家族で写真を撮って、ママに送ってあげませんか？', season:'all'},
+    {text:'ママが最近欲しがっていたもの、覚えていますか？', season:'all'},
+    {text:'今日の家事、全部パパがやって「おやすみ券」をプレゼントしませんか？', season:'all'},
+    {text:'子供の寝かしつけをパパが担当して、ママに自由時間を作りませんか？', season:'all'},
+    {text:'週末ブランチをパパが作って、ママを起こしてあげませんか？', season:'all'},
+  ];
+  const seasonMap = {spring:[3,4,5],summer:[6,7,8],autumn:[9,10,11],winter:[12,1,2]};
+  const filtered = ALL_SURPRISES.filter(su => {
+    if(su.season==='all') return true;
+    return seasonMap[su.season]?.includes(month);
+  });
+  const pick = filtered[weekNum % filtered.length];
+  return {
+    id:'surprise_papa', name:'ママへのサプライズ提案', icon:'gift', type:'surprise',
+    color:'#E91E8C', bg:'linear-gradient(135deg,#AD1457,#E91E8C)',
+    hint:pick.text,
+    tasks:[pick.text,'ママには内緒で準備する','子供も巻き込むとサプライズ感UP','写真を撮って思い出に残す'],
+    evDate:now, daysUntil:0, isolated:false, visibleTo:'papa',
+  };
+}
+
+// ── TASK 7: アフィリエイトカード配列 ─────────────────────────────────────────
+const AFFILIATE_CARDS = [
+  {
+    id:'aff_travel', name:'家族旅行、早めの予約がお得', icon:'plane', type:'affiliate',
+    color:'#0277BD', bg:'linear-gradient(135deg,#01579B,#0277BD)',
+    hint:'家族向けプランは人気ですぐ埋まります', prLabel:'PR', url:'', partner:'楽天トラベル',
+    triggerEvents:['showa','umi','yama','obon','christmas'],
+    tasks:['家族向けホテルプランを早めにチェック','子連れに嬉しい部屋タイプを確認','早割プランで予算を節約','移動手段（新幹線・飛行機）も比較'],
+    visibleTo:'all',
+  },
+  {
+    id:'aff_furusato', name:'今年のふるさと納税、お済みですか？', icon:'gift', type:'affiliate',
+    color:'#2E7D32', bg:'linear-gradient(135deg,#1B5E20,#2E7D32)',
+    hint:'上限額チェック→人気返礼品を見る', prLabel:'PR', url:'', partner:'さとふる',
+    triggerEvents:['kakutei','kinro','weekly_budget'],
+    tasks:['今年の上限額をシミュレーション','人気の返礼品ランキングをチェック','ワンストップ特例申請の期限を確認','家族で欲しい返礼品を相談'],
+    visibleTo:'all',
+  },
+  {
+    id:'aff_food', name:'献立、決まったけど買い物が面倒？', icon:'utensils', type:'affiliate',
+    color:'#E65100', bg:'linear-gradient(135deg,#BF360C,#E65100)',
+    hint:'食材キットなら15分で夕食完成', prLabel:'PR', url:'', partner:'Oisix',
+    triggerEvents:['weekly_meal'],
+    tasks:['お試しセットで味を確認','15分キットで平日の負担を減らす','子どもも食べやすいメニューが豊富','定期便の頻度は自由に変更OK'],
+    visibleTo:'all',
+  },
+];
+
+function getAffiliateCard(s, currentEventIds) {
+  const dismissed = new Set(s.dismissedEventIds||[]);
+  const match = AFFILIATE_CARDS.find(aff => {
+    if(dismissed.has(aff.id)) return false;
+    if(!aff.url) return false; // URLが未設定は非表示
+    return aff.triggerEvents.some(te=>currentEventIds.includes(te));
+  });
+  if(!match) return null;
+  return {...match, evDate:new Date(), daysUntil:0, isolated:false};
 }
 
 // ── 提案カード日程範囲ピッカー ───────────────────────────────────────────────
@@ -1737,20 +1909,51 @@ function openEventDateRangePicker(ev, hasFixedDate, onConfirm) {
 }
 
 function renderEventProposals(s) {
+  // ロール判定
+  const role = s.user?.role || 'mama';
+  const isPapa = role==='papa' || role==='dad';
+
   // 祝日イベント＋季節メンテ＋パパ振り分け＋週次カードを合わせたカードリスト
   const holidayCards = getUpcomingEvents(s);
   const seasonCard   = getSeasonalMainteCard();
-  const papaCard     = getPapaCard(s);
+  const papaCard     = isPapa ? null : getPapaCard(s); // TASK 3: パパ画面ではpapaCardの代わりにempathyCard
   const weeklyCards  = getRotatingWeeklyCards();
-  // 順番: 直近祝日2枚 → 週次カード → 季節メンテ → パパ振り分け → 残り祝日
+
+  // TASK 3-5: 新規カード
+  const empathyCard  = isPapa ? getPapaEmpathyCard(s) : null;
+  const reconcileCard= getReconcileCard(s);
+  const surpriseCard = isPapa ? getSurpriseCard(s) : null;
+
+  // 順番: empathy → 直近祝日2枚 → 週次カード → サプライズ → 季節メンテ → 仲直り → パパ振り分け → 残り祝日
   const firstHoliday = holidayCards.slice(0,2);
   const restHoliday  = holidayCards.slice(2);
   const dismissed = new Set(s.dismissedEventIds||[]);
-  const events = [...firstHoliday, ...weeklyCards, seasonCard, papaCard, ...restHoliday]
+
+  // allCardsを組み立て
+  const allCards = [];
+  if(empathyCard) allCards.push(empathyCard);
+  allCards.push(...firstHoliday);
+
+  // TASK 7: アフィリエイトカード（祝日2枚の後）
+  const currentEventIds = [...firstHoliday,...restHoliday].map(e=>e.id);
+  const affCard = getAffiliateCard(s, currentEventIds);
+  if(affCard) allCards.push(affCard);
+
+  allCards.push(...weeklyCards);
+  if(surpriseCard) allCards.push(surpriseCard);
+  if(seasonCard) allCards.push(seasonCard);
+  if(reconcileCard) allCards.push(reconcileCard);
+  if(papaCard) allCards.push(papaCard);
+  allCards.push(...restHoliday);
+
+  const events = allCards
     .filter(e => e && !dismissed.has(e.id))
     .filter(e => {
+      // TASK 6: visibleToフィルタ
+      if(e.visibleTo==='papa' && !isPapa) return false;
+      if(e.visibleTo==='mama' && isPapa) return false;
       // 既にプロジェクトに追加済みの祝日カードは非表示
-      if(e.type==='papa' || e.type==='seasonal' || e.type==='weekly') return true;
+      if(e.type==='papa'||e.type==='seasonal'||e.type==='weekly'||e.type==='empathy'||e.type==='reconcile'||e.type==='surprise'||e.type==='affiliate') return true;
       return !s.projects.find(p => p.name === e.name || p.id === e.id+'_proj');
     });
 
@@ -1856,6 +2059,14 @@ function renderEventProposals(s) {
       urgBadge.textContent = '今週のパパ振り分け';
     } else if(ev.type==='weekly'){
       urgBadge.textContent = '今週のおすすめ';
+    } else if(ev.type==='empathy'){
+      urgBadge.textContent = 'パパへ';
+    } else if(ev.type==='reconcile'){
+      urgBadge.textContent = '二人へ';
+    } else if(ev.type==='surprise'){
+      urgBadge.textContent = 'パパへのサプライズ提案';
+    } else if(ev.type==='affiliate'){
+      urgBadge.innerHTML = '<span style="background:rgba(255,255,255,.3);padding:1px 6px;border-radius:4px;font-size:9px;font-weight:800;margin-right:4px">PR</span>'+(ev.partner||'提携');
     } else {
       const dateStr = (ev.evDate.getMonth()+1)+'月'+ev.evDate.getDate()+'日';
       const vacHtml = ev.isolated ? ' <i data-lucide="calendar" style="width:10px;height:10px;display:inline-flex;vertical-align:middle;margin-right:1px"></i>有休チャンス' : '';
@@ -1927,6 +2138,32 @@ function renderEventProposals(s) {
     if(ev.type==='papa'){
       actBtn.textContent = 'パパにタスクを振り分けるAIに相談する';
       actBtn.addEventListener('click', ()=>{ navTo('chat',{action:'balance'}); });
+    } else if(ev.type==='empathy'){
+      // TASK 3: ママ大変だねカード
+      actBtn.textContent = '1つ引き受ける → AIに相談';
+      actBtn.addEventListener('click', ()=>{ navTo('chat',{action:'balance'}); });
+    } else if(ev.type==='reconcile'){
+      // TASK 4: 仲直りカード
+      actBtn.textContent = 'AIに家事バランスを相談する';
+      actBtn.addEventListener('click', ()=>{ navTo('chat',{action:'balance'}); });
+    } else if(ev.type==='surprise'){
+      // TASK 5: サプライズカード
+      actBtn.textContent = 'やる！今週やってみる';
+      actBtn.addEventListener('click', async()=>{
+        toast('素敵！ ママはきっと喜ぶよ');
+        const st = await loadST();
+        if(!st.dismissedEventIds) st.dismissedEventIds=[];
+        st.dismissedEventIds.push('surprise_papa');
+        await saveST();
+        renderEventProposals(st);
+      });
+    } else if(ev.type==='affiliate'){
+      // TASK 7: アフィリエイトカード
+      actBtn.textContent = '詳しく見る →';
+      actBtn.addEventListener('click', ()=>{
+        if(ev.url) { window.open(ev.url,'_blank'); }
+        else { toast('リンクは準備中です'); }
+      });
     } else {
       // 祝日/季節/週次: 全て日付範囲ピッカー経由でプロジェクト追加
       const hasFixedDate = ev.evDate && ev.daysUntil != null && ev.type !== 'seasonal' && ev.type !== 'weekly';
@@ -1996,7 +2233,9 @@ async function renderHome(){
   if(ht) ht.textContent = (s.family?.name||'田中')+'家のOS';
   if(hs){
     const dow = ['日','月','火','水','木','金','土'][new Date().getDay()];
-    hs.textContent = dow+'曜日 · 今日も一緒に乗り越えよう';
+    const role = s.user?.role || 'mama';
+    const isPapa = role==='papa'||role==='dad';
+    hs.textContent = isPapa ? dow+'曜日 · パパの今日のミッション' : dow+'曜日 · 今日も一緒に乗り越えよう';
   }
   if(typeof lucide!=="undefined") lucide.createIcons();
 }
@@ -2129,17 +2368,22 @@ async function renderTodayTasks(s){
   const el = document.getElementById('task-list');
   if(!el) return;
 
-  // セクションラベルを更新
+  // ロール判定（TASK 2: パパ/ママ分岐）
+  const userRole = s.user?.role || 'mama';
+  const isPapaUser = userRole === 'papa' || userRole === 'dad';
+
+  // セクションラベルを更新（TASK 2）
   const lbl = el.closest('.sec')?.querySelector('.sec-lbl');
-  if(lbl) lbl.textContent = '今日これだけ';
+  if(lbl) lbl.textContent = isPapaUser ? 'パパの今日のミッション' : '今日これだけ';
 
   // 当日（＋期限切れ）のタスクのみ表示
   const allT = TaskRepository.getAll(s);
   const todayMidnight = new Date(); todayMidnight.setHours(0,0,0,0);
   const parseDue = due => { if(!due) return null; const d=new Date(due); d.setHours(0,0,0,0); return isNaN(d.getTime())?null:d; };
-  const todayTasks = allT
+  let todayTasks = allT
     .filter(t => {
-      if(t.isCompleted||t.done) return false;
+      if(t.status === 'thanked') return false; // TASK 1: thankedは非表示
+      if(t.isCompleted && t.status !== 'done') return false; // 完了済みは非表示
       const due = parseDue(t.dueDate||t.due);
       return due && due <= todayMidnight; // 期日あり かつ 今日以前のみ
     })
@@ -2149,38 +2393,115 @@ async function renderTodayTasks(s){
       return (b.isUrgent||b.urgent?1:0)-(a.isUrgent||a.urgent?1:0); // urgent優先
     });
 
+  // TASK 2: パパ画面はパパ/両方担当のみ、ママ担当は件数バッジ
+  let hiddenMamaCount = 0;
+  if(isPapaUser) {
+    hiddenMamaCount = todayTasks.filter(t => { const who=t.who||t.assignee; return who==='mama'; }).length;
+    todayTasks = todayTasks.filter(t => { const who=t.who||t.assignee; return who==='papa'||who==='both'; });
+    // パパ担当を上にソート
+    todayTasks.sort((a,b) => {
+      const aP=(a.who||a.assignee)==='papa'?0:1;
+      const bP=(b.who||b.assignee)==='papa'?0:1;
+      return aP-bP;
+    });
+  }
+
   el.innerHTML = '';
   let expanded = false;
   const SHOW = 3;
 
+  // TASK 1: ハートボタン（done状態のタスク用）
+  function makeHeartBtn(t) {
+    const heartBtn = document.createElement('button');
+    heartBtn.className = 'heart-btn';
+    heartBtn.style.cssText = 'width:32px;height:32px;border:none;background:none;cursor:pointer;font-size:18px;flex-shrink:0;transition:transform .15s;display:flex;align-items:center;justify-content:center';
+    heartBtn.textContent = '♡';
+    heartBtn.title = 'ありがとうを送る';
+    heartBtn.addEventListener('click', async(e) => {
+      e.stopPropagation();
+      heartBtn.textContent = '❤️';
+      heartBtn.style.transform = 'scale(1.4)';
+      setTimeout(() => { heartBtn.style.transform = 'scale(1)'; }, 200);
+      // burstエフェクト
+      for(let i=0; i<5; i++) {
+        setTimeout(() => {
+          const b = document.createElement('div'); b.className='burst'; b.textContent='❤️';
+          const r = heartBtn.getBoundingClientRect();
+          b.style.left=(r.left+Math.random()*30-15)+'px';
+          b.style.top=(r.top-10)+'px';
+          document.body.appendChild(b); setTimeout(()=>b.remove(),700);
+        }, i*80);
+      }
+      // ステータス更新
+      const st = await loadST();
+      const assignee = t.who||t.assignee||'both';
+      TaskRepository.update(st, t.id, { status:'thanked' });
+      if(!st.thanks) st.thanks=[];
+      st.thanks.push({ from:st.user.role, to:assignee, taskId:t.id, date:new Date().toISOString(), type:'heart' });
+      await saveST();
+      toast('ありがとうを送りました');
+      setTimeout(()=>renderHome(),500);
+    });
+    return heartBtn;
+  }
+
+  // TASK 1: 「お願い中」バッジ
+  function makeRequestedBadge() {
+    const reqBadge = document.createElement('span');
+    reqBadge.style.cssText = 'font-size:9px;font-weight:700;padding:2px 6px;border-radius:6px;background:#FFF7ED;color:#F97316;flex-shrink:0';
+    reqBadge.textContent = 'お願い中';
+    return reqBadge;
+  }
+
   function makeTRow(t) {
     const row=document.createElement('div'); row.className='trow';
     row.dataset.taskId=t.id; row.dataset.projId=t.projId;
-    const chk=document.createElement('div'); chk.className='tchk'+(t.done?' done':'');
-    if(t.done) chk.textContent='✓';
+    const isDone = t.status==='done' || t.isCompleted;
+    const chk=document.createElement('div'); chk.className='tchk'+(isDone?' done':'');
+    if(isDone) chk.textContent='✓';
     chk.addEventListener('click', e=>{e.stopPropagation(); toggleTask(t.id,t.projId,chk);});
     const bd=document.createElement('div'); bd.className='tbody';
-    const nm=document.createElement('div'); nm.className='tname'+(t.done?' done':''); nm.textContent=t.name||t.title;
+    const nm=document.createElement('div'); nm.className='tname'+(isDone?' done':''); nm.textContent=t.name||t.title;
     const mt=document.createElement('div'); mt.className='tmeta';
     const wc=t.who==='mama'?'wt-m':t.who==='papa'?'wt-p':'wt-b';
     const wt=document.createElement('span'); wt.className='wtag '+wc; wt.innerHTML=whoLbl(t.who);
     mt.appendChild(wt);
-    if((t.urgent||t.isUrgent)&&!t.done){ const dt=document.createElement('span'); dt.className='dtag urg'; dt.textContent=(t.due||'緊急'); mt.appendChild(dt); }
-    const pt=document.createElement('span'); pt.className='dtag'; pt.textContent=t.projIcon+' '+t.projName;
+    if(t.status==='requested') mt.appendChild(makeRequestedBadge()); // TASK 1
+    if((t.urgent||t.isUrgent)&&!isDone){ const dt=document.createElement('span'); dt.className='dtag urg'; dt.textContent=(t.due||'緊急'); mt.appendChild(dt); }
+    const pt=document.createElement('span'); pt.className='dtag'; pt.innerHTML=projIcon(t.projIcon||'📌',11)+' '+t.projName; if(typeof lucide!=='undefined') lucide.createIcons({root:pt});
     mt.appendChild(pt);
     bd.append(nm,mt);
-    const arr=document.createElement('span'); arr.className='tarr'; arr.textContent='›';
-    row.append(chk,bd,arr);
+    // TASK 1: done状態ならハートボタン、それ以外は矢印
+    if(isDone && t.status==='done') {
+      row.append(chk,bd,makeHeartBtn(t));
+    } else {
+      const arr=document.createElement('span'); arr.className='tarr'; arr.textContent='›';
+      row.append(chk,bd,arr);
+    }
     row.addEventListener('click', ()=>openTaskModal(t.id,t.projId));
     return row;
   }
 
   function renderTaskRows() {
     el.innerHTML = '';
+    // TASK 2: ママタスク件数バッジ（パパ画面のみ）
+    if(isPapaUser && hiddenMamaCount > 0) {
+      const mamaBadge = document.createElement('div');
+      mamaBadge.style.cssText = 'background:#FFF0EC;border-radius:14px;padding:12px 16px;margin-bottom:8px;display:flex;align-items:center;gap:10px';
+      mamaBadge.innerHTML = '<div style="width:36px;height:36px;border-radius:50%;background:var(--mama);display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>'
+        + '<div><div style="font-size:13px;font-weight:700;color:var(--t1)">ママのタスク: '+hiddenMamaCount+'件</div>'
+        + '<div style="font-size:11px;color:var(--t2)">ママも今日たくさん頑張ってるよ</div></div>';
+      el.appendChild(mamaBadge);
+    }
     if(!todayTasks.length){
       const empty=document.createElement('div'); empty.className='trow';
       empty.style.cssText='color:var(--t2);font-size:14px;padding:18px 14px;text-align:center;flex-direction:column;gap:6px';
-      empty.innerHTML='<div style="display:flex;align-items:center;justify-content:center;height:32px"><i data-lucide="leaf" style="width:28px;height:28px;color:var(--gr)"></i></div><div>今日は余白の日です</div><div style="font-size:12px;color:var(--t3)">ゆっくり休んでください</div>';
+      if(isPapaUser) {
+        // TASK 2: パパ用空メッセージ
+        empty.innerHTML='<div style="display:flex;align-items:center;justify-content:center;height:32px"><i data-lucide="check-circle" style="width:28px;height:28px;color:var(--papa)"></i></div><div>今日のパパミッションはクリア！</div><div style="font-size:12px;color:var(--t3)">ママに「何か手伝おうか？」って聞いてみて</div>';
+      } else {
+        empty.innerHTML='<div style="display:flex;align-items:center;justify-content:center;height:32px"><i data-lucide="leaf" style="width:28px;height:28px;color:var(--gr)"></i></div><div>今日は余白の日です</div><div style="font-size:12px;color:var(--t3)">ゆっくり休んでください</div>';
+      }
       if(typeof lucide!=='undefined') lucide.createIcons({root:empty});
       el.appendChild(empty); return;
     }
@@ -2230,7 +2551,7 @@ function renderTaskList(s){
       const wt=document.createElement('span'); wt.className='wtag '+wc; wt.innerHTML=whoLbl(t.who);
       mt.appendChild(wt);
       if(t.urgent&&!t.done){ const dt=document.createElement('span'); dt.className='dtag urg'; dt.textContent=(t.due||'緊急'); mt.appendChild(dt); }
-      const pt=document.createElement('span'); pt.className='dtag'; pt.textContent=t.projIcon+' '+t.projName;
+      const pt=document.createElement('span'); pt.className='dtag'; pt.innerHTML=projIcon(t.projIcon||'📌',11)+' '+t.projName; if(typeof lucide!=='undefined') lucide.createIcons({root:pt});
       mt.appendChild(pt);
       bd.append(nm,mt);
 
@@ -2367,8 +2688,16 @@ function toggleTask(taskId,projId,el){
   if(projId==='__single__'){
     const si = (ST.singleTasks||[]).findIndex(t=>t.id===taskId);
     if(si>=0){
-      ST.singleTasks[si].isCompleted = !ST.singleTasks[si].isCompleted;
+      const wasCompleted = ST.singleTasks[si].isCompleted;
+      ST.singleTasks[si].isCompleted = !wasCompleted;
       ST.singleTasks[si].done        = ST.singleTasks[si].isCompleted;
+      if(ST.singleTasks[si].isCompleted) {
+        ST.singleTasks[si].status = 'done';
+        ST.singleTasks[si].completedAt = new Date().toISOString();
+      } else {
+        ST.singleTasks[si].status = 'pending';
+        ST.singleTasks[si].completedAt = null;
+      }
       saveST();
       const done = ST.singleTasks[si].isCompleted;
       el.classList.toggle('done',done); el.textContent=done?'✓':'';
@@ -2383,6 +2712,8 @@ function toggleTask(taskId,projId,el){
   const task=proj&&proj.tasks.find(t=>t.id===taskId);
   if(!task) return;
   task.done = !task.done; task.isCompleted = task.done;
+  if(task.done) { task.status = 'done'; task.completedAt = new Date().toISOString(); }
+  else { task.status = 'pending'; task.completedAt = null; }
   saveST();
   el.classList.toggle('done',task.done); el.textContent=task.done?'✓':'';
   el.closest('.trow')?.querySelector('.tname')?.classList.toggle('done',task.done);
@@ -2481,7 +2812,7 @@ async function renderCal(){
         });
         cell.style.background='var(--yel)';
         selectedDateStr = dStr;
-        if(isHoliday) toast('🎌 '+holidayName);
+        if(isHoliday) toast('祝日: '+holidayName);
       }
     });
 
@@ -2507,7 +2838,7 @@ async function renderCal(){
       const chip=document.createElement('div');
       // プロジェクトタスクは青、単発は担当者色
       chip.className='cchip '+(t.projId?'proj':t.who)+(t.done?' done':'');
-      chip.textContent=(t.projIcon||'📌')+' '+t.name.slice(0,6);
+      chip.innerHTML=projIcon(t.projIcon||'📌',12)+' '+t.name.slice(0,6); if(typeof lucide!=='undefined') lucide.createIcons({root:chip});
       chip.addEventListener('click',()=>toast(t.name));
       col.appendChild(chip);
     });
@@ -2553,7 +2884,7 @@ function openDateTaskOverlay(date, tasks, holidayName) {
   const hdr=document.createElement('div');
   hdr.style.cssText='padding:0 18px 14px;flex-shrink:0';
   hdr.innerHTML='<div style="font-size:18px;font-weight:900;color:var(--t1)">'+dateLabel+'</div>'
-    +(holidayName?'<div style="font-size:12px;color:#C0392B;font-weight:700;margin-top:3px">🎌 '+holidayName+'</div>':'');
+    +(holidayName?'<div style="font-size:12px;color:#C0392B;font-weight:700;margin-top:3px">祝 '+holidayName+'</div>':'');
 
   // タスクリスト
   const body=document.createElement('div');
@@ -2571,7 +2902,7 @@ function openDateTaskOverlay(date, tasks, holidayName) {
       const nm=document.createElement('div'); nm.style.cssText='font-size:14px;font-weight:500;color:var(--t1)'+(t.done?';text-decoration:line-through;color:var(--t3)':'');
       nm.textContent=t.name||t.title;
       const meta=document.createElement('div'); meta.style.cssText='font-size:11px;color:var(--t2);margin-top:3px';
-      meta.innerHTML=whoLbl(t.who)+(t.projName?' · '+t.projIcon+' '+t.projName:'');
+      meta.innerHTML=whoLbl(t.who)+(t.projName?' · '+projIcon(t.projIcon||'📌',10)+' '+t.projName:''); if(typeof lucide!=='undefined') lucide.createIcons({root:meta});
       info.append(nm,meta);
       row.append(chk,info);
       row.addEventListener('click',()=>{ ov.remove(); openTaskModal(t.id,t.projId); });
@@ -2656,7 +2987,7 @@ async function renderProjScreen(){
 
     const iconEl = document.createElement('div');
     iconEl.style.cssText = 'width:40px;height:40px;border-radius:14px;background:'+(proj.bg||'#F3F6F3')+';display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0';
-    iconEl.textContent = proj.icon||'📁';
+    iconEl.innerHTML = projIcon(proj.icon||'📁',24); if(typeof lucide!=='undefined') lucide.createIcons({root:iconEl});
 
     const info = document.createElement('div'); info.style.cssText='flex:1;min-width:0';
     info.innerHTML = '<div style="font-size:14px;font-weight:700;color:var(--t1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+proj.name+'</div>'
@@ -2979,7 +3310,7 @@ function renderTasksByCalendar(s, el){
         // 1回目タップ → 選択・ハイライト
         window._selDay = day;
         renderTasksScreen();
-        if(isHoliday) toast('🎌 '+holidayName);
+        if(isHoliday) toast('祝日: '+holidayName);
       }
     });
     grid.appendChild(cell);
@@ -3136,9 +3467,10 @@ function makeCalItem(t,s){
   nm.textContent=t.name||t.title;
   const mt=document.createElement('div'); mt.style.cssText='font-size:11px;color:var(--t2);margin-top:2px;display:flex;gap:6px;align-items:center;flex-wrap:wrap';
   const who=t.who||t.assignee;
-  const _pl=(t.projId&&t.projId!=='__single__'&&t.projName)?'<span style="background:var(--bg);border-radius:4px;padding:1px 5px;font-weight:600;color:var(--t2)">'+t.projIcon+' '+t.projName+'</span> · ':'';
+  const _pl=(t.projId&&t.projId!=='__single__'&&t.projName)?'<span style="background:var(--bg);border-radius:4px;padding:1px 5px;font-weight:600;color:var(--t2)">'+projIcon(t.projIcon||'📌',10)+' '+t.projName+'</span> · ':'';
   mt.innerHTML=_pl+whoLbl(who)
     +(t.isUrgent||t.urgent?' · <span style="color:var(--re);font-weight:700">緊急</span>':'');
+  if(typeof lucide!=='undefined') lucide.createIcons({root:mt});
   body.append(nm,mt);
   item.append(chk,body);
   item.addEventListener('click',()=>openTaskModal(t.id,t.projId||'__single__'));
@@ -3363,7 +3695,7 @@ function renderSyncCard(s) {
   if(!hasConfig) {
     // Firebase未設定
     return '<div style="padding:16px 14px">'
-      +'<div style="font-size:13px;font-weight:700;color:var(--t1);margin-bottom:6px">🔗 パパと同期するにはFirebaseの設定が必要です</div>'
+      +'<div style="font-size:13px;font-weight:700;color:var(--t1);margin-bottom:6px">パパと同期するにはFirebaseの設定が必要です</div>'
       +'<div style="font-size:11px;color:var(--t2);margin-bottom:14px">Firebaseの無料プランで家族間リアルタイム同期ができます。<br>下のボタンからセットアップを始めてください。</div>'
       +'<button onclick="showFbSetup()" style="width:100%;padding:11px;background:var(--t1);color:#fff;border:none;border-radius:12px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit">Firebaseをセットアップする</button>'
       +'</div>';
@@ -3372,7 +3704,7 @@ function renderSyncCard(s) {
   if(!fid) {
     // Firebase設定済み・家族IDなし → 新規作成 or 参加
     return '<div style="padding:16px 14px">'
-      +'<div style="font-size:13px;font-weight:700;color:var(--t1);margin-bottom:12px">✅ Firebase接続済み</div>'
+      +'<div style="font-size:13px;font-weight:700;color:var(--t1);margin-bottom:12px">Firebase接続済み</div>'
       +'<button onclick="createFamilyRoom()" style="width:100%;padding:11px;background:var(--gr);color:#fff;border:none;border-radius:12px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;margin-bottom:8px">ママとして家族ルームを作成する</button>'
       +'<button onclick="showJoinRoom()" style="width:100%;padding:11px;background:var(--bg);color:var(--t1);border:1.5px solid var(--bdr);border-radius:12px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit">招待コードで参加する（パパ用）</button>'
       +'</div>';
@@ -3391,7 +3723,7 @@ function renderSyncCard(s) {
     +'<div style="font-size:28px;font-weight:900;letter-spacing:6px;color:var(--t1);text-align:center;padding:4px 0">'+short+'</div>'
     +'<div style="font-size:10px;color:var(--t3);text-align:center">タップでコピー</div>'
     +'</div>'
-    +'<button onclick="copyInviteCode(\''+short+'\')" style="width:100%;padding:10px;background:var(--t1);color:#fff;border:none;border-radius:12px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;margin-bottom:8px">📋 招待コードをコピーする</button>'
+    +'<button onclick="copyInviteCode(\''+short+'\')" style="width:100%;padding:10px;background:var(--t1);color:#fff;border:none;border-radius:12px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;margin-bottom:8px">招待コードをコピーする</button>'
     +'<button onclick="disconnectSync()" style="width:100%;padding:10px;background:var(--bg);color:var(--re);border:1.5px solid var(--re);border-radius:12px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">同期を解除する</button>'
     +'</div>';
 }
@@ -3496,7 +3828,7 @@ async function joinFamilyRoom() {
 // 招待コードコピー
 function copyInviteCode(code) {
   if(navigator.clipboard) {
-    navigator.clipboard.writeText(code).then(()=>toast('📋 コードをコピーしました: '+code));
+    navigator.clipboard.writeText(code).then(()=>toast('コードをコピーしました: '+code));
   } else {
     toast('コード: '+code);
   }
@@ -3569,7 +3901,7 @@ async function openChat(){
   const action=ctx&&ctx.action;
 
   if(action==='kondate'){
-    addAI('献立を一緒に決めましょう 🍽️\n\n今ある食材を教えてください。あるもので作れる最適な献立を提案します。');
+    addAI('献立を一緒に決めましょう\n\n今ある食材を教えてください。あるもので作れる最適な献立を提案します。');
     setTimeout(addIngPicker, 500);
   }else if(action&&action.startsWith('project_')){
     const pid=(ctx&&ctx.projectId)||action.replace('project_','');
@@ -3587,14 +3919,14 @@ async function openChat(){
   }else if(action==='invisible'){
     const items=getInvItems(s);
     const list=items.map((it,i)=>`${i+1}. ${it.icon} ${it.name}`).join('\n');
-    addAI(`名もなき家事を ${items.length} 件検出しました 👁\n\n${list}\n\nどうしますか？`);
+    addAI(`名もなき家事を ${items.length} 件検出しました\n\n${list}\n\nどうしますか？`);
     setTimeout(()=>addChoices([
       {icon:'check-square',text:'全部タスクに追加する',key:'inv_add'},
       {icon:'user',text:'パパに割り振れるものを選ぶ', key:'inv_papa'},
       {icon:'sparkles',text:'AIに優先順位をつけてもらう', key:'inv_sort'},
     ]),400);
   }else if(action==='balance'){
-    addAI(`家事バランスを分析しました ⚖️\n\nママ 72%：パパ 28%\n\nパパに今週できるタスクを提案します。`);
+    addAI(`家事バランスを分析しました\n\nママ 72%：パパ 28%\n\nパパに今週できるタスクを提案します。`);
     setTimeout(async()=>{
       chatHistory.push({role:'user',content:'パパに今週できる家事タスクを3件、得意なこと・帰宅時間を考慮して具体的に提案してください。'});
       await callAI();
@@ -3611,7 +3943,7 @@ async function openChat(){
     const dow=['日','月','火','水','木','金','土'][new Date().getDay()];
     const isWe=[0,6].includes(new Date().getDay());
     const urg=allTasks(s).find(t=>!t.done&&t.urgent);
-    addAI(`こんにちは！${s.family.name}さん 👋\n\n今日は${dow}曜日${isWe?'、パパも在宅ですね':''}。`+(urg?`\n\n⚠️「${urg.name}」が期限に近づいています。`:'')+'\n\n今日は何を一緒に解決しますか？');
+    addAI(`こんにちは！${s.family.name}さん\n\n今日は${dow}曜日${isWe?'、パパも在宅ですね':''}。`+(urg?`\n\n「${urg.name}」が期限に近づいています。`:'')+'\n\n今日は何を一緒に解決しますか？');
     setTimeout(()=>addChoices([
       {icon:'utensils',text:'今夜の献立を食材から決める',key:'kondate'},
       {icon:'clipboard-list',text:'プロジェクトを前進させたい',key:'proj_menu'},
@@ -3670,7 +4002,7 @@ async function handleChoice(key, extraData, wrapEl, choiceText){
     loadST().then(async st=>{
       st.prefs.isPro=true; await saveST(st); ST=st;
       aiService.provider='mock';
-      toast('🎭 デモモード有効');
+      toast('デモモード有効');
       resetChat(); navTo('chat');
     }); return;
   }
@@ -3702,7 +4034,7 @@ async function handleChoice(key, extraData, wrapEl, choiceText){
           });
         });
         await saveST(st); ST=st;
-        toast('✅ タスクに追加しました（'+lines.slice(0,5).length+'件）');
+        toast('タスクに追加しました（'+lines.slice(0,5).length+'件）');
       }
       addAI('タスクに追加しました！他に何かありますか？');
       setTimeout(()=>addChoices([{icon:'refresh-cw',text:'別の相談をする',key:'restart'},{icon:'house',text:'ホームに戻る',key:'home'}]),400);
@@ -3752,7 +4084,7 @@ async function handleChoice(key, extraData, wrapEl, choiceText){
           });
         });
         await saveST(st); ST=st;
-        toast('📋 「'+proj.name+'」に追加しました（'+lines.slice(0,5).length+'件）');
+        toast('「'+proj.name+'」に追加しました（'+lines.slice(0,5).length+'件）');
         addAI('「'+proj.name+'」にタスクを追加しました！他に何かありますか？');
       } else {
         toast('追加できませんでした');
@@ -3863,9 +4195,9 @@ const aiService = {
     await new Promise(r => setTimeout(r, 800));
     const last = messages[messages.length-1]?.content || '';
     if(last.includes('献立') || last.includes('食材'))
-      return '🍽️ デモ提案：鶏肉と野菜の炒め物\n\n材料：鶏もも肉200g、キャベツ1/4、にんじん1/2\n調理時間：20分\n担当：ママ';
+      return 'デモ提案：鶏肉と野菜の炒め物\n\n材料：鶏もも肉200g、キャベツ1/4、にんじん1/2\n調理時間：20分\n担当：ママ';
     if(last.includes('タスク') || last.includes('パパ'))
-      return '📋 デモ提案：今週のパパタスク\n\n1. ゴミ出し（月・木）\n2. 週末の買い物\n3. お風呂担当（週末）\n\n※Proプランで家族情報に基づいた提案になります。';
+      return 'デモ提案：今週のパパタスク\n\n1. ゴミ出し（月・木）\n2. 週末の買い物\n3. お風呂担当（週末）\n\n※Proプランで家族情報に基づいた提案になります。';
     return 'AIが考え中です…少し待ってからもう一度お試しください。';
   }
 };
@@ -3879,7 +4211,7 @@ async function callAI(){
     if(!_st.prefs.isPro){
       document.getElementById('lveil').classList.remove('on');
       document.getElementById('send-btn').disabled=false;
-      addAI('Proプランを有効にすると、家族の状況に合わせたAI提案が届きます ✨');
+      addAI('Proプランを有効にすると、家族の状況に合わせたAI提案が届きます。');
       setTimeout(()=>addChoices([
         {icon:'settings', text:'設定でProプランを有効にする', key:'open_settings'},
         {icon:'house',    text:'ホームに戻る', key:'home'},
@@ -3938,7 +4270,7 @@ document.getElementById('mic-btn').addEventListener('click',()=>{
   micOn=!micOn;
   document.getElementById('mic-btn').classList.toggle('on',micOn);
   if(micOn){
-    toast('🎤 音声入力中...');
+    toast('音声入力中...');
     setTimeout(()=>{ micOn=false; document.getElementById('mic-btn').classList.remove('on'); document.getElementById('chat-ta').value='今夜の献立を食材から決めたい'; },2200);
   }
 });
@@ -4160,7 +4492,7 @@ function openTemplateDatePicker(tpl, onConfirm) {
 
   const title = document.createElement('div');
   title.style.cssText = 'font-size:16px;font-weight:800;color:var(--t1);margin-bottom:6px';
-  title.textContent = (tpl.icon||'📋') + ' ' + tpl.title + ' — 期間を設定';
+  title.innerHTML = projIcon(tpl.icon||'📋',18)+' '+tpl.title+' — 期間を設定'; if(typeof lucide!=='undefined') lucide.createIcons({root:title});
   const hint = document.createElement('div');
   hint.style.cssText = 'font-size:12px;color:var(--t2);margin-bottom:18px';
   hint.textContent = '取り組む期間を設定してください（任意）';
@@ -4284,8 +4616,8 @@ function renderPcmStep3(){
 
 // ── PCM ボタンイベント（boot内で登録） ───────────
 /* ===== KAJI SCREEN ===== */
-const SHOP_TPLS = [{"cat": "🥩 肉・魚・卵", "items": ["鶏もも肉", "鶏むね肉", "豚こま肉", "豚バラ肉", "豚ひき肉", "牛こま肉", "合い挽き肉", "ベーコン", "ウインナー", "ハム", "サーモン（切り身）", "鯖（切り身）", "鮭（切り身）", "あじの開き", "えび", "しらす", "ツナ缶", "サバ缶", "卵", "温泉卵"]}, {"cat": "🥦 野菜・果物", "items": ["玉ねぎ", "にんじん", "じゃがいも", "キャベツ", "レタス", "ほうれん草", "小松菜", "ブロッコリー", "トマト", "きゅうり", "なす", "ピーマン", "もやし", "長ねぎ", "大根", "白菜", "ごぼう", "れんこん", "しめじ", "えのき", "バナナ", "りんご", "みかん", "いちご", "ぶどう", "レモン", "アボカド"]}, {"cat": "🥛 乳製品・豆腐", "items": ["牛乳", "豆乳", "ヨーグルト", "バター", "生クリーム", "スライスチーズ", "ピザ用チーズ", "クリームチーズ", "豆腐（絹）", "豆腐（木綿）", "納豆", "油揚げ", "厚揚げ", "豆乳ヨーグルト"]}, {"cat": "🍞 主食・乾物", "items": ["米（5kg）", "食パン", "ロールパン", "バゲット", "うどん（乾麺）", "そば（乾麺）", "スパゲッティ", "ラーメン（生）", "そうめん", "パスタソース", "カップ麺", "インスタントみそ汁", "春雨", "もち", "コーンフレーク", "オートミール", "小麦粉", "片栗粉", "パン粉", "マカロニ"]}, {"cat": "🧂 調味料・飲料", "items": ["しょうゆ", "みそ", "みりん", "料理酒", "砂糖", "塩", "こしょう", "酢", "ごま油", "サラダ油", "オリーブオイル", "めんつゆ", "ポン酢", "マヨネーズ", "ケチャップ", "ソース", "カレールー", "ほんだし", "鶏がらスープの素", "コンソメ", "水（2Lペット）", "お茶（500ml）", "ジュース", "炭酸水", "コーヒー", "紅茶", "牛乳（低脂肪）"]}, {"cat": "🧻 日用消耗品", "items": ["トイレットペーパー", "ティッシュ", "キッチンペーパー", "ラップ", "アルミホイル", "ジッパーバッグ（大）", "ジッパーバッグ（小）", "ゴミ袋（45L）", "ゴミ袋（20L）", "ゴミ袋（小）", "食器用洗剤", "スポンジ", "排水口ネット", "重曹", "クエン酸"]}, {"cat": "🧴 洗面・衛生", "items": ["シャンプー", "リンス", "ボディソープ", "洗顔料", "歯磨き粉", "歯ブラシ", "デンタルフロス", "マウスウォッシュ", "綿棒", "ひげそり（替刃）", "生理用品", "ハンドソープ", "消毒液", "マスク", "絆創膏", "体温計用電池", "日焼け止め", "虫よけスプレー", "かゆみ止め", "爪切り"]}, {"cat": "👶 子ども・赤ちゃん", "items": ["おむつ（Sサイズ）", "おむつ（Mサイズ）", "おむつ（Lサイズ）", "おむつ（ビッグサイズ）", "おしりふき", "お尻かぶれクリーム", "子ども用歯ブラシ", "子ども用歯磨き粉", "子ども用シャンプー", "子ども用ボディソープ", "子ども用洗剤", "おやつ（赤ちゃんせんべい）", "おやつ（小袋）", "ジュース（子ども用）", "離乳食（瓶）", "ベビーフード（パウチ）", "粉ミルク", "液体ミルク", "哺乳瓶消毒液", "子ども用日焼け止め"]}, {"cat": "💊 常備薬・医療", "items": ["解熱剤（子ども用・座薬）", "解熱剤（子ども用・シロップ）", "解熱鎮痛剤（大人用）", "風邪薬（総合）", "鼻水・鼻づまり薬", "咳止め薬", "のど飴", "胃腸薬", "整腸剤", "経口補水液", "絆創膏（各サイズ）", "ガーゼ", "包帯", "冷却シート", "虫刺され薬", "目薬", "耳鼻科用綿棒", "体温計", "パルスオキシメーター用電池", "マスク（子ども用）"]}, {"cat": "🏠 家電・生活雑貨", "items": ["単3電池", "単4電池", "単1電池", "乾電池セット", "電球（LED）", "掃除機パック", "換気扇フィルター", "エアコンフィルター", "洗濯槽クリーナー", "排水管クリーナー", "カビ取り剤", "漂白剤", "コロコロ（替え）", "ビニール手袋", "除湿剤", "芳香剤", "防虫剤", "靴下", "ハンガー", "洗濯ネット"]}];
-const CHORE_TPLS = [{"cat": "🌅 毎朝の家事", "items": ["朝食を作る", "お弁当を作る", "子どもを起こす", "子どもの着替えを手伝う", "子どもの朝食を食べさせる", "子どもの身支度チェック（ハンカチ・ティッシュ）", "保育園・学校の連絡帳を書く", "保育園・学校のカバンを用意する", "洗濯機を回す", "洗濯物を干す", "ゴミをまとめてゴミ出しへ", "食洗機をセットする", "シンクを軽く拭く", "玄関を整える", "郵便受けを確認する"]}, {"cat": "🌙 毎夜の家事", "items": ["夕食を作る", "夕食の後片付け", "食器を洗う（食洗機セット）", "コンロ周りを拭く", "シンク・キッチンを拭く", "洗濯物を取り込んでたたむ", "翌日の洗い物を下洗いする", "子どもをお風呂に入れる", "子どもの歯磨きをする", "子どもの寝かしつけをする", "翌日の保育園準備をする", "翌日のお弁当の下準備", "ゴミをまとめる", "床の軽い掃除（ルンバセット）", "戸締まり・施錠確認"]}, {"cat": "📅 週次の家事", "items": ["シーツを洗濯する", "バスタオルを洗濯する", "浴槽・風呂場の掃除", "トイレ掃除（便器・床・手洗い）", "洗面台の掃除", "洗面所の床掃除", "床の掃除機がけ（全部屋）", "床の水拭き", "窓ガラスを拭く", "サッシ・網戸の掃除", "ソファ・ラグのコロコロがけ", "冷蔵庫の残り食材を確認する", "週の食材まとめ買い", "子どもの持ち物・お知らせプリント確認", "家計簿・レシートを記録する"]}, {"cat": "📦 月次・季節の家事", "items": ["エアコンフィルターの掃除", "換気扇の掃除", "レンジフードの掃除", "冷蔵庫の中の整理・拭き掃除", "洗濯槽のクリーニング", "排水管のクリーニング", "押し入れ・クローゼットの整理", "子どもの服のサイズチェック・入れ替え", "季節家電の入れ替え（扇風機・ヒーター等）", "布団を干す・クリーニングに出す", "カーテンを洗濯する", "靴・スニーカーを洗う", "庭・ベランダの掃除", "不用品の処分・断捨離", "防災グッズの点検・補充"]}, {"cat": "👤 名もなき家事（管理系）", "items": ["学校・園からのプリントを整理する", "給食費・習い事の引き落とし確認", "保険証・医療費の管理", "医薬品・消耗品の在庫チェック", "宅配便の受け取り・不在票の対応", "郵便物の仕分け・振り込み手続き", "行政手続き（各種申請・更新）", "子どもの予防接種スケジュール管理", "かかりつけ医への通院手配", "子どもの習い事の連絡・送迎調整", "学校行事カレンダーの確認・共有", "冠婚葬祭の準備（お祝い・香典など）", "クレジットカード明細の確認", "サブスクの整理・見直し", "パスワード・重要書類の管理"]}, {"cat": "🧒 育児・子ども関連", "items": ["朝の検温・健康チェック", "子どもの爪を切る", "子どもの耳掃除", "子どもの散髪の予約・連れて行く", "子どもの肌荒れ・傷のケア", "子どもの絵本読み聞かせ", "子どもの勉強・宿題のサポート", "子どもの友達関係の様子を確認", "児童館・公園への外出", "幼稚園・保育園の保護者会への出席", "学校行事（運動会・発表会）への準備", "子どもの体操服・水着の洗濯・補修", "お下がり・成長に合わせた服の整理", "おもちゃの整理・処分", "連絡帳・保護者アプリの確認・返信"]}, {"cat": "🔧 家のメンテ・その他", "items": ["電球・電池の交換", "水道の蛇口パッキン確認", "トイレのタンク・ウォシュレット掃除", "給湯器のフィルター掃除", "玄関タイルの掃除", "自転車のタイヤ空気入れ", "車のガソリン補給", "車の洗車", "車検・点検の予約", "植物・家庭菜園の水やり", "ペットのトイレ掃除", "ペットのごはん・投薬管理", "ゴミの分別ルールの確認", "粗大ゴミの申し込み・持ち出し", "近隣・マンション管理組合の対応"]}];
+const SHOP_TPLS = [{"cat": "肉・魚・卵", "items": ["鶏もも肉", "鶏むね肉", "豚こま肉", "豚バラ肉", "豚ひき肉", "牛こま肉", "合い挽き肉", "ベーコン", "ウインナー", "ハム", "サーモン（切り身）", "鯖（切り身）", "鮭（切り身）", "あじの開き", "えび", "しらす", "ツナ缶", "サバ缶", "卵", "温泉卵"]}, {"cat": "野菜・果物", "items": ["玉ねぎ", "にんじん", "じゃがいも", "キャベツ", "レタス", "ほうれん草", "小松菜", "ブロッコリー", "トマト", "きゅうり", "なす", "ピーマン", "もやし", "長ねぎ", "大根", "白菜", "ごぼう", "れんこん", "しめじ", "えのき", "バナナ", "りんご", "みかん", "いちご", "ぶどう", "レモン", "アボカド"]}, {"cat": "乳製品・豆腐", "items": ["牛乳", "豆乳", "ヨーグルト", "バター", "生クリーム", "スライスチーズ", "ピザ用チーズ", "クリームチーズ", "豆腐（絹）", "豆腐（木綿）", "納豆", "油揚げ", "厚揚げ", "豆乳ヨーグルト"]}, {"cat": "主食・乾物", "items": ["米（5kg）", "食パン", "ロールパン", "バゲット", "うどん（乾麺）", "そば（乾麺）", "スパゲッティ", "ラーメン（生）", "そうめん", "パスタソース", "カップ麺", "インスタントみそ汁", "春雨", "もち", "コーンフレーク", "オートミール", "小麦粉", "片栗粉", "パン粉", "マカロニ"]}, {"cat": "調味料・飲料", "items": ["しょうゆ", "みそ", "みりん", "料理酒", "砂糖", "塩", "こしょう", "酢", "ごま油", "サラダ油", "オリーブオイル", "めんつゆ", "ポン酢", "マヨネーズ", "ケチャップ", "ソース", "カレールー", "ほんだし", "鶏がらスープの素", "コンソメ", "水（2Lペット）", "お茶（500ml）", "ジュース", "炭酸水", "コーヒー", "紅茶", "牛乳（低脂肪）"]}, {"cat": "日用消耗品", "items": ["トイレットペーパー", "ティッシュ", "キッチンペーパー", "ラップ", "アルミホイル", "ジッパーバッグ（大）", "ジッパーバッグ（小）", "ゴミ袋（45L）", "ゴミ袋（20L）", "ゴミ袋（小）", "食器用洗剤", "スポンジ", "排水口ネット", "重曹", "クエン酸"]}, {"cat": "洗面・衛生", "items": ["シャンプー", "リンス", "ボディソープ", "洗顔料", "歯磨き粉", "歯ブラシ", "デンタルフロス", "マウスウォッシュ", "綿棒", "ひげそり（替刃）", "生理用品", "ハンドソープ", "消毒液", "マスク", "絆創膏", "体温計用電池", "日焼け止め", "虫よけスプレー", "かゆみ止め", "爪切り"]}, {"cat": "子ども・赤ちゃん", "items": ["おむつ（Sサイズ）", "おむつ（Mサイズ）", "おむつ（Lサイズ）", "おむつ（ビッグサイズ）", "おしりふき", "お尻かぶれクリーム", "子ども用歯ブラシ", "子ども用歯磨き粉", "子ども用シャンプー", "子ども用ボディソープ", "子ども用洗剤", "おやつ（赤ちゃんせんべい）", "おやつ（小袋）", "ジュース（子ども用）", "離乳食（瓶）", "ベビーフード（パウチ）", "粉ミルク", "液体ミルク", "哺乳瓶消毒液", "子ども用日焼け止め"]}, {"cat": "常備薬・医療", "items": ["解熱剤（子ども用・座薬）", "解熱剤（子ども用・シロップ）", "解熱鎮痛剤（大人用）", "風邪薬（総合）", "鼻水・鼻づまり薬", "咳止め薬", "のど飴", "胃腸薬", "整腸剤", "経口補水液", "絆創膏（各サイズ）", "ガーゼ", "包帯", "冷却シート", "虫刺され薬", "目薬", "耳鼻科用綿棒", "体温計", "パルスオキシメーター用電池", "マスク（子ども用）"]}, {"cat": "家電・生活雑貨", "items": ["単3電池", "単4電池", "単1電池", "乾電池セット", "電球（LED）", "掃除機パック", "換気扇フィルター", "エアコンフィルター", "洗濯槽クリーナー", "排水管クリーナー", "カビ取り剤", "漂白剤", "コロコロ（替え）", "ビニール手袋", "除湿剤", "芳香剤", "防虫剤", "靴下", "ハンガー", "洗濯ネット"]}];
+const CHORE_TPLS = [{"cat": "毎朝の家事", "items": ["朝食を作る", "お弁当を作る", "子どもを起こす", "子どもの着替えを手伝う", "子どもの朝食を食べさせる", "子どもの身支度チェック（ハンカチ・ティッシュ）", "保育園・学校の連絡帳を書く", "保育園・学校のカバンを用意する", "洗濯機を回す", "洗濯物を干す", "ゴミをまとめてゴミ出しへ", "食洗機をセットする", "シンクを軽く拭く", "玄関を整える", "郵便受けを確認する"]}, {"cat": "毎夜の家事", "items": ["夕食を作る", "夕食の後片付け", "食器を洗う（食洗機セット）", "コンロ周りを拭く", "シンク・キッチンを拭く", "洗濯物を取り込んでたたむ", "翌日の洗い物を下洗いする", "子どもをお風呂に入れる", "子どもの歯磨きをする", "子どもの寝かしつけをする", "翌日の保育園準備をする", "翌日のお弁当の下準備", "ゴミをまとめる", "床の軽い掃除（ルンバセット）", "戸締まり・施錠確認"]}, {"cat": "週次の家事", "items": ["シーツを洗濯する", "バスタオルを洗濯する", "浴槽・風呂場の掃除", "トイレ掃除（便器・床・手洗い）", "洗面台の掃除", "洗面所の床掃除", "床の掃除機がけ（全部屋）", "床の水拭き", "窓ガラスを拭く", "サッシ・網戸の掃除", "ソファ・ラグのコロコロがけ", "冷蔵庫の残り食材を確認する", "週の食材まとめ買い", "子どもの持ち物・お知らせプリント確認", "家計簿・レシートを記録する"]}, {"cat": "月次・季節の家事", "items": ["エアコンフィルターの掃除", "換気扇の掃除", "レンジフードの掃除", "冷蔵庫の中の整理・拭き掃除", "洗濯槽のクリーニング", "排水管のクリーニング", "押し入れ・クローゼットの整理", "子どもの服のサイズチェック・入れ替え", "季節家電の入れ替え（扇風機・ヒーター等）", "布団を干す・クリーニングに出す", "カーテンを洗濯する", "靴・スニーカーを洗う", "庭・ベランダの掃除", "不用品の処分・断捨離", "防災グッズの点検・補充"]}, {"cat": "名もなき家事（管理系）", "items": ["学校・園からのプリントを整理する", "給食費・習い事の引き落とし確認", "保険証・医療費の管理", "医薬品・消耗品の在庫チェック", "宅配便の受け取り・不在票の対応", "郵便物の仕分け・振り込み手続き", "行政手続き（各種申請・更新）", "子どもの予防接種スケジュール管理", "かかりつけ医への通院手配", "子どもの習い事の連絡・送迎調整", "学校行事カレンダーの確認・共有", "冠婚葬祭の準備（お祝い・香典など）", "クレジットカード明細の確認", "サブスクの整理・見直し", "パスワード・重要書類の管理"]}, {"cat": "育児・子ども関連", "items": ["朝の検温・健康チェック", "子どもの爪を切る", "子どもの耳掃除", "子どもの散髪の予約・連れて行く", "子どもの肌荒れ・傷のケア", "子どもの絵本読み聞かせ", "子どもの勉強・宿題のサポート", "子どもの友達関係の様子を確認", "児童館・公園への外出", "幼稚園・保育園の保護者会への出席", "学校行事（運動会・発表会）への準備", "子どもの体操服・水着の洗濯・補修", "お下がり・成長に合わせた服の整理", "おもちゃの整理・処分", "連絡帳・保護者アプリの確認・返信"]}, {"cat": "家のメンテ・その他", "items": ["電球・電池の交換", "水道の蛇口パッキン確認", "トイレのタンク・ウォシュレット掃除", "給湯器のフィルター掃除", "玄関タイルの掃除", "自転車のタイヤ空気入れ", "車のガソリン補給", "車の洗車", "車検・点検の予約", "植物・家庭菜園の水やり", "ペットのトイレ掃除", "ペットのごはん・投薬管理", "ゴミの分別ルールの確認", "粗大ゴミの申し込み・持ち出し", "近隣・マンション管理組合の対応"]}];
 const SHOP_FLAT = ["鶏もも肉", "鶏むね肉", "豚こま肉", "豚バラ肉", "豚ひき肉", "牛こま肉", "合い挽き肉", "ベーコン", "ウインナー", "ハム", "サーモン（切り身）", "鯖（切り身）", "鮭（切り身）", "あじの開き", "えび", "しらす", "ツナ缶", "サバ缶", "卵", "温泉卵", "玉ねぎ", "にんじん", "じゃがいも", "キャベツ", "レタス", "ほうれん草", "小松菜", "ブロッコリー", "トマト", "きゅうり", "なす", "ピーマン", "もやし", "長ねぎ", "大根", "白菜", "ごぼう", "れんこん", "しめじ", "えのき", "バナナ", "りんご", "みかん", "いちご", "ぶどう", "レモン", "アボカド", "牛乳", "豆乳", "ヨーグルト", "バター", "生クリーム", "スライスチーズ", "ピザ用チーズ", "クリームチーズ", "豆腐（絹）", "豆腐（木綿）", "納豆", "油揚げ", "厚揚げ", "豆乳ヨーグルト", "米（5kg）", "食パン", "ロールパン", "バゲット", "うどん（乾麺）", "そば（乾麺）", "スパゲッティ", "ラーメン（生）", "そうめん", "パスタソース", "カップ麺", "インスタントみそ汁", "春雨", "もち", "コーンフレーク", "オートミール", "小麦粉", "片栗粉", "パン粉", "マカロニ", "しょうゆ", "みそ", "みりん", "料理酒", "砂糖", "塩", "こしょう", "酢", "ごま油", "サラダ油", "オリーブオイル", "めんつゆ", "ポン酢", "マヨネーズ", "ケチャップ", "ソース", "カレールー", "ほんだし", "鶏がらスープの素", "コンソメ", "水（2Lペット）", "お茶（500ml）", "ジュース", "炭酸水", "コーヒー", "紅茶", "牛乳（低脂肪）", "トイレットペーパー", "ティッシュ", "キッチンペーパー", "ラップ", "アルミホイル", "ジッパーバッグ（大）", "ジッパーバッグ（小）", "ゴミ袋（45L）", "ゴミ袋（20L）", "ゴミ袋（小）", "食器用洗剤", "スポンジ", "排水口ネット", "重曹", "クエン酸", "シャンプー", "リンス", "ボディソープ", "洗顔料", "歯磨き粉", "歯ブラシ", "デンタルフロス", "マウスウォッシュ", "綿棒", "ひげそり（替刃）", "生理用品", "ハンドソープ", "消毒液", "マスク", "絆創膏", "体温計用電池", "日焼け止め", "虫よけスプレー", "かゆみ止め", "爪切り", "おむつ（Sサイズ）", "おむつ（Mサイズ）", "おむつ（Lサイズ）", "おむつ（ビッグサイズ）", "おしりふき", "お尻かぶれクリーム", "子ども用歯ブラシ", "子ども用歯磨き粉", "子ども用シャンプー", "子ども用ボディソープ", "子ども用洗剤", "おやつ（赤ちゃんせんべい）", "おやつ（小袋）", "ジュース（子ども用）", "離乳食（瓶）", "ベビーフード（パウチ）", "粉ミルク", "液体ミルク", "哺乳瓶消毒液", "子ども用日焼け止め", "解熱剤（子ども用・座薬）", "解熱剤（子ども用・シロップ）", "解熱鎮痛剤（大人用）", "風邪薬（総合）", "鼻水・鼻づまり薬", "咳止め薬", "のど飴", "胃腸薬", "整腸剤", "経口補水液", "絆創膏（各サイズ）", "ガーゼ", "包帯", "冷却シート", "虫刺され薬", "目薬", "耳鼻科用綿棒", "体温計", "パルスオキシメーター用電池", "マスク（子ども用）", "単3電池", "単4電池", "単1電池", "乾電池セット", "電球（LED）", "掃除機パック", "換気扇フィルター", "エアコンフィルター", "洗濯槽クリーナー", "排水管クリーナー", "カビ取り剤", "漂白剤", "コロコロ（替え）", "ビニール手袋", "除湿剤", "芳香剤", "防虫剤", "靴下", "ハンガー", "洗濯ネット"];
 const CHORE_FLAT = ["朝食を作る", "お弁当を作る", "子どもを起こす", "子どもの着替えを手伝う", "子どもの朝食を食べさせる", "子どもの身支度チェック（ハンカチ・ティッシュ）", "保育園・学校の連絡帳を書く", "保育園・学校のカバンを用意する", "洗濯機を回す", "洗濯物を干す", "ゴミをまとめてゴミ出しへ", "食洗機をセットする", "シンクを軽く拭く", "玄関を整える", "郵便受けを確認する", "夕食を作る", "夕食の後片付け", "食器を洗う（食洗機セット）", "コンロ周りを拭く", "シンク・キッチンを拭く", "洗濯物を取り込んでたたむ", "翌日の洗い物を下洗いする", "子どもをお風呂に入れる", "子どもの歯磨きをする", "子どもの寝かしつけをする", "翌日の保育園準備をする", "翌日のお弁当の下準備", "ゴミをまとめる", "床の軽い掃除（ルンバセット）", "戸締まり・施錠確認", "シーツを洗濯する", "バスタオルを洗濯する", "浴槽・風呂場の掃除", "トイレ掃除（便器・床・手洗い）", "洗面台の掃除", "洗面所の床掃除", "床の掃除機がけ（全部屋）", "床の水拭き", "窓ガラスを拭く", "サッシ・網戸の掃除", "ソファ・ラグのコロコロがけ", "冷蔵庫の残り食材を確認する", "週の食材まとめ買い", "子どもの持ち物・お知らせプリント確認", "家計簿・レシートを記録する", "エアコンフィルターの掃除", "換気扇の掃除", "レンジフードの掃除", "冷蔵庫の中の整理・拭き掃除", "洗濯槽のクリーニング", "排水管のクリーニング", "押し入れ・クローゼットの整理", "子どもの服のサイズチェック・入れ替え", "季節家電の入れ替え（扇風機・ヒーター等）", "布団を干す・クリーニングに出す", "カーテンを洗濯する", "靴・スニーカーを洗う", "庭・ベランダの掃除", "不用品の処分・断捨離", "防災グッズの点検・補充", "学校・園からのプリントを整理する", "給食費・習い事の引き落とし確認", "保険証・医療費の管理", "医薬品・消耗品の在庫チェック", "宅配便の受け取り・不在票の対応", "郵便物の仕分け・振り込み手続き", "行政手続き（各種申請・更新）", "子どもの予防接種スケジュール管理", "かかりつけ医への通院手配", "子どもの習い事の連絡・送迎調整", "学校行事カレンダーの確認・共有", "冠婚葬祭の準備（お祝い・香典など）", "クレジットカード明細の確認", "サブスクの整理・見直し", "パスワード・重要書類の管理", "朝の検温・健康チェック", "子どもの爪を切る", "子どもの耳掃除", "子どもの散髪の予約・連れて行く", "子どもの肌荒れ・傷のケア", "子どもの絵本読み聞かせ", "子どもの勉強・宿題のサポート", "子どもの友達関係の様子を確認", "児童館・公園への外出", "幼稚園・保育園の保護者会への出席", "学校行事（運動会・発表会）への準備", "子どもの体操服・水着の洗濯・補修", "お下がり・成長に合わせた服の整理", "おもちゃの整理・処分", "連絡帳・保護者アプリの確認・返信", "電球・電池の交換", "水道の蛇口パッキン確認", "トイレのタンク・ウォシュレット掃除", "給湯器のフィルター掃除", "玄関タイルの掃除", "自転車のタイヤ空気入れ", "車のガソリン補給", "車の洗車", "車検・点検の予約", "植物・家庭菜園の水やり", "ペットのトイレ掃除", "ペットのごはん・投薬管理", "ゴミの分別ルールの確認", "粗大ゴミの申し込み・持ち出し", "近隣・マンション管理組合の対応"];
 let _kajiTab = 'shop';
@@ -4369,9 +4701,10 @@ async function renderKajiScreen() {
   if (!items.length) {
     const emp = document.createElement('div');
     emp.style.cssText = 'text-align:center;padding:48px 20px;color:var(--t2)';
-    emp.innerHTML = '<div style="font-size:40px;margin-bottom:12px">' + (tab === 'shop' ? '&#128722;' : '&#129529;') + '</div>'
+    emp.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:48px;margin-bottom:12px">' + (tab === 'shop' ? '<i data-lucide="shopping-cart" style="width:40px;height:40px;color:var(--t3)"></i>' : '<i data-lucide="brush" style="width:40px;height:40px;color:var(--t3)"></i>') + '</div>'
       + '<div style="font-weight:700;font-size:15px">\u307e\u3060\u3042\u308a\u307e\u305b\u3093</div>'
       + '<div style="font-size:12px;margin-top:6px;color:var(--t3)">\u4e0a\u306e\u5165\u529b\u6b04\u304b\u3089\u8ffd\u52a0\u3057\u3066\u304f\u3060\u3055\u3044</div>';
+    if(typeof lucide!=='undefined') lucide.createIcons({root:emp});
     lw.appendChild(emp);
   }
 
@@ -4431,7 +4764,7 @@ async function renderKajiScreen() {
     });
 
     const delB = document.createElement('button');
-    delB.innerHTML = '&#128465; \u524a\u9664';
+    delB.innerHTML = '<i data-lucide="trash-2" style="width:13px;height:13px;display:inline-flex;vertical-align:middle;margin-right:3px"></i> \u524a\u9664';
     delB.style.cssText = 'padding:8px 14px;background:var(--re2);color:var(--re);border:none;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer';
     delB.addEventListener('click', async () => {
       const st = await loadST(); st.kaji[tab] = st.kaji[tab].filter(x => !x.selected); await saveST(); renderKajiScreen();
@@ -4444,6 +4777,7 @@ async function renderKajiScreen() {
     papaB.style.cssText = 'padding:8px 14px;background:var(--bl);color:#fff;border:none;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer';
     papaB.addEventListener('click', () => openPapaRequest(sel, tab, isPapa));
 
+    if(typeof lucide!=='undefined') lucide.createIcons({root:delB});
     bar.append(cnt, doneB, delB, papaB);
     body.appendChild(bar);
   }
@@ -4524,7 +4858,7 @@ function openPapaRequest(items, tab, fromPapa=false) {
   prev.textContent = msg;
 
   const cb = document.createElement('button');
-  cb.innerHTML = '&#128203; \u30b3\u30d4\u30fc\u3057\u3066LINE\u3067\u9001\u308b';
+  cb.innerHTML = '<i data-lucide="copy" style="width:14px;height:14px;display:inline-flex;vertical-align:middle;margin-right:4px"></i> \u30b3\u30d4\u30fc\u3057\u3066LINE\u3067\u9001\u308b';
   cb.style.cssText = 'width:calc(100% - 32px);margin:0 16px 20px;padding:14px;background:var(--bl);color:#fff;border:none;border-radius:14px;font-size:14px;font-weight:700;cursor:pointer;display:block';
   cb.addEventListener('click', async () => {
     try { await navigator.clipboard.writeText(msg); }
@@ -4536,6 +4870,7 @@ function openPapaRequest(items, tab, fromPapa=false) {
     ov.remove();
   });
 
+  if(typeof lucide!=='undefined') lucide.createIcons({root:cb});
   sh.append(hdr, prev, cb); ov.appendChild(sh);
   ov.addEventListener('click', e => { if (e.target === ov) ov.remove(); });
   document.body.appendChild(ov);
