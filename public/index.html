@@ -1357,26 +1357,42 @@ document.getElementById('cal-next').addEventListener('click',   ()=>{calOff++;re
 ═══════════════════════════════════════════════════════ */
 // ── 日本の祝日マスタ（月/日 固定のもの）──────────────────────────────────
 // isoWeekday=true の祝日は「前後平日に挟まれた1日祝日」= 有休チェックを追加
+// ── TASK 2: 曜日可変祝日の日付計算 ─────────────────────────────────────────
+function calcWeekRuleDate(year, month, week, dow) {
+  // month: 1-12, week: 第何週(1-5), dow: 曜日(0=日,1=月,...6=土)
+  const firstDay = new Date(year, month - 1, 1);
+  const firstDow = firstDay.getDay();
+  let day = 1 + (dow - firstDow + 7) % 7;
+  day += (week - 1) * 7;
+  return new Date(year, month - 1, day);
+}
+
+function getHolidayDate(h, year) {
+  if(h.weekRule) return calcWeekRuleDate(year, h.month, h.weekRule.week, h.weekRule.dow);
+  if(h.day) return new Date(year, h.month - 1, h.day);
+  return null;
+}
+
 const HOLIDAY_MASTER = [
-  { id:'newyear',      month:1,  day:1,  name:'元日',          icon:'🎍', color:'#C0392B', bg:'linear-gradient(135deg,#C0392B,#E74C3C)',
+  { id:'newyear',      month:1,  day:1,  leadDays:21, name:'元日',          icon:'🎍', color:'#C0392B', bg:'linear-gradient(135deg,#C0392B,#E74C3C)',
     hint:'初詣・おせち・年賀状の総仕上げ',
     tasks:['年賀状の最終確認・投函','おせちの予約または食材購入','初詣スポットと時間を決める','帰省の交通手段を予約する','子供の晴れ着・正装を確認する','お年玉の準備（ポチ袋・金額を決める）','年末年始の食材をまとめ買いする','家族みんなの年始の目標を話し合う','実家・義実家への連絡と挨拶の計画','三が日の過ごし方のスケジュールを作る'] },
-  { id:'seijin',       month:1,  day:13, name:'成人の日',       icon:'🎌', color:'#1565C0', bg:'linear-gradient(135deg,#0D47A1,#1565C0)',
+  { id:'seijin',       month:1,  weekRule:{week:2,dow:1}, name:'成人の日',       icon:'🎌', color:'#1565C0', bg:'linear-gradient(135deg,#0D47A1,#1565C0)',
     hint:'1月第2月曜日（3連休の最終日）',
     tasks:['3連休の過ごし方を家族で計画する','子供との特別なお出かけ先を予約する','家の中の正月飾りを片付ける','冬物クリーニングの予約を入れる','1月の家計・食費の振り返りをする','年始に届いた書類・郵便を整理する','子供の3学期の持ち物を確認する','パパの担当家事を今週中に決める','冬の乾燥対策グッズを補充する','加湿器のフィルターを掃除する'] },
   { id:'kenkoku',      month:2,  day:11, name:'建国記念日',     icon:'🗾', color:'#455A64', bg:'linear-gradient(135deg,#263238,#455A64)',
     hint:'2月の3連休チャンス',
     tasks:['3連休の家族プランを立てる','バレンタインのチョコ材料を購入する','子供の春物衣類をリストアップする','確定申告の準備を始める（医療費集計）','花粉症対策グッズを揃える','春の衣替えのスケジュールを立てる','子供の進級・入学準備リストを確認する','パパに頼める週末家事を3つ決める','冬物布団のクリーニング予約を入れる','家の換気・空気清浄機フィルター掃除'] },
-  { id:'setsubun',     month:2,  day:3,  name:'節分',           icon:'👹', color:'#D4611A', bg:'linear-gradient(135deg,#D4611A,#E8841A)',
+  { id:'setsubun',     month:2,  day:3,  leadDays:21, afterDays:1, name:'節分',           icon:'👹', color:'#D4611A', bg:'linear-gradient(135deg,#D4611A,#E8841A)',
     hint:'豆まき・恵方巻きの準備',
     tasks:['今年の恵方をコンパスアプリで確認する','恵方巻を予約する（人気店は2週間前までに）','豆まき用の豆（個包装タイプ）を購入する','鬼のお面を子供と手作りまたは購入する','イワシの頭と柊を玄関に飾る','豆まきのルールを家族で確認する','当日の夕食メニュー全体を確定する','写真・動画撮影の準備をする','豆まき後の掃除道具を準備する','翌日のゴミ出しの準備をしておく'] },
-  { id:'hinamatsuri',  month:3,  day:3,  name:'ひな祭り',       icon:'🎎', color:'#E91E8C', bg:'linear-gradient(135deg,#C2185B,#E91E8C)',
+  { id:'hinamatsuri',  month:3,  day:3,  leadDays:28, name:'ひな祭り',       icon:'🎎', color:'#E91E8C', bg:'linear-gradient(135deg,#C2185B,#E91E8C)',
     hint:'ひな人形・ちらし寿司の準備',
     tasks:['ひな人形の欠損チェックをして出す（2月中旬までに）','桃の花を花屋に予約または購入する','はまぐりの砂抜き（当日朝から）','菱餅・ひなあられを購入する','ちらし寿司の具材を準備する','お祝い膳のメニューを確定・食材購入','記念写真の背景を整える（生活感を消す）','祖父母を招待する場合は日程調整・連絡','盛り付け・テーブルコーディネートを考える','3/4以降に人形をすぐ片付ける'] },
   { id:'spring_eq',    month:3,  day:20, name:'春分の日',       icon:'🌸', color:'#2E7D32', bg:'linear-gradient(135deg,#1B5E20,#2E7D32)',
     hint:'春のお彼岸・お墓参りとお花見計画',
     tasks:['お墓参りの日程と段取りを決める','お供え物・お花を準備する','花見スポットと開花情報を調べる','お花見の食材・レジャーシートを準備する','春のお出かけ先を家族で決める','子供の春休みの予定を立てる','エアコンのフィルター掃除をする（春前に）','春物衣類の衣替えを始める','庭・ベランダの植物の手入れをする','春休み中の子供の体験活動を予約する'] },
-  { id:'showa',        month:4,  day:29, name:'昭和の日',       icon:'🌿', color:'#1B5E20', bg:'linear-gradient(135deg,#004D40,#1B5E20)',
+  { id:'showa',        month:4,  day:29, leadDays:45, name:'昭和の日',       icon:'🌿', color:'#1B5E20', bg:'linear-gradient(135deg,#004D40,#1B5E20)',
     hint:'GW初日・大型連休スタート',
     tasks:['GWの旅行・お出かけ先を予約する（直前は混雑）','実家への帰省の交通手段を確保する','GW中の食材をまとめ買いリストを作る','子供の体験活動・イベントを予約する','GW中のパパの担当タスクを決める','旅行の持ち物リストを作成する','ペットや植物の世話の手配をする','GW明けの仕事の段取りを確認する','お土産リストを作っておく','帰省先へのお土産を購入する'] },
   { id:'kenpo',        month:5,  day:3,  name:'憲法記念日',     icon:'📜', color:'#37474F', bg:'linear-gradient(135deg,#263238,#37474F)',
@@ -1388,22 +1404,22 @@ const HOLIDAY_MASTER = [
   { id:'kodomo',       month:5,  day:5,  name:'こどもの日',     icon:'🎏', color:'#1E5EA8', bg:'linear-gradient(135deg,#1E5EA8,#2980B9)',
     hint:'こどもの日・家族でお祝い',
     tasks:['兜・鯉のぼりを出して飾る','柏餅・ちまきを購入する','子供の好きな料理でお祝い膳を作る','子供と一緒に「やりたいこと」リストを作る','記念写真・動画を撮影する','子供に「大きくなったね」と成長を伝える','GW総まとめ・思い出を話し合う','子供の体重・身長を測って記録する','来年の兜・鯉のぼりの収納方法を確認する','GW明けの持ち物・準備を確認する'] },
-  { id:'umi',          month:7,  day:21, name:'海の日',         icon:'🌊', color:'#0277BD', bg:'linear-gradient(135deg,#01579B,#0277BD)',
+  { id:'umi',          month:7,  weekRule:{week:3,dow:1}, leadDays:30, name:'海の日',         icon:'🌊', color:'#0277BD', bg:'linear-gradient(135deg,#01579B,#0277BD)',
     hint:'7月第3月曜日・夏本番の3連休',
     tasks:['海水浴・プールのお出かけを計画する','水着・浮き輪・サンダルをチェックする','日焼け止め・虫よけを十分に準備する','熱中症対策グッズ（塩飴・経口補水液）を備蓄する','子供の夏休みの宿題スケジュールを立てる','夏休み中の学童・サマースクールを確認する','お盆の帰省の交通手段を予約する（早めに）','夏の電気代対策（エアコン設定・遮光カーテン）','冷凍食材をまとめ買いして夏の料理を効率化','パパの夏休みの取得予定を確認する'] },
   { id:'yama',         month:8,  day:11, name:'山の日',         icon:'⛰️', color:'#5D4037', bg:'linear-gradient(135deg,#4E342E,#5D4037)',
     hint:'8月の3連休・お盆前の最後のチャンス',
     tasks:['お盆の帰省準備を最終確認する','帰省のお土産を購入する','お墓参りの準備（お花・お供え）をする','子供の夏休みの宿題の進捗を確認する','2学期の学用品・持ち物リストを確認する','夏休み残りの思い出プランを立てる','家の窓・網戸の掃除をする','秋物衣類の確認と衣替え準備を始める','子供の健康診断・歯科検診を予約する','2学期に向けた生活リズムの立て直しを始める'] },
-  { id:'obon',         month:8,  day:13, name:'お盆・帰省',     icon:'🏮', color:'#B45309', bg:'linear-gradient(135deg,#92400E,#B45309)',
+  { id:'obon',         month:8,  day:13, leadDays:45, name:'お盆・帰省',     icon:'🏮', color:'#B45309', bg:'linear-gradient(135deg,#92400E,#B45309)',
     hint:'お盆・帰省・先祖供養の準備',
     tasks:['帰省の交通手段を予約する（早めに）','お墓参りの準備（お花・線香・お供え）','帰省のお土産を購入する','子供の夏休みの宿題・自由研究を仕上げる','帰省先での子供の過ごし方を計画する','盆踊り・花火大会など夏の行事を調べる','2学期の持ち物・学用品を準備する','夏服→秋服の衣替え準備を始める','エアコンのフィルター掃除をする','帰省後の疲れ対策・体調管理を意識する'] },
-  { id:'keiro',        month:9,  day:15, name:'敬老の日',       icon:'👴', color:'#7B1FA2', bg:'linear-gradient(135deg,#6A1B9A,#7B1FA2)',
+  { id:'keiro',        month:9,  weekRule:{week:3,dow:1}, name:'敬老の日',       icon:'👴', color:'#7B1FA2', bg:'linear-gradient(135deg,#6A1B9A,#7B1FA2)',
     hint:'9月第3月曜日・おじいちゃんおばあちゃんへの感謝',
     tasks:['祖父母へのプレゼントを選んで購入する','子供に手紙・似顔絵を書かせる','祖父母を招待する場合は日程調整・連絡する','食事会・外食の予約をする','祖父母の好きな料理を調べて作る','子供と一緒に「おじいちゃん・おばあちゃんへ感謝メッセージ」を考える','記念写真・動画を撮影する','祖父母の体調・健康状態を確認する','秋のお出かけ・紅葉スポットを一緒に計画する','贈り物の配送手配をする'] },
   { id:'shubun',       month:9,  day:22, name:'秋分の日',       icon:'🍁', color:'#E65100', bg:'linear-gradient(135deg,#BF360C,#E65100)',
     hint:'秋のお彼岸・衣替えのタイミング',
     tasks:['お墓参りの日程と段取りを決める','お供え物・お花（菊など）を準備する','夏物→秋冬物の衣替えをする','子供の秋冬服のサイズを確認・買い足す','冬物布団を出す・洗濯する','エアコンを暖房モードに切り替え確認する','インフルエンザ予防接種の予約を入れる','秋の運動会・発表会の準備を確認する','加湿器を出して清掃・準備する','ハロウィンの準備を始める'] },
-  { id:'sports',       month:10, day:14, name:'スポーツの日',   icon:'🏃', color:'#00695C', bg:'linear-gradient(135deg,#004D40,#00695C)',
+  { id:'sports',       month:10, weekRule:{week:2,dow:1}, name:'スポーツの日',   icon:'🏃', color:'#00695C', bg:'linear-gradient(135deg,#004D40,#00695C)',
     hint:'10月第2月曜日・秋の3連休',
     tasks:['3連休の家族お出かきプランを立てる','秋の運動会・体育祭の応援準備をする','子供と一緒に体を動かす計画を立てる','ハロウィンの衣装・装飾を準備する','秋の行楽地・紅葉スポットを調べる','年末大掃除の計画を立て始める','冬物家電（ヒーター・こたつ）を出す準備','子供の来年の習い事・塾の検討を始める','インフルエンザ予防接種を受ける','ふるさと納税の上限額を確認・注文する'] },
   { id:'bunka',        month:11, day:3,  name:'文化の日',       icon:'🎨', color:'#512DA8', bg:'linear-gradient(135deg,#4527A0,#512DA8)',
@@ -1412,48 +1428,48 @@ const HOLIDAY_MASTER = [
   { id:'kinro',        month:11, day:23, name:'勤労感謝の日',   icon:'🙏', color:'#4E342E', bg:'linear-gradient(135deg,#3E2723,#4E342E)',
     hint:'11月の3連休・年末準備スタート',
     tasks:['家族みんなへの「ありがとう」を伝える日にする','クリスマスプレゼントを決めて注文する','ケーキ・チキンを予約する（人気店は早め）','年賀状の宛先リストを整理・更新する','年末大掃除の計画と役割分担を決める','クリスマス飾り付けグッズを確認する','冬休みの過ごし方・旅行プランを検討する','子供のお年玉の準備（ポチ袋・金額）','来年の手帳・カレンダーを購入する','大掃除で使う掃除用品を揃え始める'] },
-  { id:'christmas',    month:12, day:25, name:'クリスマス',     icon:'🎄', color:'#1A5E20', bg:'linear-gradient(135deg,#1A5E20,#2E7D32)',
+  { id:'christmas',    month:12, day:25, leadDays:45, afterDays:3, name:'クリスマス',     icon:'🎄', color:'#1A5E20', bg:'linear-gradient(135deg,#1A5E20,#2E7D32)',
     hint:'プレゼント・ケーキ・サンタ演出の準備',
     tasks:['子供の欲しいものをヒアリング（サンタへの手紙）','プレゼントをネット注文する（12月上旬までに）','ケーキ・チキンを予約する（人気店は11月中に）','ツリーの電飾チェック（断線・球切れ確認）','プレゼントの隠し場所を確保する','室内の飾り付けをする（ツリー・リース）','当日のBGMプレイリストを作成する','パーティーメニューの食材をまとめ買いする','プレゼントのラッピング・リボン仕上げ','翌日の片付け・ツリーの保管方法を確認する'] },
-  { id:'osoji',        month:12, day:28, name:'年末大掃除',     icon:'🧹', color:'#37474F', bg:'linear-gradient(135deg,#263238,#37474F)',
+  { id:'osoji',        month:12, day:28, leadDays:21, afterDays:14, name:'年末大掃除',     icon:'🧹', color:'#37474F', bg:'linear-gradient(135deg,#263238,#37474F)',
     hint:'大掃除・断捨離・新年準備',
     tasks:['エアコンフィルターの掃除・交換をする','換気扇・レンジフードの油汚れを落とす','冷蔵庫の中身を全出しして庫内を拭き掃除する','浴室の鏡・水垢・カビ取りを徹底清掃する','窓ガラス・サッシ・網戸の拭き掃除をする','押し入れ・クローゼットを整理し不用品を処分する','照明器具・天井・壁のほこりを落とす','洗濯機の槽洗浄をする（専用クリーナー使用）','玄関・ベランダ・排水口を掃き・拭き掃除する','不用品を粗大ゴミ申し込みまたはフリマ出品する'] },
   // ── 子育て定期イベント ──────────────────────────────
-  { id:'nyuugaku',     month:4,  day:1,  name:'入学・進級',     icon:'🎒', color:'#1565C0', bg:'linear-gradient(135deg,#0D47A1,#1565C0)',
+  { id:'nyuugaku',     month:4,  day:1,  leadDays:60, name:'入学・進級',     icon:'🎒', color:'#1565C0', bg:'linear-gradient(135deg,#0D47A1,#1565C0)',
     hint:'入学式・進級の準備', childPhase:'school',
     tasks:['学用品リストを確認して購入する','ランドセル・制服・体操服を準備する','全持ち物への名前書きをする（お名前スタンプ推奨）','提出書類を全て記入する（予防接種記録など）','通学路を親子で一緒に歩いて確認する','親のフォーマル服・美容院の予約をする','ビデオカメラ・スマホの充電・容量確認をする','スリッパ・靴袋（親用）を準備する','当日の集合時間・持ち物を最終確認する','式典後のお祝い食事・写真撮影の計画を立てる'] },
   { id:'checkup_baby', month:0,  day:0,  name:'乳幼児健診',     icon:'👶', color:'#00695C', bg:'linear-gradient(135deg,#004D40,#00695C)',
     hint:'健診・予防接種の予約', childPhase:'baby',
     tasks:['かかりつけ医に予約を入れる','母子手帳の記録を最新にする','健診当日の持ち物を準備する','予防接種のスケジュールを確認する','子供の成長記録（身長・体重）をつける','授乳・食事の記録を整理する','健診結果を夫婦で共有する','次回の健診日程を手帳に記録する','離乳食・幼児食の進み具合を確認する','小児科・かかりつけ医の連絡先を更新する'] },
   // ── 追加イベント ────────────────────────────────────────────────────────────
-  { id:'haha',         month:5,  day:11, name:'母の日',         icon:'🌹', color:'#E91E8C', bg:'linear-gradient(135deg,#C2185B,#E91E8C)', visibleTo:'papa',
+  { id:'haha',         month:5,  weekRule:{week:2,dow:0}, leadDays:21, name:'母の日',         icon:'🌹', color:'#E91E8C', bg:'linear-gradient(135deg,#C2185B,#E91E8C)', visibleTo:'papa',
     hint:'5月第2日曜日・ママへの感謝を家族で表す日',
     tasks:['ママへのプレゼントをパパ・子どもで一緒に決める（花・スイーツ・体験など）','子どもと手作りカード・似顔絵を作る','ママの好きな料理・スイーツを調べて準備する','いつもの家事をその日は全部パパが引き受ける','外食・テイクアウトの予約をする','ママに「ゆっくりできる時間」をプレゼントする','家族写真を撮影して思い出を残す','ネット注文のプレゼントは1週間前までに手配する','子どもから「ありがとうメッセージ」を準備させる','義母（父方の祖母）へのご挨拶・贈り物も忘れずに'] },
-  { id:'chichi',       month:6,  day:15, name:'父の日',         icon:'👔', color:'#1565C0', bg:'linear-gradient(135deg,#0D47A1,#1565C0)', visibleTo:'mama',
+  { id:'chichi',       month:6,  weekRule:{week:3,dow:0}, leadDays:21, name:'父の日',         icon:'👔', color:'#1565C0', bg:'linear-gradient(135deg,#0D47A1,#1565C0)', visibleTo:'mama',
     hint:'6月第3日曜日・パパへの感謝を伝える日',
     tasks:['パパへのプレゼントをみんなで決める','子どもに「パパへの手紙・似顔絵」を書かせる','パパの好きな食事・お酒・スイーツを準備する','パパが喜ぶ「家族時間」の過ごし方を計画する','パパに感謝の言葉を直接伝える機会を作る','父方の祖父へのプレゼント・ご挨拶の手配をする','パパの趣味・やりたいことを叶える1日にする','家族みんなで記念写真を撮る','プレゼントのネット注文は1週間前までに','パパへの日頃の感謝を家族で話し合う機会にする'] },
   { id:'tsuyu',        month:6,  day:1,  name:'梅雨入り準備',   icon:'☔', color:'#0277BD', bg:'linear-gradient(135deg,#01579B,#0277BD)',
     hint:'梅雨前に済ませたいカビ・湿気対策まとめ',
     tasks:['除湿剤をクローゼット・押し入れ・靴箱に設置する','浴室のカビ防止スプレーをかける（乾燥時に）','エアコン除湿モードの動作確認をする','室内干しのスペースと乾燥機・サーキュレーターを準備する','梅雨時の洗濯ルール（干す場所・時間帯）を家族で決める','傘・レインコート・長靴のサイズを家族全員確認する','食料品の保存方法（冷蔵・防湿）を見直す','網戸の掃除・補修をする','梅雨明けのエアコン本格稼働に向け設定確認をする','カビが生えやすい場所をチェックリスト化する'] },
-  { id:'tanabata',     month:7,  day:7,  name:'七夕',           icon:'⭐', color:'#4527A0', bg:'linear-gradient(135deg,#311B92,#4527A0)',
+  { id:'tanabata',     month:7,  day:7,  afterDays:1, name:'七夕',           icon:'⭐', color:'#4527A0', bg:'linear-gradient(135deg,#311B92,#4527A0)',
     hint:'短冊・笹飾り・子どもの願い事を叶える日',
     tasks:['笹・七夕飾りセットを購入または準備する','家族みんなで短冊に願い事を書く','子どもと一緒に飾り付けを楽しむ','七夕にちなんだ料理（そうめんなど）を準備する','七夕伝説を子どもにわかりやすく話す','保育園・幼稚園・学校の七夕行事を確認する','子どもの「将来の夢」を記録しておく','記念写真・動画を撮影する','地域の七夕まつりイベントを調べる','飾りの後片付けと笹の処分方法を確認する'] },
-  { id:'hanami',       month:3,  day:25, name:'お花見',         icon:'🌸', color:'#E91E8C', bg:'linear-gradient(135deg,#AD1457,#E91E8C)',
+  { id:'hanami',       month:3,  day:25, leadDays:14, afterDays:1, name:'お花見',         icon:'🌸', color:'#E91E8C', bg:'linear-gradient(135deg,#AD1457,#E91E8C)',
     hint:'桜の開花に合わせた花見計画を立てよう',
     tasks:['近所・人気の花見スポットの開花情報を調べる','花見の日程と参加メンバーを確定する','お弁当・おにぎりのメニューと買い出しリストを作る','レジャーシート・ゴミ袋・ウェットティッシュを準備する','子供用の飲み物・おやつを準備する','防寒対策（カーディガン・ブランケット）を用意する','カメラ・スマホの充電・容量を確認する','近くのトイレ場所を事前に確認する','混雑を避ける時間帯・曜日を検討する','花見の思い出を写真・動画でしっかり残す'] },
   { id:'halloween',    month:10, day:31, name:'ハロウィン',     icon:'🎃', color:'#D4611A', bg:'linear-gradient(135deg,#BF360C,#D4611A)',
     hint:'衣装・お菓子・飾り付けの準備を始めよう',
     tasks:['子どもの衣装を決めて購入または手作りする（早めに）','玄関・部屋のハロウィン飾り付けをする','配るお菓子の準備をする（個包装・アレルギー対応）','地域のハロウィンイベント・仮装パレードを確認する','子どもと仮装の練習・写真撮影を楽しむ','パパ・ママの仮装も検討する','ハロウィンにちなんだ料理・スイーツを作る','記念写真・動画を撮影する','翌日の飾りの片付け計画をしておく','子どもにハロウィンの由来をわかりやすく話す'] },
-  { id:'shichigosan',  month:11, day:15, name:'七五三',         icon:'🎌', color:'#7B1FA2', bg:'linear-gradient(135deg,#6A1B9A,#7B1FA2)',
+  { id:'shichigosan',  month:11, day:15, leadDays:60, name:'七五三',         icon:'🎌', color:'#7B1FA2', bg:'linear-gradient(135deg,#6A1B9A,#7B1FA2)',
     hint:'衣装・写真館・千歳飴の準備', childPhase:'school',
     tasks:['写真館・フォトスタジオを予約する（人気店は2ヶ月前）','着物・スーツのレンタルまたは購入を決める','子供の着付け・ヘアセットの予約を入れる','参拝する神社を決めて祈祷の予約をする','千歳飴・お守りを準備する','親のフォーマル服・美容院の予約をする','お祝いの食事会の店を予約する（個室がおすすめ）','祖父母への参拝・食事の招待連絡をする','記念写真の背景・小物を準備する','お祝いのご祝儀・内祝いの準備をする'] },
   { id:'otsukimi',     month:9,  day:20, name:'お月見',         icon:'🌙', color:'#B45309', bg:'linear-gradient(135deg,#92400E,#B45309)',
     hint:'中秋の名月・月見団子・すすき飾りの準備',
     tasks:['お月見の日程（中秋の名月）を月齢カレンダーで確認する','月見団子を購入または手作りする','すすき・秋の七草を飾る準備をする','縁側・ベランダ・窓辺のお月見スポットを整える','子どもに月の満ち欠け・お月見の由来を話す','お月見にちなんだ料理（里芋・栗ごはん）を作る','記念写真・月の撮影を楽しむ','近所のお月見イベントを調べる','秋の夜長に家族でゆっくり過ごす計画を立てる','翌日の片付けも計画しておく'] },
-  { id:'omisoka',      month:12, day:31, name:'大晦日',         icon:'🎆', color:'#1A237E', bg:'linear-gradient(135deg,#0D47A1,#1A237E)',
+  { id:'omisoka',      month:12, day:31, leadDays:14, name:'大晦日',         icon:'🎆', color:'#1A237E', bg:'linear-gradient(135deg,#0D47A1,#1A237E)',
     hint:'年越しそば・除夜の鐘・1年の振り返り',
     tasks:['年越しそばの材料・具材を準備する（天ぷらそばなど）','近所の神社・除夜の鐘スポットを調べておく','1年間の家族の思い出を振り返る時間を作る','子どもと「今年頑張ったこと・来年の目標」を話し合う','年越しに向けた部屋の最終整理をする','正月飾り（門松・しめ縄）を飾る','テレビ番組・カウントダウンイベントを計画する','お雑煮・おせちの最終確認をする','初詣の参拝時間・場所を確定する','家族みんなで年越しの瞬間を一緒に迎える'] },
-  { id:'kakutei',      month:3,  day:10, name:'確定申告',       icon:'💴', color:'#2E7D32', bg:'linear-gradient(135deg,#1B5E20,#2E7D32)',
+  { id:'kakutei',      month:3,  day:10, leadDays:45, name:'確定申告',       icon:'💴', color:'#2E7D32', bg:'linear-gradient(135deg,#1B5E20,#2E7D32)',
     hint:'2〜3月15日締切・医療費控除・ふるさと納税整理',
     tasks:['医療費の領収書・明細をすべてまとめる','ふるさと納税のワンストップ特例申請書を確認する','生命保険・地震保険の控除証明書を探す','源泉徴収票をすべて揃える','マイナンバーカード・e-Taxの準備をする','医療費控除の対象か計算する（年10万円超が目安）','国税庁の確定申告書等作成コーナーにアクセスする','還付金の振込先口座を確認する','住宅ローン控除がある場合は必要書類を確認する','3月15日の締切を手帳・スマホにリマインドする'] },
   { id:'nigakki',      month:8,  day:25, name:'2学期準備',      icon:'🏫', color:'#00695C', bg:'linear-gradient(135deg,#004D40,#00695C)',
@@ -1467,11 +1483,15 @@ const HOLIDAY_MASTER = [
 // ── 祝日ユーティリティ ──────────────────────────────────────────────────────
 // 有休チャンス判定：前後4日以内に別の休日(土日or祝日)があり、間に平日の穴がある
 function isVacationOpportunity(evDate) {
+  const y = evDate.getFullYear();
   function isRestDay(d) {
     const dow = d.getDay();
     if(dow === 0 || dow === 6) return true;
     const m = d.getMonth()+1, day = d.getDate();
-    return HOLIDAY_MASTER.some(h => h.month === m && h.day === day);
+    return HOLIDAY_MASTER.some(h => {
+      const hDate = getHolidayDate(h, y);
+      return hDate && hDate.getMonth()+1 === m && hDate.getDate() === day;
+    });
   }
   // 前後2〜4日に別の休日があり、間に平日がある = 穴あき有休チャンス
   for(let gap = 2; gap <= 4; gap++) {
@@ -1519,20 +1539,25 @@ function getUpcomingEvents(s) {
     const y = today.getFullYear() + yearOff;
     EVENT_TEMPLATES.forEach(ev => {
       if(ev.month === 0) return; // baby系は別途
+      if(!ev.day && !ev.weekRule) return; // 日付情報なし
 
-      const evDate = new Date(y, ev.month-1, ev.day);
+      // TASK 2: weekRule対応の日付計算
+      const evDate = ev.weekRule
+        ? calcWeekRuleDate(y, ev.month, ev.weekRule.week, ev.weekRule.dow)
+        : new Date(y, ev.month-1, ev.day);
       const daysUntil = Math.ceil((evDate - today) / 86400000);
 
-      // 【祝日表示ルール】当月に入ったら即表示、当月末まで
-      // 過去7日以内（直近終わったもの）は除外、先180日まで
-      if(daysUntil < -7 || daysUntil > 180) return;
+      // TASK 1: afterDays対応の表示終了判定
+      const after = ev.afterDays || 7;
+      if(daysUntil < -after || daysUntil > 180) return;
 
       // 祝日は「当月になったら即表示」= 月が一致していれば月初から表示
       const evMonth = evDate.getMonth();
       const evYear  = evDate.getFullYear();
       const isThisMonth = (evMonth === thisMonth && evYear === thisYear);
-      // 当月以外は従来通り（30日前から）
-      if(!isThisMonth && daysUntil > 30 && !ev.childPhase) return;
+      // TASK 1: leadDays対応の表示開始判定
+      const lead = ev.leadDays || 30;
+      if(!isThisMonth && daysUntil > lead && !ev.childPhase) return;
 
       // childPhase フィルタ
       if(ev.childPhase==='school' && (childAge==null || childAge < 5)) return;
@@ -1580,111 +1605,251 @@ async function renderProp(){
   renderEventProposals(s);
 }
 
-// ── 季節メンテカード生成 ─────────────────────────────────────────────────────
+// ── TASK 3: 季節メンテカード生成（12ヶ月化） ──────────────────────────────────
 function getSeasonalMainteCard() {
   const m = new Date().getMonth()+1; // 1-12
   const cards = {
+    1:  { icon:'snowflake', name:'1月の家メンテ：結露対策＆新年スタート', color:'#0D47A1', bg:'linear-gradient(135deg,#0D47A1,#1565C0)',
+          hint:'結露・乾燥対策と新年の生活リズムを整える月', type:'seasonal',
+          tasks:['窓の結露を毎朝拭いてカビを防ぐ','加湿器の水タンクを週1で洗浄する','暖房器具のフィルターを掃除する','冬物クローゼットの防虫剤を確認する','新年の家計予算を家族で話し合う','子どもの3学期の持ち物を確認する','冬の乾燥で肌荒れしていないかチェック','インフルエンザ対策（手洗い・うがいの習慣確認）','お年玉の管理方法を子どもと相談する','今年の家族の目標を1つ決める'] },
+    2:  { icon:'heart', name:'2月の家メンテ：花粉準備＆バレンタイン', color:'#C62828', bg:'linear-gradient(135deg,#B71C1C,#C62828)',
+          hint:'花粉シーズンに備えて＆冬の終わりの片付け', type:'seasonal',
+          tasks:['花粉症の薬を早めに処方してもらう','空気清浄機のフィルターを確認・交換する','確定申告の書類を集め始める','バレンタインの準備（子どもの友チョコ含む）','冬物で今シーズン着なかった服を断捨離する','窓のパッキン・隙間テープを確認する','春の衣替えリストを作り始める','子どもの進級・入学に向けた心の準備を話す','家族の年間イベントカレンダーを更新する','暖房費の振り返りと来月の光熱費対策'] },
     3:  { icon:'🌸', name:'春の衣替え・家メンテ', color:'#2E7D32', bg:'linear-gradient(135deg,#1B5E20,#2E7D32)',
           hint:'3月はエアコン→扇風機・花粉対策の季節', type:'seasonal',
           tasks:['エアコンフィルターを掃除して暖房→冷房切り替え準備','冬物コート・セーターを洗濯してクリーニングに出す','扇風機・サーキュレーターを出して動作確認する','花粉対策グッズ（空気清浄機フィルター）を交換する','冬用布団を洗濯・クリーニングして収納する','春物衣類を出してサイズアウトをチェックする','ベランダ・庭の冬仕様から春仕様に切り替える','窓の花粉拭き掃除・カーテンを洗濯する','虫よけグッズの在庫を確認して補充する','水回り（排水口・洗面台）の掃除をする'] },
+    4:  { icon:'sprout', name:'4月の家メンテ：新生活＆家電配置', color:'#2E7D32', bg:'linear-gradient(135deg,#1B5E20,#388E3C)',
+          hint:'新学期スタート。家の中を新生活に合わせて整える', type:'seasonal',
+          tasks:['新学期の書類・プリントの整理ボックスを用意する','子どもの帰宅後の動線を見直す（ランドセル置き場等）','春の日差し対策（カーテン・ブラインド調整）','冬物を完全に収納する','庭・ベランダの植物に春の肥料をやる','子どもの新しい環境への不安を聞いてあげる','自転車のタイヤ空気圧・チェーン油を確認する','防災グッズの点検（期限切れ食品・電池交換）','新しい担任・クラスメイトの情報を家族で共有する','GWの計画を早めに立て始める'] },
+    5:  { icon:'sun', name:'5月の家メンテ：GW明け＆梅雨前', color:'#E65100', bg:'linear-gradient(135deg,#BF360C,#E65100)',
+          hint:'GWの疲れをリセットして梅雨に備える', type:'seasonal',
+          tasks:['GW中に散らかった部屋をリセットする','冷蔵庫の中身を整理（GW残り食材の消費計画）','梅雨前にベランダ・窓サッシの掃除をする','子どもの水筒・弁当箱の劣化チェック','衣替えの残り（半袖・薄手の長袖を出す）','5月病的な疲れがないか家族で確認する','エアコンの試運転をする（梅雨前に故障発見）','網戸の穴・破れを修理する','夏の旅行・イベントのリサーチを始める','母の日を過ぎたら自分へのご褒美を計画する'] },
     6:  { icon:'☔', name:'梅雨・夏前のメンテ', color:'#0277BD', bg:'linear-gradient(135deg,#01579B,#0277BD)',
           hint:'エアコン本格稼働・カビ対策の季節', type:'seasonal',
           tasks:['エアコンのフィルター掃除・試運転をする（夏前に）','除湿機・乾燥機の準備と動作確認をする','カビ防止グッズ（浴室・押し入れ）を補充する','梅雨時の洗濯乾燥方法を決める（乾燥機・室内干し）','夏物衣類への衣替えを完了させる','子供の水着・プール道具を確認・購入する','日焼け止め・虫よけの在庫を補充する','冷蔵庫の掃除と夏の食材管理ルールを決める','網戸の掃除・補修をする','窓の結露・雨漏り確認をしておく'] },
+    7:  { icon:'thermometer', name:'7月の家メンテ：夏本番＆熱中症対策', color:'#D84315', bg:'linear-gradient(135deg,#BF360C,#D84315)',
+          hint:'猛暑対策と夏休みの生活リズム管理', type:'seasonal',
+          tasks:['経口補水液・塩飴・冷却シートの在庫を確認する','エアコンのフィルターを掃除する（月1推奨）','子どもの水分補給ルールを決める','夏の電気代対策（エアコン設定温度・サーキュレーター）','虫よけ・殺虫剤の在庫を確認する','子どもの夏休みの生活リズム表を作る','プール・水遊びグッズの点検する','夏バテ防止の食事メニューを考える','子どもの「夏休みやりたいこと」を一緒に計画する','ゴミの腐敗対策（ゴミ箱の消臭・こまめな廃棄）'] },
+    8:  { icon:'sunset', name:'8月の家メンテ：夏の総仕上げ＆秋準備', color:'#4E342E', bg:'linear-gradient(135deg,#3E2723,#5D4037)',
+          hint:'夏の疲れを癒しつつ、2学期に向けた準備', type:'seasonal',
+          tasks:['夏物の洗濯（水着・サンダル・浮き輪）と収納準備','お盆用品の片付けと掃除','子どもの夏休みの宿題ラストスパート','2学期の持ち物・制服のサイズ確認','秋冬の子供服のリストアップ','家族で夏の思い出を振り返る時間を作る','エアコンの冷房→送風切替で内部を乾燥させる','防災の日（9/1）に向けた防災グッズ点検','夏に溜まった写真の整理・バックアップ','秋のイベント（運動会等）の日程を確認する'] },
     9:  { icon:'🍂', name:'秋の衣替え・冬準備', color:'#E65100', bg:'linear-gradient(135deg,#BF360C,#E65100)',
           hint:'9月は暑さが残る中でも冬準備スタート', type:'seasonal',
           tasks:['夏物衣類を洗濯して収納する','秋冬物衣類を出してサイズアウトをチェックする','子供の秋冬の制服・体操服を確認・購入する','エアコンのフィルター掃除（夏の酷使ケア）','加湿器を出して清掃・準備する','暖房器具（ヒーター・こたつ）を出して動作確認','インフルエンザ予防接種の予約を入れる','冬用布団を出して洗濯・干す','ベランダの夏物（プールや遊具）を片付ける','乾燥肌対策グッズ（保湿クリーム等）を補充する'] },
+    10: { icon:'shield', name:'10月の家メンテ：秋の防災＆冬準備', color:'#37474F', bg:'linear-gradient(135deg,#263238,#455A64)',
+          hint:'台風シーズンの防災点検と冬への切り替え', type:'seasonal',
+          tasks:['防災グッズの総点検（懐中電灯・電池・非常食の期限）','台風・大雨対策（排水口の掃除・物干し竿の固定）','暖房器具の試運転をする','ガス給湯器の凍結防止対策を確認する','ふるさと納税の残り上限額を確認する','子どもの運動会・学芸会の準備を確認する','ハロウィン飾りの準備をする','年末に向けた大掃除の計画を立て始める','子どもの冬のコート・靴のサイズチェック','家族で「今年やり残したこと」を話し合う'] },
+    11: { icon:'wind', name:'11月の家メンテ：年末準備キックオフ', color:'#4527A0', bg:'linear-gradient(135deg,#311B92,#4527A0)',
+          hint:'年末に慌てないための準備を今から始める', type:'seasonal',
+          tasks:['年賀状の宛先リストを更新し始める','おせち・ケーキ・チキンの予約を入れる','クリスマスプレゼントのリサーチを始める','大掃除の順番と担当を決める','冬のボーナスの使い道を家族で話し合う','加湿器の本格稼働に向けた清掃','暖房費の予算を確認する','年末年始の帰省の交通手段を予約する','今年1年の家族の成長を振り返る時間を作る','ふるさと納税の駆け込み注文をする'] },
     12: { icon:'🧹', name:'年末大掃除・新年準備', color:'#37474F', bg:'linear-gradient(135deg,#263238,#37474F)',
           hint:'12月は掃除・断捨離・お正月準備を並行で', type:'seasonal',
           tasks:['大掃除の役割分担をパパと決めて書き出す','エアコン・換気扇・レンジフードを掃除する','冷蔵庫の中身を整理して年末食材計画を立てる','クローゼット・押し入れを断捨離する','不用品を粗大ゴミ申し込みまたはフリマ出品する','お正月飾り・おせちの準備・予約をする','年賀状の最終作成・投函をする','帰省の持ち物リストを作成する','子供の冬休みの生活リズムプランを立てる','来年のカレンダー・手帳に家族の予定を転記する'] },
   };
-  // 該当月なければ直近の季節メンテを返す
+  // 12ヶ月全部あるのでフォールバック不要
   if(cards[m]) return {...cards[m], id:'seasonal_'+m};
-  // 春(3)夏(6)秋(9)冬(12)の直近
-  const seasons=[3,6,9,12];
-  const next=seasons.find(s=>s>m)||3;
-  return {...cards[next], id:'seasonal_'+next, hint:'次の季節メンテ（'+next+'月）の準備を始めましょう'};
+  return null;
 }
 
-// ── 週次ローテーション提案カード ─────────────────────────────────────────────
+// ── TASK 4: 週次ローテーション提案カード（weekly/monthly分離・bestDay対応） ──
 function getRotatingWeeklyCards() {
   const now = new Date();
-  // 年内の週番号（0始まり）でカードセットをローテーション
   const startOfYear = new Date(now.getFullYear(), 0, 1);
   const weekNum = Math.floor((now - startOfYear) / (7 * 24 * 60 * 60 * 1000));
+  const todayDow = now.getDay(); // 0=日,1=月,...,6=土
 
   const ALL_WEEKLY = [
     { id:'weekly_meal', name:'今週の献立計画', icon:'🍽️', type:'weekly',
       color:'#E65100', bg:'linear-gradient(135deg,#BF360C,#E65100)',
       hint:'メニューを先に決めると買い物・調理が格段にラクになる',
+      bestDay:[0,1],
       tasks:['今週の夕食7日分のメニューを書き出す','買い出しリストを食材別にまとめる','作り置きできるおかずを2品決める','パパが担当できる料理の日を決める','子どもが好きなメニューを最低2日入れる','食材の使いまわしを考えてロスを減らす','冷凍庫の在庫を先に確認してから買い物する','今週使い切りたい食材を先にリストアップする','子どもと一緒に献立を決める日を作る','平日の時短メニューを2日確保する'] },
     { id:'weekly_budget', name:'今週の家計チェック', icon:'💰', type:'weekly',
       color:'#2E7D32', bg:'linear-gradient(135deg,#1B5E20,#2E7D32)',
       hint:'週1回の振り返りで月末の赤字を防ぐ',
+      bestDay:[6,0],
       tasks:['今週の食費・日用品費のレシートを確認する','キャッシュレス決済の明細をアプリで確認する','予算オーバーのカテゴリを把握する','今週の外食回数・金額を振り返る','次週の買い物予算の上限を決める','固定費（サブスク等）で解約できるものを確認する','パパと今週の支出を共有する','子どもの習い事・学用品費を把握する','今月残りの予算を計算する','来週節約できる項目を1つ決める'] },
     { id:'weekly_chore', name:'週末の家事分担確認', icon:'📋', type:'weekly',
       color:'#1565C0', bg:'linear-gradient(135deg,#0D47A1,#1565C0)',
       hint:'週末の動き方を金曜中に決めておくとスムーズ',
+      bestDay:[4,5],
       tasks:['今週末パパが担当する家事を3つ決める','土日の掃除機がけ・床拭き担当を決める','週末の買い物をどちらが行くか決める','子どもの習い事の送迎担当を確認する','まとめ洗濯（シーツ・タオル）の担当を決める','週末の料理当番を決める','子どもの入浴・寝かしつけ担当を決める','不用品・ゴミまとめ担当を決める','週末の片付け・整理整頓エリアを決める','週末終わりに来週の分担も決める習慣をつける'] },
     { id:'weekly_outing', name:'週末お出かけプラン', icon:'🏕️', type:'weekly',
       color:'#00695C', bg:'linear-gradient(135deg,#004D40,#00695C)',
       hint:'今週末の家族時間を充実させるアイデア',
+      bestDay:[4,5],
       tasks:['週末の天気予報を確認する','近所の公園・お出かけスポットを調べる','地域のイベント・マルシェ・体験教室を調べる','子どもが行きたい場所を聞いてみる','お弁当・お菓子の準備が必要か確認する','移動手段と所要時間を確認する','混雑しにくい時間帯を調べる','週末の写真・動画撮影の準備をする','雨の場合の室内プランも考えておく','出かけ先の近くのランチ場所も調べておく'] },
     { id:'weekly_kids', name:'子どもの学習サポート', icon:'📚', type:'weekly',
       color:'#4527A0', bg:'linear-gradient(135deg,#311B92,#4527A0)',
       hint:'今週の宿題・提出物・テストをまとめて確認',
+      bestDay:[0,1],
       tasks:['今週の宿題の量・締め切りを子どもと確認する','連絡帳・保護者アプリを確認する','提出が必要なプリント・書類を確認する','今週テスト・発表がある科目を把握する','苦手科目を15分だけ一緒に取り組む','図書館の本の返却期限を確認する','習い事の持ち物・予習を確認する','子どもの「今週やりたいこと」を聞く','読み聞かせ・一緒に本を読む時間を作る','週末に1つ「できた！」体験を作ってあげる'] },
-    { id:'monthly_paper', name:'書類・プリント整理', icon:'📄', type:'weekly',
+  ];
+
+  // bestDayが今日と一致するカードを優先し、weekNumでローテーション
+  const bestToday = ALL_WEEKLY.filter(c => c.bestDay.includes(todayDow));
+  const others = ALL_WEEKLY.filter(c => !c.bestDay.includes(todayDow));
+  const pool = [...bestToday, ...others];
+  const startIdx = weekNum % pool.length;
+  return [pool[startIdx], pool[(startIdx + 1) % pool.length]];
+}
+
+// ── TASK 4: 月次カード（毎月1〜7日のみ表示） ─────────────────────────────────
+function getMonthlyCard() {
+  const now = new Date();
+  if(now.getDate() > 7) return null; // 月初1〜7日のみ
+  const month = now.getMonth() + 1;
+  const ALL_MONTHLY = [
+    { id:'monthly_paper', name:'書類・プリント整理', icon:'📄', type:'monthly',
       color:'#37474F', bg:'linear-gradient(135deg,#263238,#37474F)',
       hint:'溜まりがちな紙モノをまとめてスッキリさせる',
       tasks:['学校・園からのプリントを全部出して仕分けする','期限切れ・不要なプリントを処分する','重要書類（保険・契約など）をファイリングする','未処理の郵便物・請求書を確認する','子どもの作品・思い出プリントを整理する','デジタル化できる書類をスキャンする','行事カレンダーをスマホに入力する','学校の引き落とし日・金額を確認する','ファイルボックスのラベルを更新する','処分する書類をシュレッダーにかける'] },
-    { id:'monthly_photo', name:'家族写真を撮ろう', icon:'📸', type:'weekly',
+    { id:'monthly_photo', name:'家族写真を撮ろう', icon:'📸', type:'monthly',
       color:'#C2185B', bg:'linear-gradient(135deg,#880E4F,#C2185B)',
       hint:'子どもの成長は写真に残さないと後悔する',
       tasks:['今月の家族写真を最低1枚撮る','子どもの身長・体重を測って記録する','子どもの「今のマイブーム」を動画に残す','スマホの写真をクラウド・アルバムに整理する','家族みんなで写っている写真を選ぶ','祖父母に写真・動画を送る','子どもの成長記録アプリを更新する','誕生日・記念日の写真を振り返る','今月一番の思い出シーンを選ぶ','来月撮りたいシーンを決めておく'] },
-    { id:'monthly_clean', name:'今月の集中掃除ポイント', icon:'🧹', type:'weekly',
+    { id:'monthly_clean', name:'今月の集中掃除ポイント', icon:'🧹', type:'monthly',
       color:'#455A64', bg:'linear-gradient(135deg,#263238,#455A64)',
       hint:'毎月1箇所だけ徹底的にやるとキレイが続く',
       tasks:['今月の集中掃除エリアを1箇所決める','必要な掃除グッズを揃えておく','パパと役割分担して取り組む','掃除前後の写真を撮って達成感を記録する','普段手が届かない高い場所・棚の上を拭く','家電の裏・隙間のほこりを取る','排水口・フィルターをまとめてメンテする','不用品・使っていないものを処分する','掃除後の状態をキープするルールを決める','来月の集中エリアを今月中に決める'] },
   ];
-
-  // 週番号で2枚ずつローテーション（週が変わるたびに違う組み合わせ）
-  const groupSize = 2;
-  const startIdx = (weekNum * groupSize) % ALL_WEEKLY.length;
-  const cards = [];
-  for(let i=0; i<groupSize; i++){
-    cards.push(ALL_WEEKLY[(startIdx+i) % ALL_WEEKLY.length]);
-  }
-  return cards;
+  const idx = (month - 1) % ALL_MONTHLY.length;
+  return {...ALL_MONTHLY[idx], evDate: now, daysUntil: 0, isolated: false};
 }
 
-// ── パパ振り分け提案カード生成 ───────────────────────────────────────────────
+// ── TASK 5: パパ振り分け提案カード（3テーマ週次ローテーション） ───────────────
 function getPapaCard(s) {
+  const now = new Date();
+  const startOfYear = new Date(now.getFullYear(), 0, 1);
+  const weekNum = Math.floor((now - startOfYear) / (7 * 24 * 60 * 60 * 1000));
+  const theme = weekNum % 3; // 0: 今週のパパミッション, 1: パパの得意を活かそう, 2: ママの負担軽減プラン
+  const dow = ['日','月','火','水','木','金','土'][now.getDay()];
+
   const allT = (s.projects||[]).flatMap(p=>(p.tasks||[]).filter(t=>!t.done && (t.who==='both'||t.who==='papa')));
-  const single = (s.singleTasks||[]).filter(t=>!t.done);
   const papaT = allT.filter(t=>t.who==='papa').slice(0,3);
   const bothT = allT.filter(t=>t.who==='both').slice(0,4);
-  const today = new Date();
-  const dow = ['日','月','火','水','木','金','土'][today.getDay()];
-  // パパ担当タスクの候補（未アサイン or 両方担当から）
-  const candidates = [
-    ...bothT.map(t=>'【振り分け候補】'+t.name),
-    ...papaT.map(t=>'【パパ担当確認】'+t.name),
-  ];
-  // 固定の振り分けTips
-  const tips = [
-    'ゴミ出しの曜日ルールをパパと再確認する',
-    '週末のパパ担当料理メニューを決める',
-    '子供のお風呂・寝かしつけ担当を今週決める',
-    '買い物リストをパパと共有して分担する',
-    'パパに「来週やってほしいこと3つ」をLINEで送る',
-    '週末の公園・お出かきをパパ主導にお願いする',
-  ];
-  const tasks = [...candidates.slice(0,4), ...tips].slice(0,10);
+  const papaGood = s.prefs?.papaGood || [];
+
+  let name, hint, tasks;
+
+  if(theme === 0) {
+    // 今週のパパミッション
+    const candidates = [
+      ...bothT.map(t=>'【振り分け候補】'+t.name),
+      ...papaT.map(t=>'【パパ担当確認】'+t.name),
+    ];
+    const tips = [
+      'ゴミ出しの曜日ルールをパパと再確認する',
+      '週末のパパ担当料理メニューを決める',
+      '子供のお風呂・寝かしつけ担当を今週決める',
+      '買い物リストをパパと共有して分担する',
+      'パパに「来週やってほしいこと3つ」をLINEで送る',
+      '週末の公園・お出かけをパパ主導にお願いする',
+    ];
+    name = '今週のパパミッション';
+    hint = dow+'曜日・今週パパに頼めることをまとめました';
+    tasks = [...candidates.slice(0,4), ...tips].slice(0,10);
+  } else if(theme === 1) {
+    // パパの得意を活かそう
+    const goodTasks = papaGood.length > 0
+      ? papaGood.map(g=>'パパ得意の「'+g+'」を活かしてタスクを担当する')
+      : [];
+    name = 'パパの得意を活かそう';
+    hint = 'パパが得意なことを家族のために発揮する週';
+    tasks = [
+      ...goodTasks,
+      'パパが得意な料理を今週1品作る',
+      'パパが得意なDIY・修理を1つやってみる',
+      '子どもの趣味・遊びをパパが一緒に楽しむ',
+      'パパのスキルで家族の困りごとを解決する',
+      '「パパすごい！」と子どもに感じさせる体験を作る',
+      'パパが楽しめる家族行事を提案する',
+      'ママが苦手なことをパパが担当する',
+    ].slice(0,10);
+  } else {
+    // ママの負担軽減プラン
+    name = 'ママの負担軽減プラン';
+    hint = 'ママの毎日を少し楽にする作戦を立てよう';
+    tasks = [
+      '今週ママが一番大変なタスクを1つ聞く',
+      '朝の準備でパパが1つ追加で担当する',
+      '夕食準備をパパが週2回担当する',
+      '子どもの宿題チェックをパパが担当する',
+      '週末の買い物をパパが単独でこなす',
+      'ママが自由に使える2時間を作る',
+      '家事の手順をパパが覚えてレベルアップする',
+      'ママの「ありがとう」リストを確認して続ける',
+      '来週もこの作戦を続けるかママに確認する',
+      '「いつもありがとう」を今日伝える',
+    ];
+  }
+
   return {
-    id:'papa_balance', name:'パパへの振り分け提案', icon:'user', type:'papa',
+    id:'papa_balance', name, icon:'user', type:'papa',
     color:'#1E5EA8', bg:'linear-gradient(135deg,#1E5EA8,#2980B9)',
-    hint:dow+'曜日・今週パパに頼めることをまとめました',
-    tasks, evDate: today, daysUntil:0, isolated:false,
+    hint, tasks, evDate: now, daysUntil:0, isolated:false,
+  };
+}
+
+// ── TASK 6: ファミリースコアカード（日曜のみ表示・100点制） ──────────────────
+function getFamilyScoreCard(s) {
+  const now = new Date();
+  if(now.getDay() !== 0) return null; // 日曜のみ
+
+  const allT = [
+    ...(s.singleTasks||[]),
+    ...(s.projects||[]).flatMap(p=>p.tasks||[])
+  ];
+  const totalT = allT.length;
+  const doneT = allT.filter(t=>t.done||t.isCompleted).length;
+  const completionRate = totalT > 0 ? doneT / totalT : 0;
+  const completionScore = Math.round(completionRate * 40);
+
+  // ありがとうスコア（×5点, max30点）
+  const startOfWeek = new Date(now); startOfWeek.setDate(now.getDate() - 6); startOfWeek.setHours(0,0,0,0);
+  const weekThanks = (s.thanks||[]).filter(t => {
+    const d = new Date(t.date||t.createdAt||'');
+    return d >= startOfWeek;
+  }).length;
+  const thanksScore = Math.min(weekThanks * 5, 30);
+
+  // バランススコア（20点）- パパ/ママのタスク数の均等度
+  const papaCnt = allT.filter(t=>(t.who||t.assignee)==='papa').length;
+  const mamaCnt = allT.filter(t=>(t.who||t.assignee)==='mama').length;
+  const totalAssigned = papaCnt + mamaCnt;
+  const balanceScore = totalAssigned > 0
+    ? Math.round((Math.min(papaCnt, mamaCnt) / Math.max(papaCnt, mamaCnt)) * 20)
+    : 0;
+
+  // サプライズスコア（10点）
+  const surpriseThisWeek = (s.thanks||[]).filter(t => {
+    const d = new Date(t.date||t.createdAt||'');
+    return d >= startOfWeek && (t.type==='surprise' || t.isSurprise);
+  }).length;
+  const surpriseScore = surpriseThisWeek > 0 ? 10 : 0;
+
+  const totalScore = completionScore + thanksScore + balanceScore + surpriseScore;
+  const grade = totalScore >= 80 ? '★★★ 最高！' : totalScore >= 60 ? '★★ 良好' : totalScore >= 40 ? '★ まあまあ' : '要改善';
+
+  return {
+    id:'family_score', name:'今週のファミリースコア', icon:'bar-chart-2', type:'score',
+    color:'#7B1FA2', bg:'linear-gradient(135deg,#6A1B9A,#9C27B0)',
+    hint: totalScore+'点 / 100点 — '+grade,
+    tasks:[
+      '今週のスコア: '+totalScore+'点 / 100点 ('+grade+')',
+      '完了率ポイント: '+completionScore+'点（完了率×40）',
+      'ありがとうポイント: '+thanksScore+'点（×5点, max30）',
+      'バランスポイント: '+balanceScore+'点（パパ/ママ均等度×20）',
+      'サプライズポイント: '+surpriseScore+'点（×10）',
+      '---',
+      totalScore >= 80 ? '来週もこの調子で！家族の絆が深まっています' :
+      totalScore >= 60 ? 'いい調子！もう少しでパーフェクト' :
+      'ありがとうをもっと伝え合うとスコアアップ！',
+      'ありがとうを今週あと1回伝える',
+      'パパとママのタスクバランスを確認する',
+      '来週は'+Math.min(totalScore+10, 100)+'点を目指そう！',
+    ],
+    evDate: now, daysUntil: 0, isolated: false, score: totalScore,
   };
 }
 
@@ -1913,47 +2078,51 @@ function renderEventProposals(s) {
   const role = s.user?.role || 'mama';
   const isPapa = role==='papa' || role==='dad';
 
-  // 祝日イベント＋季節メンテ＋パパ振り分け＋週次カードを合わせたカードリスト
-  const holidayCards = getUpcomingEvents(s);
-  const seasonCard   = getSeasonalMainteCard();
-  const papaCard     = isPapa ? null : getPapaCard(s); // TASK 3: パパ画面ではpapaCardの代わりにempathyCard
-  const weeklyCards  = getRotatingWeeklyCards();
+  // TASK 7: 祝日カード同時表示上限
+  const MAX_HOLIDAY = 3;
 
-  // TASK 3-5: 新規カード
+  // 祝日イベント＋季節メンテ＋パパ振り分け＋週次カードを合わせたカードリスト
+  const holidayCards = getUpcomingEvents(s).slice(0, MAX_HOLIDAY);
+  const seasonCard   = getSeasonalMainteCard();
+  const papaCard     = isPapa ? null : getPapaCard(s);
+  const weeklyCards  = getRotatingWeeklyCards();
+  const monthlyCard  = getMonthlyCard();
+  const scoreCard    = getFamilyScoreCard(s);
+
+  // 新規カード
   const empathyCard  = isPapa ? getPapaEmpathyCard(s) : null;
   const reconcileCard= getReconcileCard(s);
   const surpriseCard = isPapa ? getSurpriseCard(s) : null;
 
-  // 順番: empathy → 直近祝日2枚 → 週次カード → サプライズ → 季節メンテ → 仲直り → パパ振り分け → 残り祝日
-  const firstHoliday = holidayCards.slice(0,2);
-  const restHoliday  = holidayCards.slice(2);
+  // 順番: empathy → 直近祝日(max3) → アフィリエイト → 週次カード → 月次カード → サプライズ → 季節メンテ → ファミリースコア → 仲直り → パパ振り分け
   const dismissed = new Set(s.dismissedEventIds||[]);
 
-  // allCardsを組み立て
   const allCards = [];
   if(empathyCard) allCards.push(empathyCard);
-  allCards.push(...firstHoliday);
+  allCards.push(...holidayCards);
 
-  // TASK 7: アフィリエイトカード（祝日2枚の後）
-  const currentEventIds = [...firstHoliday,...restHoliday].map(e=>e.id);
+  // アフィリエイトカード（祝日の後）
+  const currentEventIds = holidayCards.map(e=>e.id);
   const affCard = getAffiliateCard(s, currentEventIds);
   if(affCard) allCards.push(affCard);
 
   allCards.push(...weeklyCards);
+  if(monthlyCard) allCards.push(monthlyCard);
   if(surpriseCard) allCards.push(surpriseCard);
   if(seasonCard) allCards.push(seasonCard);
+  if(scoreCard) allCards.push(scoreCard);
   if(reconcileCard) allCards.push(reconcileCard);
   if(papaCard) allCards.push(papaCard);
-  allCards.push(...restHoliday);
 
   const events = allCards
     .filter(e => e && !dismissed.has(e.id))
     .filter(e => {
-      // TASK 6: visibleToフィルタ
+      // visibleToフィルタ
       if(e.visibleTo==='papa' && !isPapa) return false;
       if(e.visibleTo==='mama' && isPapa) return false;
-      // 既にプロジェクトに追加済みの祝日カードは非表示
-      if(e.type==='papa'||e.type==='seasonal'||e.type==='weekly'||e.type==='empathy'||e.type==='reconcile'||e.type==='surprise'||e.type==='affiliate') return true;
+      // 非祝日カードは常に表示
+      if(e.type==='papa'||e.type==='seasonal'||e.type==='weekly'||e.type==='monthly'||e.type==='score'||e.type==='empathy'||e.type==='reconcile'||e.type==='surprise'||e.type==='affiliate') return true;
+      // 祝日カードは既にプロジェクト追加済みなら非表示
       return !s.projects.find(p => p.name === e.name || p.id === e.id+'_proj');
     });
 
