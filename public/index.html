@@ -1352,9 +1352,16 @@ document.querySelectorAll('.tb[data-nav]').forEach(btn=>{
   btn.addEventListener('click',()=>navTo(btn.dataset.nav));
 });
 
-document.getElementById('sp-login-btn').addEventListener('click', ()=>navTo('home'));
+document.getElementById('sp-login-btn').addEventListener('click', ()=>{
+  // localStorageを同期確認（Firebase待ちで固まらないよう）
+  const local = lsLoad();
+  navTo(local?.sync?.onboardDone ? 'home' : 'onboard');
+});
 const spGuestBtn = document.getElementById('sp-guest-btn');
-if(spGuestBtn) spGuestBtn.addEventListener('click', ()=>navTo('home'));
+if(spGuestBtn) spGuestBtn.addEventListener('click', ()=>{
+  const local = lsLoad();
+  navTo(local?.sync?.onboardDone ? 'home' : 'onboard');
+});
 document.getElementById('chat-back').addEventListener('click',  ()=>navTo('home'));
 document.getElementById('chat-reset').addEventListener('click', ()=>resetChat());
 document.getElementById('cal-prev').addEventListener('click',   ()=>{calOff--;renderCal();});
