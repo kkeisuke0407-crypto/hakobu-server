@@ -333,6 +333,8 @@ html,body{height:100%;background:#D8D0C4;font-family:'Nunito','Noto Sans JP',san
 .task-proj-header-pct{font-size:11px;color:var(--t2);margin-left:auto;}
 .proj-list{padding:14px;overflow-y:auto;flex:1;padding-bottom:90px;}
 .task-screen-list{padding:14px;overflow-y:auto;flex:1;padding-bottom:90px;}
+.scr-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;}
+.scr-body::-webkit-scrollbar{display:none;}
 .proj-card-top{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
 .proj-card-icon{width:42px;height:42px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
 .proj-card-info{flex:1;}
@@ -546,13 +548,14 @@ window.fbUnsubscribe = function() {
   <div class="scr" id="s-home">
     <div class="hdr" id="home-hdr" style="display:flex;align-items:center;justify-content:space-between">
       <div style="display:flex;align-items:center;gap:10px">
-        <button id="ai-chat-btn" data-nav="chat" style="width:36px;height:36px;background:rgba(255,255,255,.15);border:none;border-radius:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#fff"><i class="ph ph-sparkle" style="font-size:20px;display:inline-flex;align-items:center;justify-content:center;line-height:1"></i></button>
+        <button id="ai-chat-btn" data-nav="chat" style="width:36px;height:36px;background:rgba(255,255,255,.15);border:none;border-radius:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#fff"><i class="ph ph-magic-wand" style="font-size:20px;display:inline-flex;align-items:center;justify-content:center;line-height:1"></i></button>
         <div>
           <div style="font-size:22px;font-weight:900;color:#fff" id="home-title">田中家のOS</div>
           <div style="font-size:11px;color:rgba(255,255,255,.6);margin-top:1px" id="home-sub">今日も一緒に乗り越えよう</div>
         </div>
       </div>
       <div style="position:relative">
+        <button id="cal-btn" onclick="navTo('cal')" style="width:36px;height:36px;background:rgba(255,255,255,.15);border:none;border-radius:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#fff;margin-right:6px"><i class="ph ph-calendar" style="font-size:20px;display:inline-flex;align-items:center;justify-content:center;line-height:1"></i></button>
         <button id="menu-btn" style="width:36px;height:36px;background:rgba(255,255,255,.15);border:none;border-radius:10px;cursor:pointer"><i class="ph ph-caret-left" style="font-size:20px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></button>
         <div id="dropdown-menu" style="display:none;position:absolute;right:0;top:40px;background:#fff;border-radius:16px;box-shadow:0 8px 30px rgba(0,0,0,.15);overflow:hidden;min-width:140px;z-index:999">
           <div class="dmenu-item" data-action="settings"><i class="ph ph-gear" style="font-size:15px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle;margin-right:6px"></i>設定</div>
@@ -573,11 +576,12 @@ window.fbUnsubscribe = function() {
         <div class="tlist" id="task-list"></div>
       </div>
     </div>
-    <nav class="tabs" id="tabs-home">
+    <nav class="tabs">
       <button class="tb on" data-nav="home"><span class="tb-i"><i class="ph ph-house" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">ホーム</span></button>
-      <button class="tb" data-nav="proj"><span class="tb-i"><i class="ph ph-grid-four" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">プロジェクト</span></button>
-      <button class="tb" data-nav="tasks"><span class="tb-i"><i class="ph ph-check-square" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">タスク</span><span class="tbadge" id="tbadge" style="display:none">!</span></button>
-      <button class="tb" data-nav="kaji"><span class="tb-i"><i class="ph ph-shopping-basket" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">家事</span></button>
+      <button class="tb" data-nav="tasks"><span class="tb-i"><i class="ph ph-check-square" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">タスク</span></button>
+      <button class="tb" data-nav="cal"><span class="tb-i"><i class="ph ph-calendar" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">カレンダー</span></button>
+      <button class="tb" data-nav="chat"><span class="tb-i"><i class="ph ph-magic-wand" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">AI相談</span></button>
+      <button class="tb" data-nav="more"><span class="tb-i"><i class="ph ph-dots-three" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">もっと</span></button>
     </nav>
   </div>
 
@@ -590,11 +594,12 @@ window.fbUnsubscribe = function() {
       </div>
     </div>
     <div class="proj-list" id="proj-list"></div>
-    <nav class="tabs" id="tabs-proj">
+    <nav class="tabs">
       <button class="tb" data-nav="home"><span class="tb-i"><i class="ph ph-house" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">ホーム</span></button>
-      <button class="tb on" data-nav="proj"><span class="tb-i"><i class="ph ph-grid-four" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">プロジェクト</span></button>
       <button class="tb" data-nav="tasks"><span class="tb-i"><i class="ph ph-check-square" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">タスク</span></button>
-      <button class="tb" data-nav="kaji"><span class="tb-i"><i class="ph ph-shopping-basket" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">家事</span></button>
+      <button class="tb" data-nav="cal"><span class="tb-i"><i class="ph ph-calendar" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">カレンダー</span></button>
+      <button class="tb" data-nav="chat"><span class="tb-i"><i class="ph ph-magic-wand" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">AI相談</span></button>
+      <button class="tb on" data-nav="more"><span class="tb-i"><i class="ph ph-dots-three" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">もっと</span></button>
     </nav>
   </div>
 
@@ -604,17 +609,14 @@ window.fbUnsubscribe = function() {
       <div class="hdr-row">
         <div class="hdr-title">タスク</div>
       </div>
-      <div class="type-tabs">
-        <button class="type-tab on" data-type="cal">カレンダー</button>
-        <button class="type-tab" data-type="single">単発</button>
-      </div>
     </div>
     <div class="task-cal-grid" id="task-screen-list"></div>
-    <nav class="tabs" id="tabs-tasks">
+    <nav class="tabs">
       <button class="tb" data-nav="home"><span class="tb-i"><i class="ph ph-house" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">ホーム</span></button>
-      <button class="tb" data-nav="proj"><span class="tb-i"><i class="ph ph-grid-four" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">プロジェクト</span></button>
       <button class="tb on" data-nav="tasks"><span class="tb-i"><i class="ph ph-check-square" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">タスク</span></button>
-      <button class="tb" data-nav="kaji"><span class="tb-i"><i class="ph ph-shopping-basket" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">家事</span></button>
+      <button class="tb" data-nav="cal"><span class="tb-i"><i class="ph ph-calendar" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">カレンダー</span></button>
+      <button class="tb" data-nav="chat"><span class="tb-i"><i class="ph ph-magic-wand" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">AI相談</span></button>
+      <button class="tb" data-nav="more"><span class="tb-i"><i class="ph ph-dots-three" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">もっと</span></button>
     </nav>
   </div>
 
@@ -622,7 +624,7 @@ window.fbUnsubscribe = function() {
   <div class="scr" id="s-chat">
     <div class="chat-hdr">
       <button class="back" id="chat-back"><i class="ph ph-caret-left" style="font-size:20px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></button>
-      <div class="ai-av"><i class="ph ph-sparkle" style="font-size:20px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></div>
+      <div class="ai-av"><i class="ph ph-magic-wand" style="font-size:20px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></div>
       <div style="flex:1">
         <div class="ai-name">ハコぶ AI</div>
         <div class="ai-st"><span class="ldot"></span>オンライン</div>
@@ -645,9 +647,10 @@ window.fbUnsubscribe = function() {
     </div>
     <nav class="tabs">
       <button class="tb" data-nav="home"><span class="tb-i"><i class="ph ph-house" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">ホーム</span></button>
-      <button class="tb on" data-nav="chat"><span class="tb-i"><i class="ph ph-chat-square" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">AI相談</span></button>
+      <button class="tb" data-nav="tasks"><span class="tb-i"><i class="ph ph-check-square" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">タスク</span></button>
       <button class="tb" data-nav="cal"><span class="tb-i"><i class="ph ph-calendar" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">カレンダー</span></button>
-      <button class="tb" data-nav="mem"><span class="tb-i"><i class="ph ph-users" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">メンバー</span></button>
+      <button class="tb on" data-nav="chat"><span class="tb-i"><i class="ph ph-magic-wand" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">AI相談</span></button>
+      <button class="tb" data-nav="more"><span class="tb-i"><i class="ph ph-dots-three" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">もっと</span></button>
     </nav>
   </div>
 
@@ -675,9 +678,10 @@ window.fbUnsubscribe = function() {
     <div class="scroll" style="padding:13px 13px 100px" id="cal-projs"></div>
     <nav class="tabs">
       <button class="tb" data-nav="home"><span class="tb-i"><i class="ph ph-house" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">ホーム</span></button>
-      <button class="tb" data-nav="chat"><span class="tb-i"><i class="ph ph-chat-square" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">AI相談</span></button>
+      <button class="tb" data-nav="tasks"><span class="tb-i"><i class="ph ph-check-square" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">タスク</span></button>
       <button class="tb on" data-nav="cal"><span class="tb-i"><i class="ph ph-calendar" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">カレンダー</span></button>
-      <button class="tb" data-nav="mem"><span class="tb-i"><i class="ph ph-users" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">メンバー</span></button>
+      <button class="tb" data-nav="chat"><span class="tb-i"><i class="ph ph-magic-wand" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">AI相談</span></button>
+      <button class="tb" data-nav="more"><span class="tb-i"><i class="ph ph-dots-three" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">もっと</span></button>
     </nav>
   </div>
 
@@ -689,8 +693,11 @@ window.fbUnsubscribe = function() {
     </div>
     <div class="scroll" style="padding:14px 14px 40px" id="mem-body"></div>
     <nav class="tabs">
+      <button class="tb" data-nav="home"><span class="tb-i"><i class="ph ph-house" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">ホーム</span></button>
+      <button class="tb" data-nav="tasks"><span class="tb-i"><i class="ph ph-check-square" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">タスク</span></button>
       <button class="tb" data-nav="cal"><span class="tb-i"><i class="ph ph-calendar" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">カレンダー</span></button>
-      <button class="tb on" data-nav="mem"><span class="tb-i"><i class="ph ph-users" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">メンバー</span></button>
+      <button class="tb" data-nav="chat"><span class="tb-i"><i class="ph ph-magic-wand" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">AI相談</span></button>
+      <button class="tb on" data-nav="more"><span class="tb-i"><i class="ph ph-dots-three" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">もっと</span></button>
     </nav>
   </div>
 
@@ -856,11 +863,53 @@ window.fbUnsubscribe = function() {
     <div class="scr-body" id="kaji-body" style="padding:0"></div>
     <nav class="tabs">
       <button class="tb" data-nav="home"><span class="tb-i"><i class="ph ph-house" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">ホーム</span></button>
-      <button class="tb" data-nav="proj"><span class="tb-i"><i class="ph ph-grid-four" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">プロジェクト</span></button>
       <button class="tb" data-nav="tasks"><span class="tb-i"><i class="ph ph-check-square" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">タスク</span></button>
-      <button class="tb on" data-nav="kaji"><span class="tb-i"><i class="ph ph-shopping-basket" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">家事</span></button>
+      <button class="tb" data-nav="cal"><span class="tb-i"><i class="ph ph-calendar" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">カレンダー</span></button>
+      <button class="tb" data-nav="chat"><span class="tb-i"><i class="ph ph-magic-wand" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">AI相談</span></button>
+      <button class="tb on" data-nav="more"><span class="tb-i"><i class="ph ph-dots-three" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">もっと</span></button>
     </nav>
   </div>
+
+  <!-- MORE SCREEN -->
+  <div class="scr" id="s-more">
+    <div class="hdr">
+      <div class="hdr-row"><div class="hdr-title">メニュー</div></div>
+    </div>
+    <div class="scroll" style="padding:14px 14px 100px">
+      <button onclick="navTo('proj')" style="width:100%;display:flex;align-items:center;gap:14px;padding:16px;border:none;background:var(--sur);border-radius:var(--r2);margin-bottom:10px;cursor:pointer;font-family:inherit">
+        <i class="ph ph-grid-four" style="font-size:24px;color:var(--teal);flex-shrink:0"></i>
+        <div style="flex:1;text-align:left">
+          <div style="font-size:15px;font-weight:700;color:var(--t1)">プロジェクト</div>
+          <div style="font-size:12px;color:var(--t3);margin-top:2px">家族プロジェクトの管理</div>
+        </div>
+        <i class="ph ph-caret-right" style="font-size:16px;color:var(--t3)"></i>
+      </button>
+      <button onclick="navTo('kaji')" style="width:100%;display:flex;align-items:center;gap:14px;padding:16px;border:none;background:var(--sur);border-radius:var(--r2);margin-bottom:10px;cursor:pointer;font-family:inherit">
+        <i class="ph ph-shopping-basket" style="font-size:24px;color:var(--teal);flex-shrink:0"></i>
+        <div style="flex:1;text-align:left">
+          <div style="font-size:15px;font-weight:700;color:var(--t1)">家事管理</div>
+          <div style="font-size:12px;color:var(--t3);margin-top:2px">お買い物・家事のリスト</div>
+        </div>
+        <i class="ph ph-caret-right" style="font-size:16px;color:var(--t3)"></i>
+      </button>
+      <button onclick="navTo('settings')" style="width:100%;display:flex;align-items:center;gap:14px;padding:16px;border:none;background:var(--sur);border-radius:var(--r2);margin-bottom:10px;cursor:pointer;font-family:inherit">
+        <i class="ph ph-gear" style="font-size:24px;color:var(--teal);flex-shrink:0"></i>
+        <div style="flex:1;text-align:left">
+          <div style="font-size:15px;font-weight:700;color:var(--t1)">設定</div>
+          <div style="font-size:12px;color:var(--t3);margin-top:2px">家族情報・Firebase設定</div>
+        </div>
+        <i class="ph ph-caret-right" style="font-size:16px;color:var(--t3)"></i>
+      </button>
+    </div>
+    <nav class="tabs">
+      <button class="tb" data-nav="home"><span class="tb-i"><i class="ph ph-house" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">ホーム</span></button>
+      <button class="tb" data-nav="tasks"><span class="tb-i"><i class="ph ph-check-square" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">タスク</span></button>
+      <button class="tb" data-nav="cal"><span class="tb-i"><i class="ph ph-calendar" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">カレンダー</span></button>
+      <button class="tb" data-nav="chat"><span class="tb-i"><i class="ph ph-magic-wand" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">AI相談</span></button>
+      <button class="tb on" data-nav="more"><span class="tb-i"><i class="ph ph-dots-three" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">もっと</span></button>
+    </nav>
+  </div>
+
 
   <!-- ADD TASK MODAL -->
   <div class="modal-bg" id="add-modal">
@@ -1313,8 +1362,10 @@ let curScr = 'splash';
 let chatCtx = null;
 
 function navTo(id, ctx){
-  // 全画面OFF（settings/mem含む）
-  ['splash','onboard','home','chat','cal','proj','tasks','kaji','settings','mem'].forEach(s=>{
+  // mem → settings にリダイレクト
+  if(id==='mem') id='settings';
+  // 全画面OFF
+  ['splash','onboard','home','chat','cal','proj','tasks','kaji','settings','mem','more'].forEach(s=>{
     const el = document.getElementById('s-'+s);
     if(el) el.classList.remove('on');
   });
@@ -1323,8 +1374,9 @@ function navTo(id, ctx){
   // 対象画面ON
   const target = document.getElementById('s-'+id);
   if(target) target.classList.add('on');
-  // タブ状態
-  document.querySelectorAll('.tb').forEach(b=>b.classList.toggle('on', b.dataset.nav===id));
+  // タブ状態: proj/kaji/settings は more タブをアクティブに
+  const _tabId = ['proj','kaji','settings'].includes(id) ? 'more' : id;
+  document.querySelectorAll('.tb').forEach(b=>b.classList.toggle('on', b.dataset.nav===_tabId));
   // レンダリング
   if(id==='home')     renderHome();
   if(id==='chat')     openChat();
@@ -1332,9 +1384,9 @@ function navTo(id, ctx){
   if(id==='proj')     renderProjScreen();
   if(id==='tasks')    renderTasksScreen();
   if(id==='kaji')     renderKajiScreen();
+  if(id==='more')     {} // static screen
   if(id==='onboard')  { initOnboard(); return; }
   if(id==='settings') { renderSettings(); return; }
-  if(id==='mem')      { renderMem(); return; }
 }
 
 // Tab bar delegation (全タブに一括登録)
@@ -2520,10 +2572,10 @@ function renderMealBanner(){
   }
   const {meal, hint} = taskService.getTodayMeal();
   const inner = document.createElement('div');
-  inner.style.cssText = 'background:var(--sur);border-radius:16px;border-left:4px solid var(--yel);padding:14px 16px;display:flex;align-items:center;gap:12px;cursor:pointer';
+  inner.style.cssText = 'background:var(--teal);border-radius:16px;border-left:4px solid var(--teal-d);padding:14px 16px;display:flex;align-items:center;gap:12px;cursor:pointer';
   inner.innerHTML = '<div style="width:36px;height:36px;flex-shrink:0;display:flex;align-items:center;justify-content:center"><i class="ph ph-fork-knife" style="font-size:28px;display:inline-flex;align-items:center;justify-content:center;line-height:1;color:var(--yel)"></i></div>'
     +'<div style="flex:1">'
-    +'<div style="font-size:11px;font-weight:700;color:rgba(255,255,255,.7);margin-bottom:3px">今日の献立テーマ</div>'
+    +'<div style="font-size:11px;font-weight:700;color:rgba(255,255,255,.75);margin-bottom:3px">今日の献立テーマ</div>'
     +'<div style="font-size:16px;font-weight:800;color:#fff">'+meal+'</div>'
     +'<div style="font-size:11px;color:rgba(255,255,255,.75);margin-top:2px">'+hint+'</div>'
     +'</div>'
@@ -3325,7 +3377,7 @@ async function renderProjScreen(){
 }
 
 // ─── タスク画面 ──────────────────────────────────
-let _taskFilter = 'cal';
+let _taskFilter = 'single';
 let _taskViewMode = 'day'; // 'day'|'week'|'month'
 
 async function renderTasksScreen(){
@@ -3782,7 +3834,7 @@ function renderSettings(){
   });
   ss.classList.add('on');
   curScr = 'settings';
-  document.querySelectorAll('.tb').forEach(b=>b.classList.remove('on'));
+  document.querySelectorAll('.tb').forEach(b=>b.classList.toggle('on', b.dataset.nav==='more'));
 
   loadST().then(s=>{
     const fam = s.family || {};
@@ -3795,8 +3847,12 @@ function renderSettings(){
       +'<span class="hdr-title">設定</span></div>'
       +'<div class="scroll" style="padding:14px 14px 40px">'
 
+      // ── メンバー・家事バランス（旧メンバー画面統合）
+      +'<div class="sec-lbl" style="margin-top:4px">メンバー・家事バランス</div>'
+      +'<div id="settings-mem-card" style="margin-bottom:14px"></div>'
+
       // ── 家族情報
-      +'<div class="sec-lbl" style="margin-top:4px">家族情報</div>'
+      +'<div class="sec-lbl">家族情報</div>'
       +'<div class="card" style="margin-bottom:14px;padding:14px">'
       +'<div class="field"><label>家族名</label><input id="set-famname" value="'+(fam.name||'田中')+'" placeholder="例：田中"></div>'
       +'<div style="display:flex;gap:10px">'
@@ -3853,7 +3909,70 @@ function renderSettings(){
       +'</div>'
 
       +'</div>'; // scroll end
+    renderSettingsMem(s, ss);
   });
+}
+
+// ── 設定画面内メンバーカード描画 ────────────────────────────────────
+function renderSettingsMem(s, ss) {
+  const el = ss ? ss.querySelector('#settings-mem-card') : document.getElementById('settings-mem-card');
+  if(!el) return;
+  const allT = [...(s.singleTasks||[]), ...(s.projects||[]).flatMap(p=>p.tasks||[])];
+  const mamaTotal = allT.filter(t=>(t.who||t.assignee)==='mama').length;
+  const papaTotal = allT.filter(t=>(t.who||t.assignee)==='papa').length;
+  const total = mamaTotal + papaTotal || 1;
+  const mamaLoad = Math.round(mamaTotal/total*100);
+  const papaLoad = 100 - mamaLoad;
+  const done = allT.filter(t=>t.isCompleted||t.done).length;
+  const childName = s.family?.child || 'はな';
+  const childAge  = s.family?.childAge || 5;
+  const fam = s.family || {};
+
+  const _SVG_USER = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>';
+
+  el.innerHTML =
+    // バランスバー
+    '<div class="card" style="margin-bottom:10px;padding:14px">'
+    +'<div style="font-size:12px;font-weight:800;color:var(--t2);margin-bottom:10px;letter-spacing:.3px">今月の家事バランス</div>'
+    +[
+      [mamaLoad,'var(--mama)',(fam.mama||'ママ')],
+      [papaLoad,'var(--papa)',(fam.papa||'パパ')],
+    ].map(([load,color,name])=>
+      '<div style="margin-bottom:8px">'
+      +'<div style="display:flex;justify-content:space-between;font-size:12px;color:var(--t2);margin-bottom:4px">'
+      +'<span>'+_SVG_USER+name+'</span><span style="font-weight:800;color:'+color+'">'+load+'%</span></div>'
+      +'<div style="height:7px;background:var(--bg);border-radius:4px;overflow:hidden">'
+      +'<div style="height:100%;width:'+load+'%;background:'+color+';border-radius:4px;transition:width .5s"></div></div></div>'
+    ).join('')
+    // 実績
+    +'<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:12px;text-align:center">'
+    +'<div style="background:var(--bg);border-radius:10px;padding:8px 4px"><div style="font-size:20px;font-weight:900;color:var(--t1)">'+allT.length+'</div><div style="font-size:10px;color:var(--t3)">総タスク</div></div>'
+    +'<div style="background:var(--bg);border-radius:10px;padding:8px 4px"><div style="font-size:20px;font-weight:900;color:var(--gr)">'+done+'</div><div style="font-size:10px;color:var(--t3)">完了</div></div>'
+    +'<div style="background:var(--bg);border-radius:10px;padding:8px 4px"><div style="font-size:20px;font-weight:900;color:var(--mama)">'+(s.projects||[]).length+'</div><div style="font-size:10px;color:var(--t3)">プロジェクト</div></div>'
+    +'</div>'
+    +'<button onclick="navTo('chat',{action:'balance'})" class="btn btn-g" style="margin-top:12px;width:100%">AIに家事バランスを改善してもらう →</button>'
+    +'</div>'
+    // メンバーカード
+    +[
+      {name:(fam.mama||'ママ'), color:'var(--mama)', bg:'var(--mama2)', load:mamaLoad, role:'献立・スケジュール管理', tags:['献立','送り迎え','保育園対応'], action:'member_mama'},
+      {name:(fam.papa||'パパ'), color:'var(--papa)', bg:'var(--papa2)', load:papaLoad, role:'ゴミ出し・週末担当',     tags:['ゴミ出し','週末料理'],           action:'member_papa'},
+      {name:childName+'（'+childAge+'歳）', color:'var(--yel)', bg:'var(--yel3)', load:0, role:'子ども',             tags:['お片付け','あいさつ練習'],       action:null},
+    ].map(m=>
+      '<div class="card" style="margin-bottom:10px;padding:14px">'
+      +'<div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">'
+      +'<div style="width:40px;height:40px;border-radius:50%;background:'+m.bg+';flex-shrink:0;display:flex;align-items:center;justify-content:center">'+_SVG_USER+'</div>'
+      +'<div><div style="font-size:14px;font-weight:700;color:var(--t1)">'+m.name+'</div><div style="font-size:11px;color:var(--t2)">'+m.role+'</div></div>'
+      +'</div>'
+      +(m.load>0
+        ? '<div style="margin-bottom:8px"><div style="display:flex;justify-content:space-between;font-size:11px;color:var(--t2);margin-bottom:3px"><span>家事貢献度</span><span style="font-weight:700;color:'+m.color+'">'+m.load+'%</span></div>'
+          +'<div style="height:6px;background:var(--bg);border-radius:3px;overflow:hidden"><div style="height:100%;width:'+m.load+'%;background:'+m.color+';border-radius:3px;transition:width .5s"></div></div></div>'
+        : '')
+      +'<div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:'+(m.action?'10':'0')+'px">'
+      +m.tags.map(t=>'<span style="background:var(--bg);color:var(--t2);border-radius:10px;padding:3px 8px;font-size:11px">'+t+'</span>').join('')
+      +'</div>'
+      +(m.action ? '<button onclick="navTo('chat',{action:''+m.action+''})" class="btn btn-g" style="width:100%">'+m.name+'へのタスクをAIに提案してもらう →</button>' : '')
+      +'</div>'
+    ).join('');
 }
 
 // ── 家族同期カード描画 ────────────────────────────────────────────────────
@@ -4805,7 +4924,7 @@ async function renderKajiScreen() {
 
   /* --- 入力エリア (sticky) --- */
   const iw = document.createElement('div');
-  iw.style.cssText = 'padding:10px 12px 8px;background:#fff;border-bottom:1px solid var(--bdr);position:sticky;top:56px;z-index:5';
+  iw.style.cssText = 'padding:10px 12px 8px;background:#fff;border-bottom:1px solid var(--bdr);position:sticky;top:0;z-index:5';
 
   const ir = document.createElement('div');
   ir.style.cssText = 'display:flex;gap:8px;align-items:center;margin-bottom:8px;position:relative';
