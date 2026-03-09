@@ -25,14 +25,14 @@ html,body{height:100%;background:#D8D0C4;font-family:'Nunito','Noto Sans JP',san
   --mama:#E8694A;--mama2:#FFF0EC;
   --papa:#3EC9C0;--papa2:#E8FAF9;
   --r:16px;--r2:22px;--r3:30px;--tap:44px;
-  --sh:0 1px 6px rgba(29,61,92,.08);
-  --sh2:0 4px 18px rgba(29,61,92,.12);
+  --sh:0 2px 10px rgba(29,61,92,.10);
+  --sh2:0 8px 24px rgba(29,61,92,.18);
 }
 /* ── SHELL ── */
 .shell{display:flex;justify-content:center;padding:20px 0 60px;}
 .phone{width:390px;height:844px;background:var(--bg);border-radius:48px;overflow:hidden;position:relative;flex-shrink:0;box-shadow:0 0 0 10px #1C1C1E,0 0 0 13px #2C2C2E,0 30px 90px rgba(0,0,0,.5);}
 .notch{position:absolute;top:0;left:50%;transform:translateX(-50%);width:120px;height:33px;background:#1C1C1E;border-radius:0 0 20px 20px;z-index:999;}
-.sbar{position:absolute;top:0;left:0;right:0;height:50px;display:flex;align-items:flex-end;justify-content:space-between;padding:0 24px 8px;font-size:12px;font-weight:700;color:var(--t1);z-index:100;pointer-events:none;}
+.sbar{position:absolute;top:0;left:0;right:0;height:50px;display:flex;align-items:flex-end;justify-content:space-between;padding:0 24px 8px;font-size:12px;font-weight:700;color:#fff;z-index:100;pointer-events:none;}
 /* ── SCREENS ── */
 .scr{position:absolute;inset:0;display:flex;flex-direction:column;opacity:0;pointer-events:none;transition:opacity .18s;}
 .scr.on{opacity:1;pointer-events:all;}
@@ -61,7 +61,7 @@ html,body{height:100%;background:#D8D0C4;font-family:'Nunito','Noto Sans JP',san
 .card{background:var(--sur);border-radius:var(--r2);box-shadow:var(--sh);overflow:hidden;}
 /* ── SEC ── */
 .sec{padding:14px 14px 0;}
-.sec-lbl{font-size:12px;font-weight:900;color:var(--t1);letter-spacing:.5px;margin-bottom:10px;text-transform:none;}
+.sec-lbl{font-size:10px;font-weight:800;color:var(--t3);letter-spacing:1.5px;margin-bottom:10px;text-transform:uppercase;}
 /* ── TOAST ── */
 .toast{position:absolute;bottom:92px;left:50%;transform:translateX(-50%) translateY(8px);background:var(--t1);color:#fff;padding:10px 18px;border-radius:30px;font-size:13px;font-weight:500;white-space:nowrap;z-index:9999;opacity:0;transition:all .22s;pointer-events:none;}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
@@ -97,7 +97,7 @@ html,body{height:100%;background:#D8D0C4;font-family:'Nunito','Noto Sans JP',san
 .sp-tagline{font-size:10px;font-weight:700;color:var(--t3);letter-spacing:1.5px;text-transform:uppercase;text-align:center;margin-bottom:36px;line-height:1.8;}
 .sp-btns{width:100%;display:flex;flex-direction:column;gap:0;}
 .sp-start{width:100%;padding:16px;border-radius:var(--r2);background:var(--teal);color:#fff;font-size:16px;font-weight:900;border:none;font-family:inherit;cursor:pointer;margin-bottom:10px;}
-.sp-login{width:100%;padding:12px;border-radius:var(--r2);background:transparent;color:var(--t3);font-size:13px;font-weight:600;border:none;font-family:inherit;cursor:pointer;}
+.sp-login{width:100%;padding:13px;border-radius:var(--r2);background:transparent;color:var(--t2);font-size:14px;font-weight:700;border:2px solid var(--bdr);font-family:inherit;cursor:pointer;}
 .sp-login-lbl{display:none;}
 .sp-google{width:100%;padding:14px;border-radius:var(--r2);background:var(--sur);color:var(--t1);font-size:15px;font-weight:700;border:2px solid var(--bdr);font-family:inherit;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:10px;box-shadow:var(--sh);}
 .sp-apple{width:100%;padding:14px;border-radius:var(--r2);background:var(--navy);color:#fff;font-size:15px;font-weight:700;border:none;font-family:inherit;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:10px;}
@@ -148,7 +148,7 @@ html,body{height:100%;background:#D8D0C4;font-family:'Nunito','Noto Sans JP',san
 .proj-pill:active{transform:scale(.95);}
 .pp-em{font-size:19px;margin-bottom:5px;}
 .pp-name{font-size:12px;font-weight:700;color:var(--t1);margin-bottom:4px;line-height:1.3;}
-.pp-bar{height:5px;background:var(--bdr);border-radius:3px;overflow:hidden;margin-bottom:3px;}
+.pp-bar{height:3px;background:var(--bdr);border-radius:3px;overflow:hidden;margin-bottom:3px;}
 .pp-fill{height:100%;border-radius:3px;}
 .pp-meta{font-size:10px;color:var(--t3);}
 .pp-urg{font-size:10px;color:var(--re);font-weight:700;}
@@ -168,13 +168,13 @@ html,body{height:100%;background:#D8D0C4;font-family:'Nunito','Noto Sans JP',san
 .trow{display:flex;align-items:center;gap:10px;padding:13px 14px;border-bottom:1px solid var(--bdr);cursor:pointer;transition:background .1s;}
 .trow:active{background:var(--bdr);}
 .trow:last-child{border:none;}
-.tchk{width:24px;height:24px;border-radius:8px;border:2px solid var(--bdr);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:12px;cursor:pointer;transition:all .18s;}
-.tchk.done{background:var(--gr);border-color:var(--gr);color:#fff;}
+.tchk{width:24px;height:24px;border-radius:50%;border:2px solid var(--teal);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:12px;cursor:pointer;transition:all .18s;}
+.tchk.done{background:var(--teal);border-color:var(--teal);color:#fff;}
 .tbody{flex:1;min-width:0;}
 .tname{font-size:14px;font-weight:500;color:var(--t1);}
 .tname.done{text-decoration:line-through;color:var(--t3);}
 .tmeta{display:flex;align-items:center;gap:5px;margin-top:3px;flex-wrap:wrap;}
-.wtag{font-size:10px;font-weight:700;padding:2px 7px;border-radius:8px;}
+.wtag{font-size:9px;font-weight:800;padding:2px 6px;border-radius:5px;letter-spacing:.3px;}
 .wt-m{background:var(--mama2);color:var(--mama);}
 .wt-p{background:var(--papa2);color:var(--papa);}
 .wt-b{background:var(--gr3);color:var(--gr2);}
@@ -270,13 +270,13 @@ html,body{height:100%;background:#D8D0C4;font-family:'Nunito','Noto Sans JP',san
 .pj-sub{font-size:11px;color:var(--t2);margin-top:1px;}
 .pj-pct{font-size:19px;font-weight:900;}
 .pj-prog{padding:0 13px 12px;}
-.pj-bar{height:6px;background:var(--bg);border-radius:3px;overflow:hidden;}
+.pj-bar{height:3px;background:var(--bg);border-radius:3px;overflow:hidden;}
 .pj-fill{height:100%;border-radius:3px;transition:width .7s;}
 .pj-tasks{border-top:1px solid var(--bdr);}
 .pj-trow{display:flex;align-items:center;gap:9px;padding:10px 13px;border-bottom:1px solid var(--bdr);font-size:13px;}
 .pj-trow:last-child{border:none;}
-.pj-tchk{width:20px;height:20px;border-radius:6px;border:2px solid var(--bdr);flex-shrink:0;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .18s;font-size:10px;}
-.pj-tchk.done{background:var(--gr);border-color:var(--gr);color:#fff;}
+.pj-tchk{width:20px;height:20px;border-radius:50%;border:2px solid var(--teal);flex-shrink:0;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .18s;font-size:10px;}
+.pj-tchk.done{background:var(--teal);border-color:var(--teal);color:#fff;}
 .pj-tname{flex:1;color:var(--t1);}
 .pj-tname.done{text-decoration:line-through;color:var(--t3);}
 .pj-urg{font-size:10px;font-weight:700;color:var(--re);}
@@ -338,7 +338,7 @@ html,body{height:100%;background:#D8D0C4;font-family:'Nunito','Noto Sans JP',san
 .proj-card-info{flex:1;}
 .proj-card-name{font-size:15px;font-weight:700;color:var(--t1);}
 .proj-card-meta{font-size:11px;color:var(--t2);margin-top:2px;}
-.prog-bar{height:5px;background:var(--bdr);border-radius:3px;overflow:hidden;margin-bottom:6px;}
+.prog-bar{height:3px;background:var(--bdr);border-radius:3px;overflow:hidden;margin-bottom:6px;}
 .prog-fill{height:100%;border-radius:3px;transition:width .4s;}
 .prog-label{font-size:11px;color:var(--t2);display:flex;justify-content:space-between;}
 .next-task{background:var(--teal-l);border-radius:10px;padding:8px 12px;font-size:12px;color:var(--teal-d);font-weight:600;margin-top:8px;border-left:3px solid var(--teal);}
@@ -353,12 +353,14 @@ html,body{height:100%;background:#D8D0C4;font-family:'Nunito','Noto Sans JP',san
 .icon-chip.on{border-color:var(--teal);background:var(--teal-l);}
 .fab{position:fixed;bottom:90px;right:20px;width:52px;height:52px;border-radius:16px;background:var(--teal);border:none;color:#fff;cursor:pointer;box-shadow:0 4px 16px rgba(62,201,192,.4);display:flex;align-items:center;justify-content:center;z-index:100;}
 
-/* Lucide アイコン全般 */
-[data-lucide]{display:inline-flex;align-items:center;justify-content:center;}
-[data-lucide] svg{stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;}
-.tb-i [data-lucide] svg{stroke-width:2.8;}
+/* Phosphor アイコン全般 */
+.ph{display:inline-flex;align-items:center;justify-content:center;line-height:1;}
+.tb-i .ph{font-size:24px;font-weight:bold;}
+/* タブバーはBoldウェイト */
+.tb-i .ph::before{font-family:'Phosphor-Bold' !important;}
 </style>
-<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/bold/style.css">
 
 <!-- Firebase SDK -->
 <script type="module">
@@ -447,7 +449,7 @@ window.fbUnsubscribe = function() {
 <div class="shell">
 <div class="phone" id="phone">
   <div class="notch"></div>
-  <div class="sbar"><span id="clk">9:41</span><span>●●● <i data-lucide="zap" style="width:11px;height:11px;display:inline-flex;vertical-align:middle"></i></span></div>
+  <div class="sbar"><span id="clk">9:41</span><span>●●● <i class="ph ph-lightning" style="font-size:11px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span></div>
 
   <!-- SPLASH -->
   <div class="scr on" id="s-splash">
@@ -481,12 +483,12 @@ window.fbUnsubscribe = function() {
       <div class="ob-sec">
         <div class="ob-sec-lbl">あなたは誰ですか？</div>
         <div class="role-grid" id="ob-role-grid">
-          <div class="role-card on" data-role="mama" data-em="mama" data-label="ママ"><div class="role-card-em"><i data-lucide="user" style="width:28px;height:28px;display:inline-flex;color:var(--mama)"></i></div><div class="role-card-lbl">ママ</div></div>
-          <div class="role-card" data-role="papa" data-em="papa" data-label="パパ"><div class="role-card-em"><i data-lucide="user" style="width:28px;height:28px;display:inline-flex;color:var(--papa)"></i></div><div class="role-card-lbl">パパ</div></div>
-          <div class="role-card" data-role="obachan" data-em="grandma" data-label="おばあちゃん"><div class="role-card-em"><i data-lucide="user" style="width:28px;height:28px;display:inline-flex;color:var(--t2)"></i></div><div class="role-card-lbl">おばあちゃん</div></div>
-          <div class="role-card" data-role="ojichan" data-em="grandpa" data-label="おじいちゃん"><div class="role-card-em"><i data-lucide="user" style="width:28px;height:28px;display:inline-flex;color:var(--t2)"></i></div><div class="role-card-lbl">おじいちゃん</div></div>
-          <div class="role-card" data-role="child" data-em="baby" data-label="子ども"><div class="role-card-em"><i data-lucide="baby" style="width:28px;height:28px;display:inline-flex;color:var(--t2)"></i></div><div class="role-card-lbl">子ども</div></div>
-          <div class="role-card" data-role="other" data-em="user" data-label="その他"><div class="role-card-em"><i data-lucide="user-round" style="width:28px;height:28px;display:inline-flex;color:var(--t2)"></i></div><div class="role-card-lbl">その他</div></div>
+          <div class="role-card on" data-role="mama" data-em="mama" data-label="ママ"><div class="role-card-em"><i class="ph ph-user" style="font-size:28px;display:inline-flex;align-items:center;justify-content:center;line-height:1;color:var(--mama)"></i></div><div class="role-card-lbl">ママ</div></div>
+          <div class="role-card" data-role="papa" data-em="papa" data-label="パパ"><div class="role-card-em"><i class="ph ph-user" style="font-size:28px;display:inline-flex;align-items:center;justify-content:center;line-height:1;color:var(--papa)"></i></div><div class="role-card-lbl">パパ</div></div>
+          <div class="role-card" data-role="obachan" data-em="grandma" data-label="おばあちゃん"><div class="role-card-em"><i class="ph ph-user" style="font-size:28px;display:inline-flex;align-items:center;justify-content:center;line-height:1;color:var(--t2)"></i></div><div class="role-card-lbl">おばあちゃん</div></div>
+          <div class="role-card" data-role="ojichan" data-em="grandpa" data-label="おじいちゃん"><div class="role-card-em"><i class="ph ph-user" style="font-size:28px;display:inline-flex;align-items:center;justify-content:center;line-height:1;color:var(--t2)"></i></div><div class="role-card-lbl">おじいちゃん</div></div>
+          <div class="role-card" data-role="child" data-em="baby" data-label="子ども"><div class="role-card-em"><i class="ph ph-baby" style="font-size:28px;display:inline-flex;align-items:center;justify-content:center;line-height:1;color:var(--t2)"></i></div><div class="role-card-lbl">子ども</div></div>
+          <div class="role-card" data-role="other" data-em="user" data-label="その他"><div class="role-card-em"><i class="ph ph-user-circle" style="font-size:28px;display:inline-flex;align-items:center;justify-content:center;line-height:1;color:var(--t2)"></i></div><div class="role-card-lbl">その他</div></div>
         </div>
       </div>
       <!-- ニックネーム -->
@@ -500,18 +502,18 @@ window.fbUnsubscribe = function() {
       <div class="ob-sec">
         <div class="ob-sec-lbl">アバター</div>
         <div class="av-grid" id="ob-av-grid">
-          <div class="av-chip on" data-av="mama"><i data-lucide="user" style="width:22px;height:22px;display:inline-flex;color:var(--mama)"></i></div>
-          <div class="av-chip" data-av="papa"><i data-lucide="user" style="width:22px;height:22px;display:inline-flex;color:var(--papa)"></i></div>
-          <div class="av-chip" data-av="user"><i data-lucide="user" style="width:22px;height:22px;display:inline-flex"></i></div>
-          <div class="av-chip" data-av="girl"><i data-lucide="user" style="width:22px;height:22px;display:inline-flex;color:var(--salmon)"></i></div>
-          <div class="av-chip" data-av="boy"><i data-lucide="user" style="width:22px;height:22px;display:inline-flex;color:var(--teal)"></i></div>
-          <div class="av-chip" data-av="baby"><i data-lucide="baby" style="width:22px;height:22px;display:inline-flex"></i></div>
-          <div class="av-chip" data-av="grandma"><i data-lucide="user" style="width:22px;height:22px;display:inline-flex;color:var(--t3)"></i></div>
-          <div class="av-chip" data-av="grandpa"><i data-lucide="user" style="width:22px;height:22px;display:inline-flex;color:var(--t3)"></i></div>
-          <div class="av-chip" data-av="cat"><i data-lucide="cat" style="width:22px;height:22px;display:inline-flex"></i></div>
-          <div class="av-chip" data-av="dog"><i data-lucide="dog" style="width:22px;height:22px;display:inline-flex"></i></div>
-          <div class="av-chip" data-av="rabbit"><i data-lucide="rabbit" style="width:22px;height:22px;display:inline-flex"></i></div>
-          <div class="av-chip" data-av="paw"><i data-lucide="paw-print" style="width:22px;height:22px;display:inline-flex"></i></div>
+          <div class="av-chip on" data-av="mama"><i class="ph ph-user" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;color:var(--mama)"></i></div>
+          <div class="av-chip" data-av="papa"><i class="ph ph-user" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;color:var(--papa)"></i></div>
+          <div class="av-chip" data-av="user"><i class="ph ph-user" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1"></i></div>
+          <div class="av-chip" data-av="girl"><i class="ph ph-user" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;color:var(--salmon)"></i></div>
+          <div class="av-chip" data-av="boy"><i class="ph ph-user" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;color:var(--teal)"></i></div>
+          <div class="av-chip" data-av="baby"><i class="ph ph-baby" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1"></i></div>
+          <div class="av-chip" data-av="grandma"><i class="ph ph-user" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;color:var(--t3)"></i></div>
+          <div class="av-chip" data-av="grandpa"><i class="ph ph-user" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;color:var(--t3)"></i></div>
+          <div class="av-chip" data-av="cat"><i class="ph ph-cat" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1"></i></div>
+          <div class="av-chip" data-av="dog"><i class="ph ph-dog" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1"></i></div>
+          <div class="av-chip" data-av="rabbit"><i class="ph ph-rabbit" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1"></i></div>
+          <div class="av-chip" data-av="paw"><i class="ph ph-paw-print" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1"></i></div>
         </div>
       </div>
       <!-- 家族名 -->
@@ -544,16 +546,16 @@ window.fbUnsubscribe = function() {
   <div class="scr" id="s-home">
     <div class="hdr" id="home-hdr" style="display:flex;align-items:center;justify-content:space-between">
       <div style="display:flex;align-items:center;gap:10px">
-        <button id="ai-chat-btn" data-nav="chat" style="width:36px;height:36px;background:var(--t1);border:none;border-radius:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#fff"><i data-lucide="sparkles" style="width:20px;height:20px;display:inline-flex"></i></button>
+        <button id="ai-chat-btn" data-nav="chat" style="width:36px;height:36px;background:rgba(255,255,255,.15);border:none;border-radius:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#fff"><i class="ph ph-sparkle" style="font-size:20px;display:inline-flex;align-items:center;justify-content:center;line-height:1"></i></button>
         <div>
-          <div style="font-size:22px;font-weight:900;color:var(--t1)" id="home-title">田中家のOS</div>
-          <div style="font-size:11px;color:rgba(0,0,0,.5);margin-top:1px" id="home-sub">今日も一緒に乗り越えよう</div>
+          <div style="font-size:22px;font-weight:900;color:#fff" id="home-title">田中家のOS</div>
+          <div style="font-size:11px;color:rgba(255,255,255,.6);margin-top:1px" id="home-sub">今日も一緒に乗り越えよう</div>
         </div>
       </div>
       <div style="position:relative">
-        <button id="menu-btn" style="width:36px;height:36px;background:rgba(0,0,0,.1);border:none;border-radius:10px;cursor:pointer"><i data-lucide="chevron-left" style="width:20px;height:20px;display:inline-flex;vertical-align:middle" ></i></button>
+        <button id="menu-btn" style="width:36px;height:36px;background:rgba(255,255,255,.15);border:none;border-radius:10px;cursor:pointer"><i class="ph ph-caret-left" style="font-size:20px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></button>
         <div id="dropdown-menu" style="display:none;position:absolute;right:0;top:40px;background:#fff;border-radius:16px;box-shadow:0 8px 30px rgba(0,0,0,.15);overflow:hidden;min-width:140px;z-index:999">
-          <div class="dmenu-item" data-action="settings"><i data-lucide="settings" style="width:15px;height:15px;display:inline-flex;vertical-align:middle;margin-right:6px"></i>設定</div>
+          <div class="dmenu-item" data-action="settings"><i class="ph ph-gear" style="font-size:15px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle;margin-right:6px"></i>設定</div>
         </div>
       </div>
     </div>
@@ -572,10 +574,10 @@ window.fbUnsubscribe = function() {
       </div>
     </div>
     <nav class="tabs" id="tabs-home">
-      <button class="tb on" data-nav="home"><span class="tb-i"><i data-lucide="house" style="width:22px;height:22px;display:inline-flex;vertical-align:middle" ></i></span><span class="tb-l">ホーム</span></button>
-      <button class="tb" data-nav="proj"><span class="tb-i"><i data-lucide="layout-grid" style="width:22px;height:22px;display:inline-flex;vertical-align:middle" ></i></span><span class="tb-l">プロジェクト</span></button>
-      <button class="tb" data-nav="tasks"><span class="tb-i"><i data-lucide="check-square" style="width:22px;height:22px;display:inline-flex;vertical-align:middle" ></i></span><span class="tb-l">タスク</span><span class="tbadge" id="tbadge" style="display:none">!</span></button>
-      <button class="tb" data-nav="kaji"><span class="tb-i"><i data-lucide="shopping-basket" style="width:22px;height:22px;display:inline-flex;vertical-align:middle" ></i></span><span class="tb-l">家事</span></button>
+      <button class="tb on" data-nav="home"><span class="tb-i"><i class="ph ph-house" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">ホーム</span></button>
+      <button class="tb" data-nav="proj"><span class="tb-i"><i class="ph ph-grid-four" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">プロジェクト</span></button>
+      <button class="tb" data-nav="tasks"><span class="tb-i"><i class="ph ph-check-square" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">タスク</span><span class="tbadge" id="tbadge" style="display:none">!</span></button>
+      <button class="tb" data-nav="kaji"><span class="tb-i"><i class="ph ph-shopping-basket" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">家事</span></button>
     </nav>
   </div>
 
@@ -584,15 +586,15 @@ window.fbUnsubscribe = function() {
     <div class="hdr">
       <div class="hdr-row">
         <div class="hdr-title">プロジェクト</div>
-        <button id="proj-add-btn" style="padding:7px 14px;background:var(--gr);border:none;border-radius:20px;font-size:13px;font-weight:700;color:#fff;cursor:pointer;display:flex;align-items:center;gap:4px"><i data-lucide="plus" style="width:16px;height:16px;display:inline-flex;vertical-align:middle" ></i>追加</button>
+        <button id="proj-add-btn" style="padding:7px 14px;background:var(--teal);border:none;border-radius:20px;font-size:13px;font-weight:700;color:#fff;cursor:pointer;display:flex;align-items:center;gap:4px"><i class="ph ph-plus" style="font-size:16px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i>追加</button>
       </div>
     </div>
     <div class="proj-list" id="proj-list"></div>
     <nav class="tabs" id="tabs-proj">
-      <button class="tb" data-nav="home"><span class="tb-i"><i data-lucide="house" style="width:22px;height:22px;display:inline-flex;vertical-align:middle" ></i></span><span class="tb-l">ホーム</span></button>
-      <button class="tb on" data-nav="proj"><span class="tb-i"><i data-lucide="layout-grid" style="width:22px;height:22px;display:inline-flex;vertical-align:middle" ></i></span><span class="tb-l">プロジェクト</span></button>
-      <button class="tb" data-nav="tasks"><span class="tb-i"><i data-lucide="check-square" style="width:22px;height:22px;display:inline-flex;vertical-align:middle" ></i></span><span class="tb-l">タスク</span></button>
-      <button class="tb" data-nav="kaji"><span class="tb-i"><i data-lucide="shopping-basket" style="width:22px;height:22px;display:inline-flex;vertical-align:middle" ></i></span><span class="tb-l">家事</span></button>
+      <button class="tb" data-nav="home"><span class="tb-i"><i class="ph ph-house" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">ホーム</span></button>
+      <button class="tb on" data-nav="proj"><span class="tb-i"><i class="ph ph-grid-four" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">プロジェクト</span></button>
+      <button class="tb" data-nav="tasks"><span class="tb-i"><i class="ph ph-check-square" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">タスク</span></button>
+      <button class="tb" data-nav="kaji"><span class="tb-i"><i class="ph ph-shopping-basket" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">家事</span></button>
     </nav>
   </div>
 
@@ -609,18 +611,18 @@ window.fbUnsubscribe = function() {
     </div>
     <div class="task-cal-grid" id="task-screen-list"></div>
     <nav class="tabs" id="tabs-tasks">
-      <button class="tb" data-nav="home"><span class="tb-i"><i data-lucide="house" style="width:22px;height:22px;display:inline-flex;vertical-align:middle" ></i></span><span class="tb-l">ホーム</span></button>
-      <button class="tb" data-nav="proj"><span class="tb-i"><i data-lucide="layout-grid" style="width:22px;height:22px;display:inline-flex;vertical-align:middle" ></i></span><span class="tb-l">プロジェクト</span></button>
-      <button class="tb on" data-nav="tasks"><span class="tb-i"><i data-lucide="check-square" style="width:22px;height:22px;display:inline-flex;vertical-align:middle" ></i></span><span class="tb-l">タスク</span></button>
-      <button class="tb" data-nav="kaji"><span class="tb-i"><i data-lucide="shopping-basket" style="width:22px;height:22px;display:inline-flex;vertical-align:middle" ></i></span><span class="tb-l">家事</span></button>
+      <button class="tb" data-nav="home"><span class="tb-i"><i class="ph ph-house" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">ホーム</span></button>
+      <button class="tb" data-nav="proj"><span class="tb-i"><i class="ph ph-grid-four" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">プロジェクト</span></button>
+      <button class="tb on" data-nav="tasks"><span class="tb-i"><i class="ph ph-check-square" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">タスク</span></button>
+      <button class="tb" data-nav="kaji"><span class="tb-i"><i class="ph ph-shopping-basket" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">家事</span></button>
     </nav>
   </div>
 
   <!-- CHAT -->
   <div class="scr" id="s-chat">
     <div class="chat-hdr">
-      <button class="back" id="chat-back"><i data-lucide="chevron-left" style="width:20px;height:20px;display:inline-flex;vertical-align:middle" ></i></button>
-      <div class="ai-av"><i data-lucide="sparkles" style="width:20px;height:20px;display:inline-flex;vertical-align:middle" ></i></div>
+      <button class="back" id="chat-back"><i class="ph ph-caret-left" style="font-size:20px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></button>
+      <div class="ai-av"><i class="ph ph-sparkle" style="font-size:20px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></div>
       <div style="flex:1">
         <div class="ai-name">ハコぶ AI</div>
         <div class="ai-st"><span class="ldot"></span>オンライン</div>
@@ -630,11 +632,11 @@ window.fbUnsubscribe = function() {
     <div class="chat-body" id="chat-body"></div>
     <div class="chat-ft">
       <div class="input-row">
-        <button class="mic-btn" id="mic-btn"><i data-lucide="mic" style="width:18px;height:18px;display:inline-flex;vertical-align:middle" ></i></button>
+        <button class="mic-btn" id="mic-btn"><i class="ph ph-microphone" style="font-size:18px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></button>
         <div class="ibox">
           <textarea class="chat-ta" id="chat-ta" placeholder="メッセージを入力..." rows="1"></textarea>
         </div>
-        <button class="send-btn" id="send-btn"><i data-lucide="send" style="width:18px;height:18px;display:inline-flex;vertical-align:middle" ></i></button>
+        <button class="send-btn" id="send-btn"><i class="ph ph-paper-plane-tilt" style="font-size:18px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></button>
       </div>
     </div>
     <div class="lveil" id="lveil">
@@ -642,10 +644,10 @@ window.fbUnsubscribe = function() {
       <div style="font-size:12px;color:var(--t2)">考えています...</div>
     </div>
     <nav class="tabs">
-      <button class="tb" data-nav="home"><span class="tb-i"><i data-lucide="house" style="width:22px;height:22px;display:inline-flex;vertical-align:middle" ></i></span><span class="tb-l">ホーム</span></button>
-      <button class="tb on" data-nav="chat"><span class="tb-i"><i data-lucide="message-square" style="width:22px;height:22px;display:inline-flex;vertical-align:middle" ></i></span><span class="tb-l">AI相談</span></button>
-      <button class="tb" data-nav="cal"><span class="tb-i"><i data-lucide="calendar" style="width:22px;height:22px;display:inline-flex;vertical-align:middle" ></i></span><span class="tb-l">カレンダー</span></button>
-      <button class="tb" data-nav="mem"><span class="tb-i"><i data-lucide="users" style="width:22px;height:22px;display:inline-flex;vertical-align:middle" ></i></span><span class="tb-l">メンバー</span></button>
+      <button class="tb" data-nav="home"><span class="tb-i"><i class="ph ph-house" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">ホーム</span></button>
+      <button class="tb on" data-nav="chat"><span class="tb-i"><i class="ph ph-chat-square" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">AI相談</span></button>
+      <button class="tb" data-nav="cal"><span class="tb-i"><i class="ph ph-calendar" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">カレンダー</span></button>
+      <button class="tb" data-nav="mem"><span class="tb-i"><i class="ph ph-users" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">メンバー</span></button>
     </nav>
   </div>
 
@@ -658,36 +660,37 @@ window.fbUnsubscribe = function() {
           <div class="cal-range" id="cal-range"></div>
         </div>
         <div class="cal-nav-btns">
-          <button class="cnb" id="cal-prev"><i data-lucide="chevron-left" style="width:16px;height:16px;display:inline-flex;vertical-align:middle" ></i></button>
-          <button class="cnb" id="cal-next"><i data-lucide="chevron-right" style="width:16px;height:16px;display:inline-flex;vertical-align:middle" ></i></button>
+          <button class="cnb" id="cal-prev"><i class="ph ph-caret-left" style="font-size:16px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></button>
+          <button class="cnb" id="cal-next"><i class="ph ph-caret-right" style="font-size:16px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></button>
         </div>
       </div>
     </div>
     <div class="cal-leg">
-      <div class="cl-item"><div class="cl-dot" style="background:var(--or)"></div><i data-lucide="user" style="width:12px;height:12px;display:inline-flex;vertical-align:middle;margin-right:2px"></i>ママ</div>
-      <div class="cl-item"><div class="cl-dot" style="background:var(--bl)"></div><i data-lucide="user" style="width:12px;height:12px;display:inline-flex;vertical-align:middle;margin-right:2px"></i>パパ</div>
-      <div class="cl-item"><div class="cl-dot" style="background:var(--gr2)"></div><i data-lucide="users" style="width:12px;height:12px;display:inline-flex;vertical-align:middle;margin-right:2px"></i>二人</div>
+      <div class="cl-item"><div class="cl-dot" style="background:var(--or)"></div><i class="ph ph-user" style="font-size:12px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle;margin-right:2px"></i>ママ</div>
+      <div class="cl-item"><div class="cl-dot" style="background:var(--bl)"></div><i class="ph ph-user" style="font-size:12px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle;margin-right:2px"></i>パパ</div>
+      <div class="cl-item"><div class="cl-dot" style="background:var(--gr2)"></div><i class="ph ph-users" style="font-size:12px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle;margin-right:2px"></i>二人</div>
     </div>
     <div class="cal-dow" id="cal-dow"></div>
     <div class="cal-grid" id="cal-grid"></div>
     <div class="scroll" style="padding:13px 13px 100px" id="cal-projs"></div>
     <nav class="tabs">
-      <button class="tb" data-nav="home"><span class="tb-i"><i data-lucide="house" style="width:22px;height:22px;display:inline-flex;vertical-align:middle" ></i></span><span class="tb-l">ホーム</span></button>
-      <button class="tb" data-nav="chat"><span class="tb-i"><i data-lucide="message-square" style="width:22px;height:22px;display:inline-flex;vertical-align:middle" ></i></span><span class="tb-l">AI相談</span></button>
-      <button class="tb on" data-nav="cal"><span class="tb-i"><i data-lucide="calendar" style="width:22px;height:22px;display:inline-flex;vertical-align:middle" ></i></span><span class="tb-l">カレンダー</span></button>
-      <button class="tb" data-nav="mem"><span class="tb-i"><i data-lucide="users" style="width:22px;height:22px;display:inline-flex;vertical-align:middle" ></i></span><span class="tb-l">メンバー</span></button>
+      <button class="tb" data-nav="home"><span class="tb-i"><i class="ph ph-house" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">ホーム</span></button>
+      <button class="tb" data-nav="chat"><span class="tb-i"><i class="ph ph-chat-square" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">AI相談</span></button>
+      <button class="tb on" data-nav="cal"><span class="tb-i"><i class="ph ph-calendar" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">カレンダー</span></button>
+      <button class="tb" data-nav="mem"><span class="tb-i"><i class="ph ph-users" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">メンバー</span></button>
     </nav>
   </div>
 
   <!-- MEMBERS -->
   <div class="scr" id="s-mem">
     <div class="hdr" style="display:flex;align-items:center;gap:10px">
-      <button onclick="navTo('home')" style="width:36px;height:36px;background:rgba(0,0,0,.1);border:none;border-radius:10px;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center"><i data-lucide="chevron-left" style="width:20px;height:20px;display:inline-flex;vertical-align:middle" ></i></button>
+      <button onclick="navTo('home')" style="width:36px;height:36px;background:rgba(255,255,255,.15);border:none;border-radius:10px;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#fff"><i class="ph ph-caret-left" style="font-size:20px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></button>
       <div class="hdr-title">メンバー</div>
     </div>
     <div class="scroll" style="padding:14px 14px 40px" id="mem-body"></div>
-      <button class="tb" data-nav="cal"><span class="tb-i"><i data-lucide="calendar" style="width:22px;height:22px;display:inline-flex;vertical-align:middle" ></i></span><span class="tb-l">カレンダー</span></button>
-      <button class="tb on" data-nav="mem"><span class="tb-i"><i data-lucide="users" style="width:22px;height:22px;display:inline-flex;vertical-align:middle" ></i></span><span class="tb-l">メンバー</span></button>
+    <nav class="tabs">
+      <button class="tb" data-nav="cal"><span class="tb-i"><i class="ph ph-calendar" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">カレンダー</span></button>
+      <button class="tb on" data-nav="mem"><span class="tb-i"><i class="ph ph-users" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">メンバー</span></button>
     </nav>
   </div>
 
@@ -704,9 +707,9 @@ window.fbUnsubscribe = function() {
         <div class="field">
           <label>担当者</label>
           <div class="chips" id="td-who-chips">
-            <button class="chip" data-val="mama"><i data-lucide="user" style="width:14px;height:14px;display:inline-flex;vertical-align:middle;margin-right:3px"></i>ママ</button>
-            <button class="chip" data-val="papa"><i data-lucide="user" style="width:14px;height:14px;display:inline-flex;vertical-align:middle;margin-right:3px"></i>パパ</button>
-            <button class="chip" data-val="both"><i data-lucide="users" style="width:14px;height:14px;display:inline-flex;vertical-align:middle;margin-right:3px"></i>二人で</button>
+            <button class="chip" data-val="mama"><i class="ph ph-user" style="font-size:14px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle;margin-right:3px"></i>ママ</button>
+            <button class="chip" data-val="papa"><i class="ph ph-user" style="font-size:14px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle;margin-right:3px"></i>パパ</button>
+            <button class="chip" data-val="both"><i class="ph ph-users" style="font-size:14px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle;margin-right:3px"></i>二人で</button>
           </div>
         </div>
         <div class="field">
@@ -727,7 +730,7 @@ window.fbUnsubscribe = function() {
       <div class="mhandle"></div>
       <div class="minner">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
-          <div class="mtitle"><i data-lucide="flame" style="width:20px;height:20px;display:inline-flex;vertical-align:middle;margin-right:6px;color:var(--salmon)"></i>Firebase設定</div>
+          <div class="mtitle"><i class="ph ph-flame" style="font-size:20px;display:inline-flex;align-items:center;justify-content:center;line-height:1;color:var(--salmon);vertical-align:middle;margin-right:6px"></i>Firebase設定</div>
           <button onclick="hideFbSetup()" style="border:none;background:none;font-size:22px;cursor:pointer;color:var(--t2)">×</button>
         </div>
         <div style="background:#FFF8E1;border-radius:12px;padding:12px 14px;margin-bottom:16px;font-size:12px;color:#B45309;line-height:1.7">
@@ -761,7 +764,7 @@ window.fbUnsubscribe = function() {
       <div class="mhandle"></div>
       <div class="minner">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
-          <div class="mtitle"><i data-lucide="user-plus" style="width:20px;height:20px;display:inline-flex;vertical-align:middle;margin-right:6px;color:var(--papa)"></i>招待コードで参加</div>
+          <div class="mtitle"><i class="ph ph-user-plus" style="font-size:20px;display:inline-flex;align-items:center;justify-content:center;line-height:1;color:var(--papa);vertical-align:middle;margin-right:6px"></i>招待コードで参加</div>
           <button onclick="hideJoinRoom()" style="border:none;background:none;font-size:22px;cursor:pointer;color:var(--t2)">×</button>
         </div>
         <div style="font-size:13px;color:var(--t2);margin-bottom:20px">ママから受け取った6文字のコードを入力してください</div>
@@ -781,8 +784,8 @@ window.fbUnsubscribe = function() {
         <div class="minner" style="padding-bottom:8px">
           <div class="mtitle">プロジェクトを追加</div>
           <p style="font-size:13px;color:var(--t2);margin-bottom:16px">テンプレートから選ぶか、ゼロから作ることができます</p>
-          <button class="btn btn-g" id="pcm-use-template" style="margin-bottom:10px"><i data-lucide="layout-template" style="width:16px;height:16px;display:inline-flex;vertical-align:middle;margin-right:6px"></i>テンプレートから選ぶ</button>
-          <button class="btn btn-sub" id="pcm-from-scratch"><i data-lucide="pencil" style="width:16px;height:16px;display:inline-flex;vertical-align:middle;margin-right:6px"></i>ゼロから作る</button>
+          <button class="btn btn-g" id="pcm-use-template" style="margin-bottom:10px"><i class="ph ph-layout" style="font-size:16px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle;margin-right:6px"></i>テンプレートから選ぶ</button>
+          <button class="btn btn-sub" id="pcm-from-scratch"><i class="ph ph-pencil" style="font-size:16px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle;margin-right:6px"></i>ゼロから作る</button>
         </div>
       </div>
       <!-- Step2a: テンプレ一覧 -->
@@ -803,7 +806,7 @@ window.fbUnsubscribe = function() {
           <div class="field"><label>プロジェクト名</label><input id="pcm-name" placeholder="例：クリスマス準備" maxlength="30" style="width:100%;padding:10px 12px;border:1.5px solid var(--bdr);border-radius:var(--r);font-family:inherit;font-size:14px"></div>
           <div class="field"><label>アイコン</label>
             <div id="pcm-icons" style="display:flex;flex-wrap:wrap;gap:8px">
-              <span class="icon-chip on" data-icon="📋"><i data-lucide="clipboard-list" style="width:20px;height:20px;display:inline-flex;vertical-align:middle" ></i></span><span class="icon-chip" data-icon="🎄"><i data-lucide="tree-pine" style="width:20px;height:20px;display:inline-flex;vertical-align:middle" ></i></span><span class="icon-chip" data-icon="🎎"><i data-lucide="users" style="width:20px;height:20px;display:inline-flex;vertical-align:middle" ></i></span><span class="icon-chip" data-icon="🏖️"><i data-lucide="umbrella" style="width:20px;height:20px;display:inline-flex;vertical-align:middle" ></i></span><span class="icon-chip" data-icon="✈️"><i data-lucide="plane" style="width:20px;height:20px;display:inline-flex;vertical-align:middle" ></i></span><span class="icon-chip" data-icon="🎒"><i data-lucide="backpack" style="width:20px;height:20px;display:inline-flex;vertical-align:middle" ></i></span><span class="icon-chip" data-icon="🏠"><i data-lucide="house" style="width:20px;height:20px;display:inline-flex;vertical-align:middle" ></i></span><span class="icon-chip" data-icon="💰"><i data-lucide="wallet" style="width:20px;height:20px;display:inline-flex;vertical-align:middle" ></i></span><span class="icon-chip" data-icon="🧹"><i data-lucide="brush" style="width:20px;height:20px;display:inline-flex;vertical-align:middle" ></i></span><span class="icon-chip" data-icon="🎂"><i data-lucide="cake" style="width:20px;height:20px;display:inline-flex;vertical-align:middle" ></i></span>
+              <span class="icon-chip on" data-icon="📋"><i class="ph ph-clipboard-text" style="font-size:20px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="icon-chip" data-icon="🎄"><i class="ph ph-tree-evergreen" style="font-size:20px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="icon-chip" data-icon="🎎"><i class="ph ph-users" style="font-size:20px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="icon-chip" data-icon="🏖️"><i class="ph ph-umbrella" style="font-size:20px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="icon-chip" data-icon="✈️"><i class="ph ph-airplane" style="font-size:20px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="icon-chip" data-icon="🎒"><i class="ph ph-backpack" style="font-size:20px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="icon-chip" data-icon="🏠"><i class="ph ph-house" style="font-size:20px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="icon-chip" data-icon="💰"><i class="ph ph-wallet" style="font-size:20px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="icon-chip" data-icon="🧹"><i class="ph ph-paint-brush" style="font-size:20px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="icon-chip" data-icon="🎂"><i class="ph ph-cake" style="font-size:20px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span>
             </div>
           </div>
           <div class="field"><label>目標日（任意）</label><input type="date" id="pcm-date" style="width:100%;padding:10px 12px;border:1.5px solid var(--bdr);border-radius:var(--r);font-family:inherit;font-size:14px"></div>
@@ -824,9 +827,9 @@ window.fbUnsubscribe = function() {
             <input id="pcm-new-task" placeholder="タスク名を入力…" style="width:100%;padding:8px 10px;border:1.5px solid var(--bdr);border-radius:10px;font-family:inherit;font-size:13px;margin-bottom:8px;box-sizing:border-box">
             <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
               <div style="display:flex;gap:4px" id="pcm-new-who-chips">
-                <button class="pcm-nw-chip" data-val="both" style="border:none;border-radius:20px;padding:3px 10px;font-size:10px;font-weight:700;cursor:pointer;background:var(--gr);color:#fff;display:inline-flex;align-items:center;gap:3px"><i data-lucide="users" style="width:11px;height:11px;display:inline-flex"></i>二人</button>
-                <button class="pcm-nw-chip" data-val="mama" style="border:none;border-radius:20px;padding:3px 10px;font-size:10px;font-weight:700;cursor:pointer;background:var(--bg);color:var(--t2);display:inline-flex;align-items:center;gap:3px"><i data-lucide="user" style="width:11px;height:11px;display:inline-flex"></i>ママ</button>
-                <button class="pcm-nw-chip" data-val="papa" style="border:none;border-radius:20px;padding:3px 10px;font-size:10px;font-weight:700;cursor:pointer;background:var(--bg);color:var(--t2);display:inline-flex;align-items:center;gap:3px"><i data-lucide="user" style="width:11px;height:11px;display:inline-flex"></i>パパ</button>
+                <button class="pcm-nw-chip" data-val="both" style="border:none;border-radius:20px;padding:3px 10px;font-size:10px;font-weight:700;cursor:pointer;background:var(--gr);color:#fff;display:inline-flex;align-items:center;gap:3px"><i class="ph ph-users" style="font-size:11px;display:inline-flex;align-items:center;justify-content:center;line-height:1"></i>二人</button>
+                <button class="pcm-nw-chip" data-val="mama" style="border:none;border-radius:20px;padding:3px 10px;font-size:10px;font-weight:700;cursor:pointer;background:var(--bg);color:var(--t2);display:inline-flex;align-items:center;gap:3px"><i class="ph ph-user" style="font-size:11px;display:inline-flex;align-items:center;justify-content:center;line-height:1"></i>ママ</button>
+                <button class="pcm-nw-chip" data-val="papa" style="border:none;border-radius:20px;padding:3px 10px;font-size:10px;font-weight:700;cursor:pointer;background:var(--bg);color:var(--t2);display:inline-flex;align-items:center;gap:3px"><i class="ph ph-user" style="font-size:11px;display:inline-flex;align-items:center;justify-content:center;line-height:1"></i>パパ</button>
               </div>
               <input type="date" id="pcm-new-due" style="border:1px solid var(--bdr);border-radius:8px;padding:2px 7px;font-size:10px;color:var(--t1);background:#fff;font-family:inherit;flex:1;min-width:110px">
               <button id="pcm-add-task-btn" style="padding:6px 14px;background:var(--gr);color:#fff;border:none;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap">＋ 追加</button>
@@ -846,16 +849,16 @@ window.fbUnsubscribe = function() {
     <div class="hdr">
       <div class="hdr-row"><div class="hdr-title">家事管理</div></div>
       <div style="display:flex;border-bottom:2px solid var(--bdr)">
-        <button class="kaji-tab on" data-tab="shop" style="flex:1;border:none;background:none;padding:10px 0;font-size:13px;font-weight:700;cursor:pointer;color:var(--t1);border-bottom:3px solid var(--t1);margin-bottom:-2px"><i data-lucide="shopping-cart" style="width:14px;height:14px;display:inline-flex;vertical-align:middle;margin-right:4px"></i>お買い物</button>
-        <button class="kaji-tab" data-tab="chore" style="flex:1;border:none;background:none;padding:10px 0;font-size:13px;font-weight:700;cursor:pointer;color:var(--t3);border-bottom:3px solid transparent;margin-bottom:-2px"><i data-lucide="brush" style="width:14px;height:14px;display:inline-flex;vertical-align:middle;margin-right:4px"></i>家事</button>
+        <button class="kaji-tab on" data-tab="shop" style="flex:1;border:none;background:none;padding:10px 0;font-size:13px;font-weight:700;cursor:pointer;color:var(--t1);border-bottom:3px solid var(--t1);margin-bottom:-2px"><i class="ph ph-shopping-cart" style="font-size:14px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle;margin-right:4px"></i>お買い物</button>
+        <button class="kaji-tab" data-tab="chore" style="flex:1;border:none;background:none;padding:10px 0;font-size:13px;font-weight:700;cursor:pointer;color:var(--t3);border-bottom:3px solid transparent;margin-bottom:-2px"><i class="ph ph-paint-brush" style="font-size:14px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle;margin-right:4px"></i>家事</button>
       </div>
     </div>
     <div class="scr-body" id="kaji-body" style="padding:0"></div>
     <nav class="tabs">
-      <button class="tb" data-nav="home"><span class="tb-i"><i data-lucide="house" style="width:22px;height:22px;display:inline-flex;vertical-align:middle" ></i></span><span class="tb-l">ホーム</span></button>
-      <button class="tb" data-nav="proj"><span class="tb-i"><i data-lucide="layout-grid" style="width:22px;height:22px;display:inline-flex;vertical-align:middle" ></i></span><span class="tb-l">プロジェクト</span></button>
-      <button class="tb" data-nav="tasks"><span class="tb-i"><i data-lucide="check-square" style="width:22px;height:22px;display:inline-flex;vertical-align:middle" ></i></span><span class="tb-l">タスク</span></button>
-      <button class="tb on" data-nav="kaji"><span class="tb-i"><i data-lucide="shopping-basket" style="width:22px;height:22px;display:inline-flex;vertical-align:middle" ></i></span><span class="tb-l">家事</span></button>
+      <button class="tb" data-nav="home"><span class="tb-i"><i class="ph ph-house" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">ホーム</span></button>
+      <button class="tb" data-nav="proj"><span class="tb-i"><i class="ph ph-grid-four" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">プロジェクト</span></button>
+      <button class="tb" data-nav="tasks"><span class="tb-i"><i class="ph ph-check-square" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">タスク</span></button>
+      <button class="tb on" data-nav="kaji"><span class="tb-i"><i class="ph ph-shopping-basket" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">家事</span></button>
     </nav>
   </div>
 
@@ -872,9 +875,9 @@ window.fbUnsubscribe = function() {
         <div class="field">
           <label>担当者</label>
           <div class="chips" id="who-chips">
-            <button class="chip on"><i data-lucide="user" style="width:14px;height:14px;display:inline-flex;vertical-align:middle;margin-right:3px"></i>ママ</button>
-            <button class="chip"><i data-lucide="user" style="width:14px;height:14px;display:inline-flex;vertical-align:middle;margin-right:3px"></i>パパ</button>
-            <button class="chip"><i data-lucide="users" style="width:14px;height:14px;display:inline-flex;vertical-align:middle;margin-right:3px"></i>二人で</button>
+            <button class="chip on"><i class="ph ph-user" style="font-size:14px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle;margin-right:3px"></i>ママ</button>
+            <button class="chip"><i class="ph ph-user" style="font-size:14px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle;margin-right:3px"></i>パパ</button>
+            <button class="chip"><i class="ph ph-users" style="font-size:14px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle;margin-right:3px"></i>二人で</button>
           </div>
         </div>
         <div class="field">
@@ -1293,16 +1296,16 @@ const taskService = {
 /* ═══════════════════════════════════════════════════════
    NAVIGATION  (onclick属性なし)
 ═══════════════════════════════════════════════════════ */
-const PROJ_LUCIDE_MAP={"🌸":"flower","✈️":"plane","🎄":"tree-pine","🎂":"cake","📋":"clipboard-list","🧹":"brush","🏠":"house","💰":"wallet","🎒":"backpack","🏖️":"umbrella","🎎":"users","🛡️":"shield","🚗":"car","📱":"smartphone","🔨":"hammer","🐾":"paw-print","🥂":"glass-water","⛩️":"landmark","🍚":"utensils","👘":"shirt","🎭":"theater","🎋":"tree-deciduous","👹":"angry","🤒":"thermometer","🌀":"wind","🎃":"ghost","🍫":"candy","👨‍👩‍👧":"heart","🎠":"ferris-wheel","📦":"package","🏃":"run","🎤":"mic",
+const PROJ_LUCIDE_MAP={"🌸":"flower","✈️":"airplane","🎄":"tree-evergreen","🎂":"cake","📋":"clipboard-text","🧹":"paint-brush","🏠":"house","💰":"wallet","🎒":"backpack","🏖️":"umbrella","🎎":"users","🛡️":"shield","🚗":"car","📱":"device-mobile","🔨":"hammer","🐾":"paw-print","🥂":"wine","⛩️":"building","🍚":"fork-knife","👘":"t-shirt","🎭":"masks-theater","🎋":"tree","👹":"smiley-angry","🤒":"thermometer","🌀":"wind","🎃":"ghost","🍫":"candy","👨‍👩‍👧":"heart","🎠":"circles-three","📦":"package","🏃":"person-simple-run","🎤":"microphone",
   "🎍":"tree-pine","🎌":"flag","🗾":"map","🌿":"leaf","📜":"scroll-text","🌱":"sprout","🎏":"flag","🌊":"waves","⛰️":"mountain","🏮":"lamp-desk","👴":"user","🍁":"leaf","🎨":"palette","🙏":"heart-handshake","🎆":"sparkles","💴":"banknote","🏫":"school","💉":"syringe","🌹":"flower-2","👔":"shirt","☔":"cloud-rain","⭐":"star","🌙":"moon","👶":"baby","📅":"calendar","🌻":"sun","🍱":"box","📌":"map-pin","🛒":"shopping-cart","✏️":"pencil","⚡":"zap","🎏":"flag",
   "default":"clipboard-list"};
-function projIcon(em,size){const name=PROJ_LUCIDE_MAP[em]||"clipboard-list";const s=size||22;return `<i data-lucide="${name}" style="width:${s}px;height:${s}px;display:inline-flex;vertical-align:middle"></i>`;}
+function projIcon(em,size){const name=PROJ_LUCIDE_MAP[em]||"clipboard-list";const s=size||22;return `<i class="ph ph-${name}" style="font-size:20px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i>`;}
 
 /* ── 担当者ラベル用インラインSVG（data-lucide不要、innerHTML直書き用） ── */
 const _SVG_USER=`<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline-flex;vertical-align:middle;margin-right:2px;flex-shrink:0"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`;
 const _SVG_USERS=`<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline-flex;vertical-align:middle;margin-right:2px;flex-shrink:0"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>`;
-/* whoLbl(who, opt?) → "user icon + ママ/パパ/二人" HTML */
-function whoLbl(who,opt){return who==='mama'?_SVG_USER+'ママ':who==='papa'?_SVG_USER+'パパ':_SVG_USERS+(opt||'二人');}
+/* whoLbl(who, opt?) → "user icon + MAMA/PAPA/BOTH" HTML */
+function whoLbl(who,opt){return who==='mama'?_SVG_USER+'MAMA':who==='papa'?_SVG_USER+'PAPA':_SVG_USERS+(opt||'BOTH');}
 /* avSvg(size) → avatar display用インラインSVG */
 function avSvg(size){size=size||28;return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`;}
 
@@ -1332,14 +1335,13 @@ function navTo(id, ctx){
   if(id==='onboard')  { initOnboard(); return; }
   if(id==='settings') { renderSettings(); return; }
   if(id==='mem')      { renderMem(); return; }
-  if(typeof lucide !== 'undefined') lucide.createIcons();
 }
 
 // Tab bar delegation (全タブに一括登録)
 document.querySelectorAll('.tb[data-nav]').forEach(btn=>{
   btn.addEventListener('click',()=>navTo(btn.dataset.nav));
 });
-if(typeof lucide!=='undefined') lucide.createIcons();
+
 document.getElementById('sp-login-btn').addEventListener('click', ()=>navTo('home'));
 const spGuestBtn = document.getElementById('sp-guest-btn');
 if(spGuestBtn) spGuestBtn.addEventListener('click', ()=>navTo('home'));
@@ -2034,7 +2036,7 @@ function openEventDateRangePicker(ev, hasFixedDate, onConfirm) {
   const title = document.createElement('div');
   title.style.cssText = 'font-size:16px;font-weight:800;color:var(--t1);margin-bottom:6px';
   title.innerHTML = projIcon(ev.icon||'📅',18)+' '+ev.name+' — 期間を設定';
-  if(typeof lucide!=='undefined') lucide.createIcons({root:title});
+  
 
   const hint = document.createElement('div');
   hint.style.cssText = 'font-size:12px;color:var(--t2);margin-bottom:18px';
@@ -2187,7 +2189,7 @@ function renderEventProposals(s) {
     const navTitle = document.createElement('div');
     navTitle.style.cssText = 'color:#fff;font-size:13px;font-weight:800;flex:1;text-align:center;';
     navTitle.innerHTML = projIcon(ev.icon,16)+' '+ev.name+'  '+(idx+1)+'/'+total;
-    if(typeof lucide!=='undefined') lucide.createIcons({root:navTitle});
+    
 
     const nextBtn = document.createElement('button');
     nextBtn.style.cssText = 'border:none;background:rgba(255,255,255,.2);color:#fff;border-radius:8px;width:28px;height:28px;cursor:pointer;font-size:18px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;';
@@ -2222,8 +2224,8 @@ function renderEventProposals(s) {
     const urgBadge = document.createElement('span');
     urgBadge.style.cssText = 'display:inline-block;background:rgba(255,255,255,.25);color:#fff;font-size:10px;font-weight:800;border-radius:6px;padding:2px 7px;margin-bottom:4px';
     if(ev.type==='seasonal'){
-      urgBadge.innerHTML = '<i data-lucide="thermometer" style="width:10px;height:10px;display:inline-flex;vertical-align:middle;margin-right:2px"></i> 今月の季節メンテ';
-      if(typeof lucide!=='undefined') lucide.createIcons({root:urgBadge});
+      urgBadge.innerHTML = '<i class="ph ph-thermometer" style="font-size:10px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle;margin-right:2px"></i> 今月の季節メンテ';
+      
     } else if(ev.type==='papa'){
       urgBadge.textContent = '今週のパパ振り分け';
     } else if(ev.type==='weekly'){
@@ -2238,9 +2240,9 @@ function renderEventProposals(s) {
       urgBadge.innerHTML = '<span style="background:rgba(255,255,255,.3);padding:1px 6px;border-radius:4px;font-size:9px;font-weight:800;margin-right:4px">PR</span>'+(ev.partner||'提携');
     } else {
       const dateStr = (ev.evDate.getMonth()+1)+'月'+ev.evDate.getDate()+'日';
-      const vacHtml = ev.isolated ? ' <i data-lucide="calendar" style="width:10px;height:10px;display:inline-flex;vertical-align:middle;margin-right:1px"></i>有休チャンス' : '';
+      const vacHtml = ev.isolated ? ' <i class="ph ph-calendar" style="font-size:10px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle;margin-right:1px"></i>有休チャンス' : '';
       urgBadge.innerHTML = urg.label + ' · ' + dateStr + vacHtml;
-      if(typeof lucide!=='undefined') lucide.createIcons({root:urgBadge});
+      
     }
     const hintEl = document.createElement('div');
     hintEl.style.cssText = 'font-size:11px;color:rgba(255,255,255,.82);margin-top:2px';
@@ -2406,7 +2408,7 @@ async function renderHome(){
     const isPapa = role==='papa'||role==='dad';
     hs.textContent = isPapa ? dow+'曜日 · パパの今日のミッション' : dow+'曜日 · 今日も一緒に乗り越えよう';
   }
-  if(typeof lucide!=="undefined") lucide.createIcons();
+  
 }
 
 function renderProjRow(s){
@@ -2421,7 +2423,7 @@ function renderProjRow(s){
     pill.dataset.projId = proj.id;
 
     const em = document.createElement('div'); em.className='pp-em'; em.innerHTML=projIcon(proj.icon);
-    if(typeof lucide!=='undefined') lucide.createIcons({root:em});
+    
     const nm = document.createElement('div'); nm.className='pp-name'; nm.textContent=proj.name;
     const br = document.createElement('div'); br.className='pp-bar';
     const bf = document.createElement('div'); bf.className='pp-fill'; bf.style.cssText=`width:${p2}%;background:${proj.color};`;
@@ -2468,7 +2470,7 @@ function renderInv(s){
   const dot = document.createElement('div'); dot.className='inv-dot';
   const ttl = document.createElement('div'); ttl.className='inv-title';
   ttl.innerHTML = projIcon(holiday.icon,15)+' 次の連休 — '+holiday.name;
-  if(typeof lucide!=='undefined') lucide.createIcons({root:ttl});
+  
   const cnt = document.createElement('div'); cnt.className='inv-cnt';
   cnt.textContent = label;
   cnt.style.color = urg.color;
@@ -2479,7 +2481,7 @@ function renderInv(s){
   (holiday.tasks||[]).slice(0,3).forEach(task=>{
     const row=document.createElement('div'); row.className='inv-row';
     const em=document.createElement('span'); em.className='inv-em'; em.innerHTML=projIcon('📋',14);
-    if(typeof lucide!=='undefined') lucide.createIcons({root:em});
+    
     const nm=document.createElement('span'); nm.textContent=task;
     row.append(em,nm); el.appendChild(row);
   });
@@ -2519,7 +2521,7 @@ function renderMealBanner(){
   const {meal, hint} = taskService.getTodayMeal();
   const inner = document.createElement('div');
   inner.style.cssText = 'background:var(--sur);border-radius:16px;border-left:4px solid var(--yel);padding:14px 16px;display:flex;align-items:center;gap:12px;cursor:pointer';
-  inner.innerHTML = '<div style="width:36px;height:36px;flex-shrink:0;display:flex;align-items:center;justify-content:center"><i data-lucide="utensils" style="width:28px;height:28px;color:var(--yel)"></i></div>'
+  inner.innerHTML = '<div style="width:36px;height:36px;flex-shrink:0;display:flex;align-items:center;justify-content:center"><i class="ph ph-fork-knife" style="font-size:28px;display:inline-flex;align-items:center;justify-content:center;line-height:1;color:var(--yel)"></i></div>'
     +'<div style="flex:1">'
     +'<div style="font-size:11px;font-weight:700;color:rgba(255,255,255,.7);margin-bottom:3px">今日の献立テーマ</div>'
     +'<div style="font-size:16px;font-weight:800;color:#fff">'+meal+'</div>'
@@ -2529,7 +2531,7 @@ function renderMealBanner(){
   inner.addEventListener('click', function(){ navTo('chat',{action:'kondate'}); });
   banner.innerHTML = '';
   banner.appendChild(inner);
-  if(typeof lucide!=='undefined') lucide.createIcons({root:inner});
+  
 }
 
 // ─── 今日やるべきタスク（プラン分岐） ─────────────
@@ -2637,7 +2639,7 @@ async function renderTodayTasks(s){
     mt.appendChild(wt);
     if(t.status==='requested') mt.appendChild(makeRequestedBadge()); // TASK 1
     if((t.urgent||t.isUrgent)&&!isDone){ const dt=document.createElement('span'); dt.className='dtag urg'; dt.textContent=(t.due||'緊急'); mt.appendChild(dt); }
-    const pt=document.createElement('span'); pt.className='dtag'; pt.innerHTML=projIcon(t.projIcon||'📌',11)+' '+t.projName; if(typeof lucide!=='undefined') lucide.createIcons({root:pt});
+    const pt=document.createElement('span'); pt.className='dtag'; pt.innerHTML=projIcon(t.projIcon||'📌',11)+' '+t.projName; 
     mt.appendChild(pt);
     bd.append(nm,mt);
     // TASK 1: done状態ならハートボタン、それ以外は矢印
@@ -2667,11 +2669,11 @@ async function renderTodayTasks(s){
       empty.style.cssText='color:var(--t2);font-size:14px;padding:18px 14px;text-align:center;flex-direction:column;gap:6px';
       if(isPapaUser) {
         // TASK 2: パパ用空メッセージ
-        empty.innerHTML='<div style="display:flex;align-items:center;justify-content:center;height:32px"><i data-lucide="check-circle" style="width:28px;height:28px;color:var(--papa)"></i></div><div>今日のパパミッションはクリア！</div><div style="font-size:12px;color:var(--t3)">ママに「何か手伝おうか？」って聞いてみて</div>';
+        empty.innerHTML='<div style="display:flex;align-items:center;justify-content:center;height:32px"><i class="ph ph-check-circle" style="font-size:28px;display:inline-flex;align-items:center;justify-content:center;line-height:1;color:var(--papa)"></i></div><div>今日のパパミッションはクリア！</div><div style="font-size:12px;color:var(--t3)">ママに「何か手伝おうか？」って聞いてみて</div>';
       } else {
-        empty.innerHTML='<div style="display:flex;align-items:center;justify-content:center;height:32px"><i data-lucide="leaf" style="width:28px;height:28px;color:var(--gr)"></i></div><div>今日は余白の日です</div><div style="font-size:12px;color:var(--t3)">ゆっくり休んでください</div>';
+        empty.innerHTML='<div style="display:flex;align-items:center;justify-content:center;height:32px"><i class="ph ph-leaf" style="font-size:28px;display:inline-flex;align-items:center;justify-content:center;line-height:1;color:var(--gr)"></i></div><div>今日は余白の日です</div><div style="font-size:12px;color:var(--t3)">ゆっくり休んでください</div>';
       }
-      if(typeof lucide!=='undefined') lucide.createIcons({root:empty});
+      
       el.appendChild(empty); return;
     }
     const showing = expanded ? todayTasks : todayTasks.slice(0, SHOW);
@@ -2701,8 +2703,8 @@ function renderTaskList(s){
   if(!sorted.length){
     const empty=document.createElement('div'); empty.className='trow';
     empty.style.color='var(--t2)'; empty.style.fontSize='14px';
-    empty.innerHTML='今日のタスクはありません <i data-lucide="party-popper" style="width:14px;height:14px;display:inline-flex;vertical-align:middle"></i>';
-    if(typeof lucide!=='undefined') lucide.createIcons({root:empty});
+    empty.innerHTML='今日のタスクはありません <i class="ph ph-confetti" style="font-size:14px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i>';
+    
     el.appendChild(empty);
   }else{
     sorted.forEach(t=>{
@@ -2720,7 +2722,7 @@ function renderTaskList(s){
       const wt=document.createElement('span'); wt.className='wtag '+wc; wt.innerHTML=whoLbl(t.who);
       mt.appendChild(wt);
       if(t.urgent&&!t.done){ const dt=document.createElement('span'); dt.className='dtag urg'; dt.textContent=(t.due||'緊急'); mt.appendChild(dt); }
-      const pt=document.createElement('span'); pt.className='dtag'; pt.innerHTML=projIcon(t.projIcon||'📌',11)+' '+t.projName; if(typeof lucide!=='undefined') lucide.createIcons({root:pt});
+      const pt=document.createElement('span'); pt.className='dtag'; pt.innerHTML=projIcon(t.projIcon||'📌',11)+' '+t.projName; 
       mt.appendChild(pt);
       bd.append(nm,mt);
 
@@ -3007,7 +3009,7 @@ async function renderCal(){
       const chip=document.createElement('div');
       // プロジェクトタスクは青、単発は担当者色
       chip.className='cchip '+(t.projId?'proj':t.who)+(t.done?' done':'');
-      chip.innerHTML=projIcon(t.projIcon||'📌',12)+' '+t.name.slice(0,6); if(typeof lucide!=='undefined') lucide.createIcons({root:chip});
+      chip.innerHTML=projIcon(t.projIcon||'📌',12)+' '+t.name.slice(0,6); 
       chip.addEventListener('click',()=>toast(t.name));
       col.appendChild(chip);
     });
@@ -3059,19 +3061,19 @@ function openDateTaskOverlay(date, tasks, holidayName) {
   const body=document.createElement('div');
   body.style.cssText='flex:1;overflow-y:auto;padding:0 16px 40px';
   if(!dateTasks.length){
-    body.innerHTML='<div style="text-align:center;padding:40px 0;color:var(--t2)"><div style="margin-bottom:10px;display:flex;justify-content:center"><i data-lucide="calendar" style="width:36px;height:36px"></i></div><div>この日のタスクはありません</div></div>';
+    body.innerHTML='<div style="text-align:center;padding:40px 0;color:var(--t2)"><div style="margin-bottom:10px;display:flex;justify-content:center"><i class="ph ph-calendar" style="font-size:36px;display:inline-flex;align-items:center;justify-content:center;line-height:1"></i></div><div>この日のタスクはありません</div></div>';
   } else {
     dateTasks.forEach(t=>{
       const row=document.createElement('div');
       row.style.cssText='background:var(--sur);border-radius:14px;padding:14px;margin-bottom:10px;box-shadow:var(--sh);display:flex;align-items:center;gap:12px';
       const chk=document.createElement('div');
-      chk.style.cssText='width:24px;height:24px;border-radius:8px;border:2px solid var(--bdr);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:12px;cursor:pointer;'+(t.done?'background:var(--gr);border-color:var(--gr);color:#fff':'');
+      chk.style.cssText='width:24px;height:24px;border-radius:50%;border:2px solid '+(t.done?'var(--teal)':'var(--teal)')+';flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:12px;cursor:pointer;'+(t.done?'background:var(--teal);color:#fff':'');
       chk.textContent=t.done?'✓':'';
       const info=document.createElement('div'); info.style.flex='1';
       const nm=document.createElement('div'); nm.style.cssText='font-size:14px;font-weight:500;color:var(--t1)'+(t.done?';text-decoration:line-through;color:var(--t3)':'');
       nm.textContent=t.name||t.title;
       const meta=document.createElement('div'); meta.style.cssText='font-size:11px;color:var(--t2);margin-top:3px';
-      meta.innerHTML=whoLbl(t.who)+(t.projName?' · '+projIcon(t.projIcon||'📌',10)+' '+t.projName:''); if(typeof lucide!=='undefined') lucide.createIcons({root:meta});
+      meta.innerHTML=whoLbl(t.who)+(t.projName?' · '+projIcon(t.projIcon||'📌',10)+' '+t.projName:''); 
       info.append(nm,meta);
       row.append(chk,info);
       row.addEventListener('click',()=>{ ov.remove(); openTaskModal(t.id,t.projId); });
@@ -3124,8 +3126,8 @@ async function renderProjScreen(){
 
   const allProjs = ProjectRepository.getAll(s);
   if(!allProjs.length){
-    el.innerHTML = '<div style="text-align:center;padding:40px 20px;color:var(--t2)"><div style="display:flex;justify-content:center;margin-bottom:12px"><i data-lucide="clipboard-list" style="width:40px;height:40px;color:var(--t3)"></i></div><div style="font-weight:600">プロジェクトがありません</div></div>';
-    if(typeof lucide!=='undefined') lucide.createIcons({root:el});
+    el.innerHTML = '<div style="text-align:center;padding:40px 20px;color:var(--t2)"><div style="display:flex;justify-content:center;margin-bottom:12px"><i class="ph ph-clipboard-text" style="font-size:40px;display:inline-flex;align-items:center;justify-content:center;line-height:1;color:var(--t3)"></i></div><div style="font-weight:600">プロジェクトがありません</div></div>';
+    
     return;
   }
 
@@ -3156,7 +3158,7 @@ async function renderProjScreen(){
 
     const iconEl = document.createElement('div');
     iconEl.style.cssText = 'width:40px;height:40px;border-radius:14px;background:'+(proj.bg||'#F3F6F3')+';display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0';
-    iconEl.innerHTML = projIcon(proj.icon||'📁',24); if(typeof lucide!=='undefined') lucide.createIcons({root:iconEl});
+    iconEl.innerHTML = projIcon(proj.icon||'📁',24); 
 
     const info = document.createElement('div'); info.style.cssText='flex:1;min-width:0';
     info.innerHTML = '<div style="font-size:14px;font-weight:700;color:var(--t1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+proj.name+'</div>'
@@ -3215,7 +3217,7 @@ async function renderProjScreen(){
     (proj.tasks||[]).forEach(t=>{
       const row = document.createElement('div'); row.className='proj-task-row';
       const chk = document.createElement('div');
-      chk.style.cssText='width:20px;height:20px;border-radius:6px;border:2px solid var(--bdr);flex-shrink:0;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:10px;transition:all .18s;background:'+(t.isCompleted||t.done?'var(--gr)':'transparent');
+      chk.style.cssText='width:20px;height:20px;border-radius:50%;border:2px solid var(--teal);flex-shrink:0;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:10px;transition:all .18s;background:'+(t.isCompleted||t.done?'var(--teal)':'transparent')+';color:'+(t.isCompleted||t.done?'#fff':'transparent');
       chk.textContent=(t.isCompleted||t.done)?'✓':'';
       chk.addEventListener('click', e=>{
         e.stopPropagation();
@@ -3539,8 +3541,8 @@ function renderTasksByCalendar(s, el){
 async function renderTasksByProject(s, el){
   const projs = ProjectRepository.getAll(s);
   if(!projs.length){
-    el.innerHTML='<div style="text-align:center;padding:40px 20px;color:var(--t2)"><div style="display:flex;justify-content:center;margin-bottom:10px"><i data-lucide="clipboard-list" style="width:36px;height:36px;color:var(--t3)"></i></div><div style="font-weight:600">プロジェクトがありません</div></div>';
-    if(typeof lucide!=='undefined') lucide.createIcons({root:el});
+    el.innerHTML='<div style="text-align:center;padding:40px 20px;color:var(--t2)"><div style="display:flex;justify-content:center;margin-bottom:10px"><i class="ph ph-clipboard-text" style="font-size:36px;display:inline-flex;align-items:center;justify-content:center;line-height:1;color:var(--t3)"></i></div><div style="font-weight:600">プロジェクトがありません</div></div>';
+    
     return;
   }
   projs.forEach(proj=>{
@@ -3596,16 +3598,16 @@ function renderTasksBySingle(s, el){
   const singles = (s.singleTasks||[]);
   // 先頭に追加ボタン
   const addSingleBtn = document.createElement('div');
-  addSingleBtn.style.cssText='display:flex;align-items:center;gap:10px;padding:12px 14px;cursor:pointer;color:var(--gr);font-size:14px;font-weight:700;border-bottom:1px solid var(--bdr)';
-  addSingleBtn.innerHTML='<span style="width:24px;height:24px;background:var(--gr);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">＋</span>単発タスクを追加';
+  addSingleBtn.style.cssText='display:flex;align-items:center;gap:10px;padding:12px 14px;cursor:pointer;color:var(--teal);font-size:14px;font-weight:700;border-bottom:1px solid var(--bdr)';
+  addSingleBtn.innerHTML='<span style="width:24px;height:24px;background:var(--teal);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">＋</span>単発タスクを追加';
   addSingleBtn.addEventListener('click',()=>openAddModal());
   el.appendChild(addSingleBtn);
 
   if(!singles.length){
     const emp=document.createElement('div');
     emp.style.cssText='text-align:center;padding:32px 20px;color:var(--t2)';
-    emp.innerHTML='<div style="display:flex;justify-content:center;margin-bottom:10px"><i data-lucide="map-pin" style="width:36px;height:36px;color:var(--t3)"></i></div><div style="font-weight:600">単発タスクがありません</div>';
-    if(typeof lucide!=='undefined') lucide.createIcons({root:emp});
+    emp.innerHTML='<div style="display:flex;justify-content:center;margin-bottom:10px"><i class="ph ph-map-pin" style="font-size:36px;display:inline-flex;align-items:center;justify-content:center;line-height:1;color:var(--t3)"></i></div><div style="font-weight:600">単発タスクがありません</div>';
+    
     el.appendChild(emp);
     return;
   }
@@ -3639,7 +3641,7 @@ function makeCalItem(t,s){
   const _pl=(t.projId&&t.projId!=='__single__'&&t.projName)?'<span style="background:var(--bg);border-radius:4px;padding:1px 5px;font-weight:600;color:var(--t2)">'+projIcon(t.projIcon||'📌',10)+' '+t.projName+'</span> · ':'';
   mt.innerHTML=_pl+whoLbl(who)
     +(t.isUrgent||t.urgent?' · <span style="color:var(--re);font-weight:700">緊急</span>':'');
-  if(typeof lucide!=='undefined') lucide.createIcons({root:mt});
+  
   body.append(nm,mt);
   item.append(chk,body);
   item.addEventListener('click',()=>openTaskModal(t.id,t.projId||'__single__'));
@@ -3674,8 +3676,8 @@ async function renderMem(){
 
   // ── バランスカード
   const bc = document.createElement('div'); bc.className='mem-card';
-  bc.innerHTML = '<div style="font-size:13px;font-weight:900;color:var(--t1);margin-bottom:12px;display:flex;align-items:center;gap:5px"><i data-lucide="scale" style="width:14px;height:14px;display:inline-flex"></i> 今月の家事バランス</div>';
-  if(typeof lucide!=='undefined') lucide.createIcons({root:bc});
+  bc.innerHTML = '<div style="font-size:13px;font-weight:900;color:var(--t1);margin-bottom:12px;display:flex;align-items:center;gap:5px"><i class="ph ph-scales" style="font-size:14px;display:inline-flex;align-items:center;justify-content:center;line-height:1"></i> 今月の家事バランス</div>';
+  
   [
     [mamaLoad, 'var(--mama)', _SVG_USER+(s.family?.mama||'ママ')],
     [papaLoad, 'var(--papa)', _SVG_USER+(s.family?.papa||'パパ')],
@@ -3696,13 +3698,13 @@ async function renderMem(){
   const doneTasks  = done.length;
   const sc = document.createElement('div'); sc.className='mem-card';
   sc.style.marginBottom='10px';
-  sc.innerHTML = '<div style="font-size:13px;font-weight:900;color:var(--t1);margin-bottom:12px;display:flex;align-items:center;gap:5px"><i data-lucide="bar-chart-2" style="width:14px;height:14px;display:inline-flex"></i> 今月の実績</div>'
+  sc.innerHTML = '<div style="font-size:13px;font-weight:900;color:var(--t1);margin-bottom:12px;display:flex;align-items:center;gap:5px"><i class="ph ph-chart-bar" style="font-size:14px;display:inline-flex;align-items:center;justify-content:center;line-height:1"></i> 今月の実績</div>'
     + `<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;text-align:center">`
     + `<div style="background:var(--bg);border-radius:12px;padding:10px 6px"><div style="font-size:24px;font-weight:900;color:var(--t1)">${totalTasks}</div><div style="font-size:10px;color:var(--t3)">総タスク</div></div>`
     + `<div style="background:var(--bg);border-radius:12px;padding:10px 6px"><div style="font-size:24px;font-weight:900;color:var(--gr)">${doneTasks}</div><div style="font-size:10px;color:var(--t3)">完了</div></div>`
     + `<div style="background:var(--bg);border-radius:12px;padding:10px 6px"><div style="font-size:24px;font-weight:900;color:var(--mama)">${(s.projects||[]).length}</div><div style="font-size:10px;color:var(--t3)">プロジェクト</div></div>`
     + '</div>';
-  if(typeof lucide!=='undefined') lucide.createIcons({root:sc});
+  
   el.appendChild(sc);
 
   // ── メンバーカード
@@ -3756,7 +3758,7 @@ async function renderMem(){
     el.appendChild(card);
   });
 
-  setTimeout(()=>{ if(typeof lucide!="undefined") lucide.createIcons(); },50);
+  setTimeout(()=>{  },50);
 }
 
 
@@ -3789,7 +3791,7 @@ function renderSettings(){
     ss.innerHTML =
       // ヘッダー
       '<div class="hdr" style="display:flex;align-items:center;gap:10px">'
-      +'<button onclick="navTo(\'home\')" style="width:36px;height:36px;background:rgba(0,0,0,.1);border:none;border-radius:10px;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center"><i data-lucide="chevron-left" style="width:20px;height:20px;display:inline-flex;vertical-align:middle" ></i></button>'
+      +'<button onclick="navTo(\'home\')" style="width:36px;height:36px;background:rgba(0,0,0,.1);border:none;border-radius:10px;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center"><i class="ph ph-caret-left" style="font-size:20px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></button>'
       +'<span class="hdr-title">設定</span></div>'
       +'<div class="scroll" style="padding:14px 14px 40px">'
 
@@ -3874,7 +3876,7 @@ function renderSyncCard(s) {
     // Firebase設定済み・家族IDなし → 新規作成 or 参加
     return '<div style="padding:16px 14px">'
       +'<div style="font-size:13px;font-weight:700;color:var(--t1);margin-bottom:12px">Firebase接続済み</div>'
-      +'<button onclick="createFamilyRoom()" style="width:100%;padding:11px;background:var(--gr);color:#fff;border:none;border-radius:12px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;margin-bottom:8px">ママとして家族ルームを作成する</button>'
+      +'<button onclick="createFamilyRoom()" style="width:100%;padding:11px;background:var(--teal);color:#fff;border:none;border-radius:12px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;margin-bottom:8px">ママとして家族ルームを作成する</button>'
       +'<button onclick="showJoinRoom()" style="width:100%;padding:11px;background:var(--bg);color:var(--t1);border:1.5px solid var(--bdr);border-radius:12px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit">招待コードで参加する（パパ用）</button>'
       +'</div>';
   }
@@ -4304,7 +4306,7 @@ function addChoices(choices){
     const isLucide=/^[a-z][a-z0-9-]+$/.test(c.icon||'');
     const ic=document.createElement('span'); ic.className='cicon';
     if(isLucide){
-      ic.innerHTML=`<i data-lucide="${c.icon}" style="width:14px;height:14px;display:inline-flex;vertical-align:middle"></i>`;
+      ic.innerHTML=`<i class="ph ph-${c.icon}" style="font-size:14px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i>`;
     } else {
       ic.textContent=c.icon||'';
     }
@@ -4315,7 +4317,7 @@ function addChoices(choices){
     w.appendChild(btn);
   });
   cb.appendChild(w); scrollChat();
-  if(typeof lucide!=='undefined') setTimeout(()=>lucide.createIcons(),30);
+  
 }
 
 async function buildSys(){
@@ -4511,7 +4513,6 @@ function initOnboard() {
   const screen = document.getElementById('s-onboard');
   if(!screen) return;
   screen.classList.add('on');
-  if(typeof lucide !== 'undefined') lucide.createIcons();
 
   // 役割選択
   document.querySelectorAll('#ob-role-grid .role-card').forEach(card=>{
@@ -4589,7 +4590,7 @@ async function boot(){
       item.addEventListener('click', ()=>{
         dropMenu.style.display='none';
         navTo(item.dataset.action);
-    setTimeout(()=>{ if(typeof lucide!="undefined") lucide.createIcons(); },50);
+    setTimeout(()=>{  },50);
   });
     });
   }
@@ -4661,7 +4662,7 @@ function openTemplateDatePicker(tpl, onConfirm) {
 
   const title = document.createElement('div');
   title.style.cssText = 'font-size:16px;font-weight:800;color:var(--t1);margin-bottom:6px';
-  title.innerHTML = projIcon(tpl.icon||'📋',18)+' '+tpl.title+' — 期間を設定'; if(typeof lucide!=='undefined') lucide.createIcons({root:title});
+  title.innerHTML = projIcon(tpl.icon||'📋',18)+' '+tpl.title+' — 期間を設定'; 
   const hint = document.createElement('div');
   hint.style.cssText = 'font-size:12px;color:var(--t2);margin-bottom:18px';
   hint.textContent = '取り組む期間を設定してください（任意）';
@@ -4716,7 +4717,7 @@ function renderPcmTemplateList(){
         +'<div style="flex:1;min-width:0"><div style="font-size:14px;font-weight:700;color:var(--t1)">'+tpl.title+'</div>'
         +'<div style="font-size:11px;color:var(--t2);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+tpl.overview.slice(0,28)+'</div></div>'
         +'<div style="font-size:11px;color:var(--t3);flex-shrink:0">'+tpl.tasks.length+'件›</div>';
-      if(typeof lucide!=='undefined') lucide.createIcons({root:row});
+      
       row.addEventListener('click',()=>{
         // 目標日入力ピッカーを先に表示してからstep3へ
         openTemplateDatePicker(tpl, (goalDate, startDate) => {
@@ -4816,7 +4817,7 @@ async function renderKajiScreen() {
 
   const addBtn = document.createElement('button');
   addBtn.textContent = '+';
-  addBtn.style.cssText = 'width:40px;height:40px;background:var(--gr);color:#fff;border:none;border-radius:12px;font-size:22px;font-weight:700;cursor:pointer;flex-shrink:0';
+  addBtn.style.cssText = 'width:40px;height:40px;background:var(--teal);color:#fff;border:none;border-radius:12px;font-size:22px;font-weight:700;cursor:pointer;flex-shrink:0';
 
   /* 予測変換 dropdown */
   const dd = document.createElement('div');
@@ -4870,10 +4871,10 @@ async function renderKajiScreen() {
   if (!items.length) {
     const emp = document.createElement('div');
     emp.style.cssText = 'text-align:center;padding:48px 20px;color:var(--t2)';
-    emp.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:48px;margin-bottom:12px">' + (tab === 'shop' ? '<i data-lucide="shopping-cart" style="width:40px;height:40px;color:var(--t3)"></i>' : '<i data-lucide="brush" style="width:40px;height:40px;color:var(--t3)"></i>') + '</div>'
+    emp.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:48px;margin-bottom:12px">' + (tab === 'shop' ? '<i class="ph ph-shopping-cart" style="font-size:40px;display:inline-flex;align-items:center;justify-content:center;line-height:1;color:var(--t3)"></i>' : '<i class="ph ph-paint-brush" style="font-size:40px;display:inline-flex;align-items:center;justify-content:center;line-height:1;color:var(--t3)"></i>') + '</div>'
       + '<div style="font-weight:700;font-size:15px">\u307e\u3060\u3042\u308a\u307e\u305b\u3093</div>'
       + '<div style="font-size:12px;margin-top:6px;color:var(--t3)">\u4e0a\u306e\u5165\u529b\u6b04\u304b\u3089\u8ffd\u52a0\u3057\u3066\u304f\u3060\u3055\u3044</div>';
-    if(typeof lucide!=='undefined') lucide.createIcons({root:emp});
+    
     lw.appendChild(emp);
   }
 
@@ -4884,7 +4885,7 @@ async function renderKajiScreen() {
 
     /* 完了チェック */
     const chk = document.createElement('div');
-    chk.style.cssText = 'width:22px;height:22px;border-radius:7px;border:2px solid ' + (item.done ? 'var(--gr)' : 'var(--bdr)') + ';flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:12px;background:' + (item.done ? 'var(--gr)' : 'transparent') + ';color:#fff;cursor:pointer;transition:all .15s';
+    chk.style.cssText = 'width:22px;height:22px;border-radius:50%;border:2px solid ' + (item.done ? 'var(--teal)' : 'var(--bdr)') + ';flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:12px;background:' + (item.done ? 'var(--teal)' : 'transparent') + ';color:#fff;cursor:pointer;transition:all .15s';
     chk.textContent = item.done ? '\u2713' : '';
     chk.addEventListener('click', async e => {
       e.stopPropagation();
@@ -4901,7 +4902,7 @@ async function renderKajiScreen() {
     /* 選択ボール */
     const sb = document.createElement('div');
     sb.style.cssText = 'width:22px;height:22px;border-radius:50%;border:2px solid ' + (item.selected ? 'var(--gr)' : 'var(--bdr)') + ';flex-shrink:0;background:' + (item.selected ? 'var(--gr)' : 'transparent') + ';cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center';
-    if (item.selected) sb.innerHTML = '<i data-lucide="check" style="width:12px;height:12px;display:inline-flex;stroke:#fff"></i>';
+    if (item.selected) sb.innerHTML = '<i class="ph ph-check" style="font-size:12px;display:inline-flex;align-items:center;justify-content:center;line-height:1"></i>';
     sb.addEventListener('click', async e => {
       e.stopPropagation();
       const st = await loadST(); const it = st.kaji[tab].find(x => x.id === item.id); if (!it) return;
@@ -4925,7 +4926,7 @@ async function renderKajiScreen() {
 
     const doneB = document.createElement('button');
     doneB.textContent = '\u2713 \u5b8c\u4e86';
-    doneB.style.cssText = 'padding:8px 14px;background:var(--gr);color:#fff;border:none;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer';
+    doneB.style.cssText = 'padding:8px 14px;background:var(--teal);color:#fff;border:none;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer';
     doneB.addEventListener('click', async () => {
       const st = await loadST();
       sel.forEach(si => { const it = st.kaji[tab].find(x => x.id === si.id); if (it) { it.done = true; it.selected = false; } });
@@ -4933,7 +4934,7 @@ async function renderKajiScreen() {
     });
 
     const delB = document.createElement('button');
-    delB.innerHTML = '<i data-lucide="trash-2" style="width:13px;height:13px;display:inline-flex;vertical-align:middle;margin-right:3px"></i> \u524a\u9664';
+    delB.innerHTML = '<i class="ph ph-trash" style="font-size:13px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle;margin-right:3px"></i> \u524a\u9664';
     delB.style.cssText = 'padding:8px 14px;background:var(--re2);color:var(--re);border:none;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer';
     delB.addEventListener('click', async () => {
       const st = await loadST(); st.kaji[tab] = st.kaji[tab].filter(x => !x.selected); await saveST(); renderKajiScreen();
@@ -4946,7 +4947,7 @@ async function renderKajiScreen() {
     papaB.style.cssText = 'padding:8px 14px;background:var(--bl);color:#fff;border:none;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer';
     papaB.addEventListener('click', () => openPapaRequest(sel, tab, isPapa));
 
-    if(typeof lucide!=='undefined') lucide.createIcons({root:delB});
+    
     bar.append(cnt, doneB, delB, papaB);
     body.appendChild(bar);
   }
@@ -4987,7 +4988,7 @@ async function openKajiTplModal(cat, tab) {
 
   const ft = document.createElement('div'); ft.style.cssText = 'padding:12px 16px;border-top:1px solid var(--bdr)';
   const ab = document.createElement('button'); ab.textContent = '\u9078\u629e\u3057\u305f\u3082\u306e\u3092\u8ffd\u52a0';
-  ab.style.cssText = 'width:100%;padding:13px;background:var(--gr);color:#fff;border:none;border-radius:14px;font-size:14px;font-weight:700;cursor:pointer';
+  ab.style.cssText = 'width:100%;padding:13px;background:var(--teal);color:#fff;border:none;border-radius:14px;font-size:14px;font-weight:700;cursor:pointer';
   ab.addEventListener('click', async () => {
     if (!sel2.size) { toast('\u30a2\u30a4\u30c6\u30e0\u3092\u9078\u629e\u3057\u3066\u304f\u3060\u3055\u3044'); return; }
     const st = await loadST(); if (!st.kaji) st.kaji = { shop: [], chore: [] };
@@ -5027,7 +5028,7 @@ function openPapaRequest(items, tab, fromPapa=false) {
   prev.textContent = msg;
 
   const cb = document.createElement('button');
-  cb.innerHTML = '<i data-lucide="copy" style="width:14px;height:14px;display:inline-flex;vertical-align:middle;margin-right:4px"></i> \u30b3\u30d4\u30fc\u3057\u3066LINE\u3067\u9001\u308b';
+  cb.innerHTML = '<i class="ph ph-copy" style="font-size:14px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle;margin-right:4px"></i> \u30b3\u30d4\u30fc\u3057\u3066LINE\u3067\u9001\u308b';
   cb.style.cssText = 'width:calc(100% - 32px);margin:0 16px 20px;padding:14px;background:var(--bl);color:#fff;border:none;border-radius:14px;font-size:14px;font-weight:700;cursor:pointer;display:block';
   cb.addEventListener('click', async () => {
     try { await navigator.clipboard.writeText(msg); }
@@ -5039,7 +5040,7 @@ function openPapaRequest(items, tab, fromPapa=false) {
     ov.remove();
   });
 
-  if(typeof lucide!=='undefined') lucide.createIcons({root:cb});
+  
   sh.append(hdr, prev, cb); ov.appendChild(sh);
   ov.addEventListener('click', e => { if (e.target === ov) ov.remove(); });
   document.body.appendChild(ov);
