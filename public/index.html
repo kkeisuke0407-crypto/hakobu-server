@@ -3915,7 +3915,7 @@ function renderSettingsMem(s, ss) {
     +'<div style="background:var(--bg);border-radius:10px;padding:8px 4px"><div style="font-size:20px;font-weight:900;color:var(--gr)">'+done+'</div><div style="font-size:10px;color:var(--t3)">完了</div></div>'
     +'<div style="background:var(--bg);border-radius:10px;padding:8px 4px"><div style="font-size:20px;font-weight:900;color:var(--mama)">'+(s.projects||[]).length+'</div><div style="font-size:10px;color:var(--t3)">プロジェクト</div></div>'
     +'</div>'
-    +'<button onclick="navTo('chat',{action:'balance'})" class="btn btn-g" style="margin-top:12px;width:100%">AIに家事バランスを改善してもらう →</button>'
+    +'<button onclick="navTo(\'chat\',{action:\'balance\'})" class="btn btn-g" style="margin-top:12px;width:100%">AIに家事バランスを改善してもらう →</button>'
     +'</div>'
     // メンバーカード
     +[
@@ -3935,7 +3935,7 @@ function renderSettingsMem(s, ss) {
       +'<div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:'+(m.action?'10':'0')+'px">'
       +m.tags.map(t=>'<span style="background:var(--bg);color:var(--t2);border-radius:10px;padding:3px 8px;font-size:11px">'+t+'</span>').join('')
       +'</div>'
-      +(m.action ? '<button onclick="navTo('chat',{action:''+m.action+''})" class="btn btn-g" style="width:100%">'+m.name+'へのタスクをAIに提案してもらう →</button>' : '')
+      +(m.action ? '<button onclick="navTo(\'chat\',{action:\''+m.action+'\'})" class="btn btn-g" style="width:100%">'+m.name+'へのタスクをAIに提案してもらう →</button>' : '')
       +'</div>'
     ).join('');
 }
