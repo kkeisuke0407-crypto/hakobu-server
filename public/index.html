@@ -555,7 +555,6 @@ window.fbUnsubscribe = function() {
         </div>
       </div>
       <div style="position:relative">
-        <button id="cal-btn" onclick="navTo('cal')" style="width:36px;height:36px;background:rgba(255,255,255,.15);border:none;border-radius:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#fff;margin-right:6px"><i class="ph ph-calendar" style="font-size:20px;display:inline-flex;align-items:center;justify-content:center;line-height:1"></i></button>
         <button id="menu-btn" style="width:36px;height:36px;background:rgba(255,255,255,.15);border:none;border-radius:10px;cursor:pointer"><i class="ph ph-caret-left" style="font-size:20px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></button>
         <div id="dropdown-menu" style="display:none;position:absolute;right:0;top:40px;background:#fff;border-radius:16px;box-shadow:0 8px 30px rgba(0,0,0,.15);overflow:hidden;min-width:140px;z-index:999">
           <div class="dmenu-item" data-action="settings"><i class="ph ph-gear" style="font-size:15px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle;margin-right:6px"></i>設定</div>
@@ -576,11 +575,10 @@ window.fbUnsubscribe = function() {
         <div class="tlist" id="task-list"></div>
       </div>
     </div>
-    <nav class="tabs">
+    <nav class="tabs" id="tabs-home">
       <button class="tb on" data-nav="home"><span class="tb-i"><i class="ph ph-house" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">ホーム</span></button>
       <button class="tb" data-nav="proj"><span class="tb-i"><i class="ph ph-grid-four" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">プロジェクト</span></button>
-      <button class="tb" data-nav="cal"><span class="tb-i"><i class="ph ph-calendar" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">カレンダー</span></button>
-      <button class="tb" data-nav="tasks"><span class="tb-i"><i class="ph ph-check-square" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">タスク</span></button>
+      <button class="tb" data-nav="tasks"><span class="tb-i"><i class="ph ph-check-square" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">タスク</span><span class="tbadge" id="tbadge" style="display:none">!</span></button>
       <button class="tb" data-nav="kaji"><span class="tb-i"><i class="ph ph-shopping-basket" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">家事</span></button>
     </nav>
   </div>
@@ -594,10 +592,9 @@ window.fbUnsubscribe = function() {
       </div>
     </div>
     <div class="proj-list" id="proj-list"></div>
-    <nav class="tabs">
+    <nav class="tabs" id="tabs-proj">
       <button class="tb" data-nav="home"><span class="tb-i"><i class="ph ph-house" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">ホーム</span></button>
       <button class="tb on" data-nav="proj"><span class="tb-i"><i class="ph ph-grid-four" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">プロジェクト</span></button>
-      <button class="tb" data-nav="cal"><span class="tb-i"><i class="ph ph-calendar" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">カレンダー</span></button>
       <button class="tb" data-nav="tasks"><span class="tb-i"><i class="ph ph-check-square" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">タスク</span></button>
       <button class="tb" data-nav="kaji"><span class="tb-i"><i class="ph ph-shopping-basket" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">家事</span></button>
     </nav>
@@ -609,12 +606,15 @@ window.fbUnsubscribe = function() {
       <div class="hdr-row">
         <div class="hdr-title">タスク</div>
       </div>
+      <div class="type-tabs">
+        <button class="type-tab on" data-type="cal">カレンダー</button>
+        <button class="type-tab" data-type="single">単発</button>
+      </div>
     </div>
     <div class="task-cal-grid" id="task-screen-list"></div>
-    <nav class="tabs">
+    <nav class="tabs" id="tabs-tasks">
       <button class="tb" data-nav="home"><span class="tb-i"><i class="ph ph-house" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">ホーム</span></button>
       <button class="tb" data-nav="proj"><span class="tb-i"><i class="ph ph-grid-four" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">プロジェクト</span></button>
-      <button class="tb" data-nav="cal"><span class="tb-i"><i class="ph ph-calendar" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">カレンダー</span></button>
       <button class="tb on" data-nav="tasks"><span class="tb-i"><i class="ph ph-check-square" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">タスク</span></button>
       <button class="tb" data-nav="kaji"><span class="tb-i"><i class="ph ph-shopping-basket" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">家事</span></button>
     </nav>
@@ -648,7 +648,6 @@ window.fbUnsubscribe = function() {
     <nav class="tabs">
       <button class="tb" data-nav="home"><span class="tb-i"><i class="ph ph-house" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">ホーム</span></button>
       <button class="tb" data-nav="proj"><span class="tb-i"><i class="ph ph-grid-four" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">プロジェクト</span></button>
-      <button class="tb" data-nav="cal"><span class="tb-i"><i class="ph ph-calendar" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">カレンダー</span></button>
       <button class="tb" data-nav="tasks"><span class="tb-i"><i class="ph ph-check-square" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">タスク</span></button>
       <button class="tb" data-nav="kaji"><span class="tb-i"><i class="ph ph-shopping-basket" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">家事</span></button>
     </nav>
@@ -656,31 +655,21 @@ window.fbUnsubscribe = function() {
 
   <!-- CALENDAR -->
   <div class="scr" id="s-cal">
-    <div class="cal-hdr">
-      <div class="cal-hdr-row">
-        <div>
-          <div class="cal-month" id="cal-month"></div>
-          <div class="cal-range" id="cal-range"></div>
-        </div>
-        <div class="cal-nav-btns">
+    <div class="hdr">
+      <div class="hdr-row">
+        <div class="hdr-title" id="cal-month-lbl"></div>
+        <div style="display:flex;gap:6px">
           <button class="cnb" id="cal-prev"><i class="ph ph-caret-left" style="font-size:16px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></button>
           <button class="cnb" id="cal-next"><i class="ph ph-caret-right" style="font-size:16px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></button>
         </div>
       </div>
     </div>
-    <div class="cal-leg">
-      <div class="cl-item"><div class="cl-dot" style="background:var(--or)"></div><i class="ph ph-user" style="font-size:12px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle;margin-right:2px"></i>ママ</div>
-      <div class="cl-item"><div class="cl-dot" style="background:var(--bl)"></div><i class="ph ph-user" style="font-size:12px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle;margin-right:2px"></i>パパ</div>
-      <div class="cl-item"><div class="cl-dot" style="background:var(--gr2)"></div><i class="ph ph-users" style="font-size:12px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle;margin-right:2px"></i>二人</div>
-    </div>
-    <div class="cal-dow" id="cal-dow"></div>
-    <div class="cal-grid" id="cal-grid"></div>
-    <div class="scroll" style="padding:13px 13px 100px" id="cal-projs"></div>
+    <div id="cal-body" style="flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;"></div>
     <nav class="tabs">
       <button class="tb" data-nav="home"><span class="tb-i"><i class="ph ph-house" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">ホーム</span></button>
       <button class="tb" data-nav="proj"><span class="tb-i"><i class="ph ph-grid-four" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">プロジェクト</span></button>
-      <button class="tb on" data-nav="cal"><span class="tb-i"><i class="ph ph-calendar" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">カレンダー</span></button>
       <button class="tb" data-nav="tasks"><span class="tb-i"><i class="ph ph-check-square" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">タスク</span></button>
+      <button class="tb on" data-nav="cal"><span class="tb-i"><i class="ph ph-calendar" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">カレンダー</span></button>
       <button class="tb" data-nav="kaji"><span class="tb-i"><i class="ph ph-shopping-basket" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">家事</span></button>
     </nav>
   </div>
@@ -695,7 +684,6 @@ window.fbUnsubscribe = function() {
     <nav class="tabs">
       <button class="tb" data-nav="home"><span class="tb-i"><i class="ph ph-house" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">ホーム</span></button>
       <button class="tb" data-nav="proj"><span class="tb-i"><i class="ph ph-grid-four" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">プロジェクト</span></button>
-      <button class="tb" data-nav="cal"><span class="tb-i"><i class="ph ph-calendar" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">カレンダー</span></button>
       <button class="tb" data-nav="tasks"><span class="tb-i"><i class="ph ph-check-square" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">タスク</span></button>
       <button class="tb" data-nav="kaji"><span class="tb-i"><i class="ph ph-shopping-basket" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">家事</span></button>
     </nav>
@@ -864,12 +852,10 @@ window.fbUnsubscribe = function() {
     <nav class="tabs">
       <button class="tb" data-nav="home"><span class="tb-i"><i class="ph ph-house" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">ホーム</span></button>
       <button class="tb" data-nav="proj"><span class="tb-i"><i class="ph ph-grid-four" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">プロジェクト</span></button>
-      <button class="tb" data-nav="cal"><span class="tb-i"><i class="ph ph-calendar" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">カレンダー</span></button>
       <button class="tb" data-nav="tasks"><span class="tb-i"><i class="ph ph-check-square" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">タスク</span></button>
       <button class="tb on" data-nav="kaji"><span class="tb-i"><i class="ph ph-shopping-basket" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">家事</span></button>
     </nav>
   </div>
-
 
   <!-- ADD TASK MODAL -->
   <div class="modal-bg" id="add-modal">
@@ -982,7 +968,7 @@ function mkState(){
 }
 
 let ST = null;
-let calOff = 0;
+
 
 // ── Firebase / localStorage ハイブリッドストレージ ──────────────────────────
 const LS_KEY    = 'hakobu_st';
@@ -1334,7 +1320,7 @@ function navTo(id, ctx){
   // 対象画面ON
   const target = document.getElementById('s-'+id);
   if(target) target.classList.add('on');
-  // タブ状態: chat/settings はタブなし扱い
+  // タブ状態（cal画面はタブなし扱い → 全OFF）
   document.querySelectorAll('.tb').forEach(b=>b.classList.toggle('on', b.dataset.nav===id));
   // レンダリング
   if(id==='home')     renderHome();
@@ -1352,20 +1338,13 @@ document.querySelectorAll('.tb[data-nav]').forEach(btn=>{
   btn.addEventListener('click',()=>navTo(btn.dataset.nav));
 });
 
-document.getElementById('sp-login-btn').addEventListener('click', ()=>{
-  // localStorageを同期確認（Firebase待ちで固まらないよう）
-  const local = lsLoad();
-  navTo(local?.sync?.onboardDone ? 'home' : 'onboard');
-});
+document.getElementById('sp-login-btn').addEventListener('click', ()=>navTo('home'));
 const spGuestBtn = document.getElementById('sp-guest-btn');
-if(spGuestBtn) spGuestBtn.addEventListener('click', ()=>{
-  const local = lsLoad();
-  navTo(local?.sync?.onboardDone ? 'home' : 'onboard');
-});
+if(spGuestBtn) spGuestBtn.addEventListener('click', ()=>navTo('home'));
 document.getElementById('chat-back').addEventListener('click',  ()=>navTo('home'));
 document.getElementById('chat-reset').addEventListener('click', ()=>resetChat());
-document.getElementById('cal-prev').addEventListener('click',   ()=>{calOff--;renderCal();});
-document.getElementById('cal-next').addEventListener('click',   ()=>{calOff++;renderCal();});
+document.getElementById('cal-prev').addEventListener('click', ()=>{ window._calMonth--; if(window._calMonth<0){window._calMonth=11;window._calYear--;} renderCal(); });
+document.getElementById('cal-next').addEventListener('click', ()=>{ window._calMonth++; if(window._calMonth>11){window._calMonth=0;window._calYear++;} renderCal(); });
 
 /* ═══════════════════════════════════════════════════════
    PROPOSALS — 献立以外の家族課題も提案
@@ -2923,124 +2902,153 @@ function burst(){
 /* ═══════════════════════════════════════════════════════
    CALENDAR
 ═══════════════════════════════════════════════════════ */
-function weekDates(off){
-  const today=new Date(), dow=today.getDay();
-  const mon=new Date(today); mon.setDate(today.getDate()-(dow===0?6:dow-1)+off*7);
-  return Array.from({length:7},(_,i)=>{ const d=new Date(mon); d.setDate(mon.getDate()+i); return d; });
-}
-
 async function renderCal(){
-  const s=await loadST();
-  const today=new Date(), dates=weekDates(calOff);
-  document.getElementById('cal-month').textContent=`${dates[0].getFullYear()}年${dates[0].getMonth()+1}月`;
-  document.getElementById('cal-range').textContent=`${dates[0].getMonth()+1}/${dates[0].getDate()} — ${dates[6].getMonth()+1}/${dates[6].getDate()}`;
+  const s = await loadST();
+  const today = new Date();
+  const now0  = new Date(today.getFullYear(), today.getMonth(), today.getDate());
 
-  const DAYS=['月','火','水','木','金','土','日'];
+  if(window._calMonth === undefined) window._calMonth = today.getMonth();
+  if(window._calYear  === undefined) window._calYear  = today.getFullYear();
+  const viewYear = window._calYear, viewMonth = window._calMonth;
 
-  // 祝日判定ヘルパー（HOLIDAY_MASTERから当該日を探す）
-  function getHolidayName(date) {
-    const m = date.getMonth()+1, d2 = date.getDate();
-    const hit = HOLIDAY_MASTER.find(h => h.month===m && h.day===d2);
-    return hit ? hit.name : null;
-  }
+  const MONTHS = ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
+  const lbl = document.getElementById('cal-month-lbl');
+  if(lbl) lbl.textContent = viewYear + '年' + MONTHS[viewMonth];
 
-  let selectedDateStr = null; // 選択日付の状態
-  const tasks2=allTasks(s); // クロージャで参照するためdowEl構築前に宣言
+  const body = document.getElementById('cal-body');
+  if(!body) return;
+  body.innerHTML = '';
 
-  const dowEl=document.getElementById('cal-dow');
-  dowEl.innerHTML='';
-  dates.forEach((d,i)=>{
-    const isToday   = d.toDateString()===today.toDateString();
-    const isSun     = d.getDay()===0;
-    const isSat     = d.getDay()===6;
-    const holidayName = getHolidayName(d);
-    const isHoliday = !!holidayName;
-    const dStr = d.toDateString();
+  const allT = allTasks(s);
+  const parseDue = due => { if(!due) return null; const d=new Date(due); return isNaN(d)?null:new Date(d.getFullYear(),d.getMonth(),d.getDate()); };
+  const taskMap = {};
+  allT.forEach(t => { const d=parseDue(t.dueDate||t.due); if(!d) return; const k=d.toDateString(); if(!taskMap[k]) taskMap[k]=[]; taskMap[k].push(t); });
 
-    const cell=document.createElement('div'); cell.className='cdh';
-    cell.dataset.dstr = dStr;
-    if(isHoliday) cell.style.cssText='background:rgba(192,57,43,.08);border-radius:8px;';
+  if(!window._selDay) window._selDay = now0;
 
-    const lb=document.createElement('span');
-    lb.className='cdh-lbl';
-    lb.textContent = isHoliday ? '祝' : DAYS[i];
-    if(isHoliday||isSun) lb.style.color='#C0392B';
-    else if(isSat)       lb.style.color='#1E5EA8';
+  // 曜日ヘッダー（月曜始まり）
+  const WDAY = ['月','火','水','木','金','土','日'];
+  const dowHdr = document.createElement('div');
+  dowHdr.style.cssText = 'display:grid;grid-template-columns:repeat(7,1fr);padding:6px 6px 2px;background:#fff;border-bottom:1px solid var(--bdr)';
+  WDAY.forEach((w,wi) => {
+    const c = document.createElement('div');
+    c.style.cssText = 'text-align:center;font-size:10px;font-weight:700;color:'+(wi===5?'#1E5EA8':wi===6?'#C0392B':'var(--t3)');
+    c.textContent = w; dowHdr.appendChild(c);
+  });
+  body.appendChild(dowHdr);
 
-    const nm=document.createElement('span');
-    nm.className='cdh-num'+(isToday?' today':'');
-    nm.textContent=d.getDate();
-    if(!isToday){
-      if(isHoliday||isSun) nm.style.color='#C0392B';
-      else if(isSat)       nm.style.color='#1E5EA8';
-    }
+  // 月グリッド
+  const gridStart = new Date(viewYear, viewMonth, 1);
+  const gridEnd   = new Date(viewYear, viewMonth+1, 0);
+  const startOff  = (gridStart.getDay()+6)%7;
+  const grid = document.createElement('div');
+  grid.style.cssText = 'display:grid;grid-template-columns:repeat(7,1fr);gap:1px;padding:4px 6px 8px;background:#fff;border-bottom:1px solid var(--bdr)';
+  for(let i=0;i<startOff;i++) grid.appendChild(document.createElement('div'));
 
-    cell.append(lb,nm);
+  for(let d2=new Date(gridStart); d2<=gridEnd; d2.setDate(d2.getDate()+1)){
+    const day      = new Date(d2);
+    const key      = day.toDateString();
+    const isToday  = key===now0.toDateString();
+    const isSel    = key===window._selDay.toDateString();
+    const isPast   = day < now0;
+    const dayTasks = taskMap[key]||[];
+    const dow      = day.getDay();
+    const isSat    = dow===6, isSun=dow===0;
+    const hm=day.getMonth()+1, hd=day.getDate();
+    const holidayEntry = HOLIDAY_MASTER.find(h=>h.month===hm&&h.day===hd);
+    const holidayName  = holidayEntry?holidayEntry.name:null;
+    const isHoliday    = !!holidayName;
 
-    // 祝日名ラベル
+    const cell = document.createElement('div');
+    cell.style.cssText = 'height:72px;min-height:72px;max-height:72px;overflow:hidden;border-radius:8px;padding:3px 2px;cursor:pointer;'
+      +'background:'+(isSel?'#E8F5E9':isHoliday?'rgba(192,57,43,.07)':'transparent')+';'
+      +'border:'+(isSel?'1.5px solid var(--gr)':'1px solid transparent')+';transition:background .1s';
+
+    const numWrap = document.createElement('div');
+    numWrap.style.cssText='display:flex;align-items:center;justify-content:center;margin-bottom:2px';
+    const numEl = document.createElement('div');
+    numEl.style.cssText='width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;'
+      +'font-size:12px;font-weight:'+(isToday?'800':'600')+';'
+      +'background:'+(isToday?'var(--gr)':'transparent')+';'
+      +'color:'+(isToday?'#fff':(isHoliday||isSun)?'#C0392B':isSat?'#1E5EA8':isPast?'var(--t3)':'var(--t1)')+';';
+    numEl.textContent=day.getDate();
+    numWrap.appendChild(numEl);
+    cell.appendChild(numWrap);
+
     if(isHoliday){
       const hlbl=document.createElement('div');
-      hlbl.style.cssText='font-size:7px;color:#C0392B;font-weight:700;text-align:center;line-height:1.2;margin-top:1px;overflow:hidden;';
+      hlbl.style.cssText='font-size:7px;color:#C0392B;font-weight:700;text-align:center;line-height:1.2;overflow:hidden;white-space:nowrap;padding:0 2px;margin-bottom:1px';
       hlbl.textContent=holidayName.slice(0,4);
       cell.appendChild(hlbl);
     }
-
-    // タップ挙動: 1回目→色付き, 2回目→全画面タスク
-    cell.style.cursor='pointer';
-    cell.addEventListener('click', ()=>{
-      if(selectedDateStr === dStr){
-        // 2回目タップ → 全画面
-        openDateTaskOverlay(d, tasks2, getHolidayName(d));
-      } else {
-        // 1回目タップ → 色付き
-        dowEl.querySelectorAll('.cdh').forEach(c=>c.style.background='');
-        dowEl.querySelectorAll('.cdh[data-dstr]').forEach(c=>{
-          const cd=getHolidayName(dates.find(dd=>dd.toDateString()===c.dataset.dstr));
-          if(cd) c.style.background='rgba(192,57,43,.08)';
-        });
-        cell.style.background='var(--yel)';
-        selectedDateStr = dStr;
-        if(isHoliday) toast('祝日: '+holidayName);
-      }
+    const MAX_PILLS=3;
+    dayTasks.slice(0,MAX_PILLS).forEach(t=>{
+      const pill=document.createElement('div');
+      const isDone=t.isCompleted||t.done;
+      const color=isDone?'#ccc':(t.projId?'#1A7FDB':'var(--gr)');
+      pill.style.cssText='border-radius:4px;padding:1px 4px;font-size:9px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:1px;'
+        +'background:'+(isDone?'#eee':(t.projId?'#EBF5FF':'var(--gr3)'))+';'
+        +'border-left:3px solid '+color+';'
+        +'color:'+(isDone?'#999':(t.projId?'#1A7FDB':'var(--gr2)'))+';'
+        +'text-decoration:'+(isDone?'line-through':'none')+';';
+      const _fn=t.name||t.title||''; pill.textContent=_fn.length>6?_fn.slice(0,5)+'…':_fn;
+      cell.appendChild(pill);
     });
-
-    dowEl.appendChild(cell);
-  });
-
-  const gridEl=document.getElementById('cal-grid');
-  gridEl.innerHTML='';
-  dates.forEach((d,di)=>{
-    const isSun = d.getDay()===0;
-    const isSat = d.getDay()===6;
-    const isHolidayCol = !!getHolidayName(d);
-    const col=document.createElement('div'); col.className='ccol';
-    if(isHolidayCol||isSun) col.style.background='rgba(192,57,43,.04)';
-    else if(isSat)           col.style.background='rgba(30,94,168,.04)';
-    const colDateStr = dates[di].toDateString();
-    tasks2.filter(t=>{
-      const due = t.dueDate||t.due;
-      if(!due) return false;
-      const td = new Date(due);
-      return !isNaN(td.getTime()) && td.toDateString()===colDateStr;
-    }).slice(0,3).forEach(t=>{
-      const chip=document.createElement('div');
-      // プロジェクトタスクは青、単発は担当者色
-      chip.className='cchip '+(t.projId?'proj':t.who)+(t.done?' done':'');
-      chip.innerHTML=projIcon(t.projIcon||'📌',12)+' '+t.name.slice(0,6); 
-      chip.addEventListener('click',()=>toast(t.name));
-      col.appendChild(chip);
+    if(dayTasks.length>MAX_PILLS){
+      const more=document.createElement('div');
+      more.style.cssText='font-size:9px;color:var(--t3);padding-left:4px';
+      more.textContent='+'+(dayTasks.length-MAX_PILLS)+'件';
+      cell.appendChild(more);
+    }
+    cell.addEventListener('click',()=>{
+      if(isSel){ openDateTaskOverlay(day,allT,holidayName); }
+      else { window._selDay=day; renderCal(); if(isHoliday) toast('祝日: '+holidayName); }
     });
-    gridEl.appendChild(col);
-  });
+    grid.appendChild(cell);
+  }
+  body.appendChild(grid);
 
-  // カレンダー下部のプロジェクト一覧は削除（プロジェクトタブへ誘導）
-  const pa=document.getElementById('cal-projs');
-  pa.innerHTML='';
-  const guideEl=document.createElement('div');
-  guideEl.style.cssText='text-align:center;padding:24px 16px;color:var(--t2)';
-  guideEl.innerHTML='<div style="font-size:13px;font-weight:600">プロジェクトの詳細は</div>'
-    +'<button onclick="navTo(\'proj\')" style="margin-top:8px;padding:10px 20px;background:var(--yel);border:none;border-radius:14px;font-size:13px;font-weight:700;cursor:pointer">プロジェクト画面へ →</button>';
-  pa.appendChild(guideEl);
+  // 選択日タスク一覧
+  const listWrap = document.createElement('div');
+  listWrap.style.cssText = 'padding:0 12px 100px';
+  const selKey   = window._selDay.toDateString();
+  const selTasks = taskMap[selKey]||[];
+  const selD     = window._selDay;
+  const WDAY2    = ['日','月','火','水','木','金','土'];
+  const isSelToday = selKey===now0.toDateString();
+
+  const selHdr = document.createElement('div');
+  selHdr.style.cssText='padding:12px 2px 8px;display:flex;align-items:center;justify-content:space-between';
+  const selTitle = document.createElement('div');
+  selTitle.style.cssText='font-size:14px;font-weight:800;color:var(--t1);display:flex;align-items:center;gap:8px';
+  const selBadge = document.createElement('span');
+  selBadge.style.cssText='display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:var(--gr);color:#fff;font-size:13px;font-weight:800';
+  selBadge.textContent=selD.getDate();
+  selTitle.appendChild(selBadge);
+  selTitle.appendChild(document.createTextNode((selD.getMonth()+1)+'月'+selD.getDate()+'日（'+WDAY2[selD.getDay()]+'）'+(isSelToday?' · 今日':'')));
+  const addBtn2=document.createElement('button');
+  addBtn2.style.cssText='width:30px;height:30px;background:var(--t1);border:none;border-radius:50%;font-size:18px;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0';
+  addBtn2.textContent='+';
+  addBtn2.addEventListener('click',()=>{
+    const fmt=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+    document.getElementById('new-due').value=fmt(selD); openAddModal();
+  });
+  selHdr.append(selTitle,addBtn2);
+  listWrap.appendChild(selHdr);
+
+  if(!selTasks.length){
+    const emp=document.createElement('div');
+    emp.style.cssText='padding:20px 0;text-align:center;color:var(--t3);font-size:13px';
+    emp.textContent='この日のタスクはありません';
+    listWrap.appendChild(emp);
+  } else {
+    selTasks.forEach(t=>listWrap.appendChild(makeCalItem(t,window.ST)));
+  }
+  body.appendChild(listWrap);
+
+  // ── （以下は旧週次コードの残骸、削除）
+  const _dummy=null;
+  const today_unused=new Date(), dates_unused=[];
 }
 
 // ── カレンダー日付タップ → 全画面タスクオーバーレイ ────────────────────
@@ -3342,7 +3350,7 @@ async function renderProjScreen(){
 }
 
 // ─── タスク画面 ──────────────────────────────────
-let _taskFilter = 'single';
+let _taskFilter = 'cal';
 let _taskViewMode = 'day'; // 'day'|'week'|'month'
 
 async function renderTasksScreen(){
@@ -3915,7 +3923,7 @@ function renderSettingsMem(s, ss) {
     +'<div style="background:var(--bg);border-radius:10px;padding:8px 4px"><div style="font-size:20px;font-weight:900;color:var(--gr)">'+done+'</div><div style="font-size:10px;color:var(--t3)">完了</div></div>'
     +'<div style="background:var(--bg);border-radius:10px;padding:8px 4px"><div style="font-size:20px;font-weight:900;color:var(--mama)">'+(s.projects||[]).length+'</div><div style="font-size:10px;color:var(--t3)">プロジェクト</div></div>'
     +'</div>'
-    +'<button onclick="navTo(\'chat\',{action:\'balance\'})" class="btn btn-g" style="margin-top:12px;width:100%">AIに家事バランスを改善してもらう →</button>'
+    +'<button onclick="navTo('chat',{action:'balance'})" class="btn btn-g" style="margin-top:12px;width:100%">AIに家事バランスを改善してもらう →</button>'
     +'</div>'
     // メンバーカード
     +[
@@ -3935,7 +3943,7 @@ function renderSettingsMem(s, ss) {
       +'<div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:'+(m.action?'10':'0')+'px">'
       +m.tags.map(t=>'<span style="background:var(--bg);color:var(--t2);border-radius:10px;padding:3px 8px;font-size:11px">'+t+'</span>').join('')
       +'</div>'
-      +(m.action ? '<button onclick="navTo(\'chat\',{action:\''+m.action+'\'})" class="btn btn-g" style="width:100%">'+m.name+'へのタスクをAIに提案してもらう →</button>' : '')
+      +(m.action ? '<button onclick="navTo('chat',{action:''+m.action+''})" class="btn btn-g" style="width:100%">'+m.name+'へのタスクをAIに提案してもらう →</button>' : '')
       +'</div>'
     ).join('');
 }
