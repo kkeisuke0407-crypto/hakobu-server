@@ -1043,7 +1043,7 @@ window.fbSignOut = async function() {
     <button class="tb" data-nav="proj"><span class="tb-i"><i class="ph ph-grid-four" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">プロジェクト</span></button>
     <button class="tb" data-nav="tasks"><span class="tb-i"><i class="ph ph-check-square" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">タスク</span></button>
     <button class="tb" data-nav="cal"><span class="tb-i"><i class="ph ph-calendar" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">カレンダー</span></button>
-    <button class="tb" data-nav="kaji"><span class="tb-i"><i class="ph ph-shopping-basket" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">家事</span></button>
+    <button class="tb" data-nav="kaji"><span class="tb-i"><i class="ph ph-basket" style="font-size:22px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i></span><span class="tb-l">家事</span></button>
   </nav>
 </div>
 </div>
@@ -2495,11 +2495,9 @@ function getPapaReturnCard(s) {
   };
 }
 
-// ⑭ ゴミ出し前日リマインドカード（18時以降）
+// ⑭ ゴミ出し前日リマインドカード（翌日にゴミ出しがある場合のみ表示）
 function getGomiReminderCard(s) {
   const now = new Date();
-  const hour = now.getHours();
-  if(hour < 18) return null; // 18時以降のみ
   const gomi = s.prefs?.gomi || [];
   if(!gomi.length) return null;
   const tomorrow = new Date(now); tomorrow.setDate(now.getDate()+1);
@@ -3584,10 +3582,10 @@ const GOMI_PRESETS = [
  */
 function nextGomiDiff(schedules) {
   const now = new Date();
-  const hour = now.getHours();
-  const startOffset = hour >= 18 ? 1 : 0;
+  // 常に翌日のみチェック（当日表示なし）
+  const startOffset = 1;
 
-  for(let offset = startOffset; offset < 14; offset++) {
+  for(let offset = startOffset; offset <= 1; offset++) {
     const d = new Date(now);
     d.setDate(d.getDate() + offset);
     d.setHours(0,0,0,0);
@@ -4743,23 +4741,28 @@ async function renderCal(){
       cell.appendChild(ptag);
     }
 
-    // 予定（1件のみ、色付きチップ — プロジェクト目標日と重複する名前は除外）
+    // 予定（3件まで表示）
     const projNames = new Set(dayProjs.map(p => p.name));
     const dayScheds = (s.schedules||[]).filter(sc => {
       const d = new Date(sc.date); d.setHours(0,0,0,0);
       return d.toDateString() === key && !projNames.has(sc.title);
     });
-    if(dayScheds.length > 0) {
+    const totalExtra = dayScheds.length + dayProjs.length;
+    const maxVisible = 3;
+    let shownCount = dayProjs.length > 0 ? 1 : 0; // projは1件分すでに表示済み
+    dayScheds.forEach((sc, idx) => {
+      if(shownCount >= maxVisible) return;
       const ev = document.createElement('div');
-      const scColor = dayScheds[0].color || 'var(--teal)';
+      const scColor = sc.color || 'var(--teal)';
       ev.style.cssText = 'font-size:7px;font-weight:700;color:#fff;background:'+scColor+';border-radius:3px;padding:1px 3px;margin:1px 1px 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:center;';
-      ev.textContent = dayScheds[0].title.slice(0,4);
+      ev.textContent = sc.title.slice(0,4);
       cell.appendChild(ev);
-    }
-    if(dayScheds.length + dayProjs.length > 1){
+      shownCount++;
+    });
+    if(totalExtra > maxVisible){
       const extra = document.createElement('div');
       extra.style.cssText = 'font-size:7px;color:var(--t3);text-align:center;font-weight:700;';
-      extra.textContent = '+'+(dayScheds.length + dayProjs.length - 1);
+      extra.textContent = '+'+(totalExtra - maxVisible);
       cell.appendChild(extra);
     }
 
@@ -4938,7 +4941,7 @@ async function openDateTaskOverlay(date, tasks, holidayName) {
 // 予定追加モーダル
 function openAddScheduleModal(date, parentOv) {
   const ex = document.getElementById('add-sched-modal'); if(ex) ex.remove();
-  const dateStr = date.toISOString().split('T')[0];
+  const dateStr = date.getFullYear()+'-'+String(date.getMonth()+1).padStart(2,'0')+'-'+String(date.getDate()).padStart(2,'0');
   const COLORS = ['#3EC9C0','#E8694A','#1D3D5C','#22C55E','#F97316','#7C3AED','#E91E63'];
 
   const bg = document.createElement('div'); bg.id='add-sched-modal';
@@ -5021,14 +5024,16 @@ async function renderProjScreen(){
   el.innerHTML = '';
 
   const allProjs = ProjectRepository.getAll(s);
-  if(!allProjs.length){
+  const activeProjs = allProjs.filter(p => p.status !== 'done');
+  const doneProjs   = allProjs.filter(p => p.status === 'done');
+
+  if(!activeProjs.length && !doneProjs.length){
     el.innerHTML = '<div style="text-align:center;padding:40px 20px;color:var(--t2)"><div style="margin-bottom:8px;"><i class="ph ph-clipboard-text" style="font-size:28px;display:inline-flex;align-items:center;justify-content:center;line-height:1;color:var(--t3)"></i></div><div style="font-weight:700">プロジェクトがありません</div><div style="font-size:12px;color:var(--t3);margin-top:4px;">テンプレートから簡単に始められます</div></div>';
-    
     return;
   }
 
   // 日付が近い順→日付なしは後ろ
-  const projs = [...allProjs].sort((a, b) => {
+  const projs = [...activeProjs].sort((a, b) => {
     const da = a.goalDate ? new Date(a.goalDate) : null;
     const db = b.goalDate ? new Date(b.goalDate) : null;
     if(da && db) return da - db;
@@ -5342,6 +5347,80 @@ async function renderProjScreen(){
     el.appendChild(card);
   });
 
+  // ── 完了済みプロジェクト（折りたたみ表示）──
+  if(doneProjs.length > 0){
+    let doneOpen = false;
+    const doneToggle = document.createElement('div');
+    doneToggle.style.cssText = 'display:flex;align-items:center;gap:8px;padding:12px 14px;cursor:pointer;border-radius:14px;background:var(--sur);margin-top:6px;box-shadow:var(--sh);';
+    const doneLst = document.createElement('div');
+
+    function refreshDoneSection(){
+      doneToggle.innerHTML = '<i class="ph ph-check-circle" style="font-size:18px;color:var(--teal);display:inline-flex;align-items:center;line-height:1;flex-shrink:0;"></i>'
+        +'<span style="flex:1;font-size:13px;font-weight:700;color:var(--t2);">完了済み '+doneProjs.length+'件</span>'
+        +'<span style="font-size:13px;color:var(--t3);">'+(doneOpen?'▾':'▸')+'</span>';
+
+      if(doneOpen){
+        // 一括削除ボタン
+        const delAllBtn = document.createElement('button');
+        delAllBtn.innerHTML = '<i class="ph ph-trash" style="font-size:13px;display:inline-flex;align-items:center;line-height:1;margin-right:4px;"></i>すべて削除';
+        delAllBtn.style.cssText = 'padding:6px 12px;border:none;background:var(--salmon-l);color:var(--salmon-d);border-radius:10px;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer;margin:8px 0 4px;';
+        delAllBtn.addEventListener('click', async e=>{
+          e.stopPropagation();
+          if(!confirm('完了済み '+doneProjs.length+'件をすべて削除しますか？')) return;
+          const st = await loadST();
+          const doneIds = new Set(doneProjs.map(p=>p.id));
+          st.projects = (st.projects||[]).filter(p=>!doneIds.has(p.id));
+          await saveST(st);
+          toast('完了済みを削除しました');
+          renderProjScreen();
+        });
+        doneLst.innerHTML = '';
+        doneLst.appendChild(delAllBtn);
+        doneProjs.forEach(proj=>{
+          const row = document.createElement('div');
+          row.style.cssText = 'display:flex;align-items:center;gap:10px;padding:10px 12px;background:#fff;border-radius:12px;margin-bottom:6px;box-shadow:0 1px 4px rgba(0,0,0,.06);opacity:.7;';
+          const total = proj.tasks?.length||0;
+          const done  = proj.tasks?.filter(t=>t.isCompleted||t.done).length||0;
+          row.innerHTML = '<div style="width:32px;height:32px;border-radius:10px;background:var(--bg);display:flex;align-items:center;justify-content:center;flex-shrink:0;">'+projIcon(proj.icon||'folder',18)+'</div>'
+            +'<div style="flex:1;min-width:0;">'
+            +'<div style="font-size:13px;font-weight:700;color:var(--t2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+proj.name+'</div>'
+            +'<div style="font-size:10px;color:var(--t3);margin-top:1px;">'+done+'/'+total+' 完了</div>'
+            +'</div>';
+          // 再開ボタン
+          const reopen = document.createElement('button');
+          reopen.textContent = '再開';
+          reopen.style.cssText = 'padding:4px 10px;border:1px solid var(--bdr);background:#fff;color:var(--t2);border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;flex-shrink:0;';
+          reopen.addEventListener('click', async e=>{
+            e.stopPropagation();
+            const st = await loadST();
+            const p = st.projects.find(p=>p.id===proj.id);
+            if(p){ p.status='active'; delete p.completedAt; await saveST(st); toast('再開しました'); renderProjScreen(); }
+          });
+          // 個別削除
+          const del = document.createElement('button');
+          del.innerHTML = '<i class="ph ph-x" style="font-size:12px;display:inline-flex;align-items:center;line-height:1;"></i>';
+          del.style.cssText = 'width:26px;height:26px;border:none;background:none;color:var(--t3);cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;border-radius:6px;';
+          del.addEventListener('click', async e=>{
+            e.stopPropagation();
+            if(!confirm('「'+proj.name+'」を削除しますか？')) return;
+            const st = await loadST();
+            st.projects = (st.projects||[]).filter(p=>p.id!==proj.id);
+            await saveST(st); toast('削除しました'); renderProjScreen();
+          });
+          row.append(reopen, del);
+          doneLst.appendChild(row);
+        });
+        doneLst.style.display = 'block';
+      } else {
+        doneLst.style.display = 'none';
+      }
+    }
+
+    doneToggle.addEventListener('click', ()=>{ doneOpen=!doneOpen; refreshDoneSection(); });
+    refreshDoneSection();
+    el.append(doneToggle, doneLst);
+  }
+
   // 展開対象にスクロール
   if(window._expandProjId){
     setTimeout(()=>{
@@ -5458,7 +5537,7 @@ async function renderPrivateTasks(s, el, timeFilter){
 async function makePrivateTaskItem(t, s){
   const item=document.createElement('div');
   item.className='task-cal-item'+(t.isCompleted?' done-item':'');
-  item.style.cssText=(item.className.includes('done-item')?'opacity:.55;':'')+'position:relative';
+  item.style.cssText=(t.isCompleted?'opacity:.55;':'')+'position:relative';
 
   const chk=document.createElement('div');
   chk.className='tchk'+(t.isCompleted?' done':'');
@@ -5785,7 +5864,9 @@ function makeCalItem(t,s){
   const mt=document.createElement('div'); mt.style.cssText='font-size:11px;color:var(--t2);margin-top:2px;display:flex;gap:6px;align-items:center;flex-wrap:wrap';
   const who=t.who||t.assignee;
   const _pl=(t.projId&&t.projId!=='__single__'&&t.projName)?'<span style="background:var(--bg);border-radius:4px;padding:1px 5px;font-weight:600;color:var(--t2)">'+projIcon(t.projIcon||'📌',10)+' '+t.projName+'</span> · ':'';
-  mt.innerHTML=_pl+whoLbl(who);
+  const due=t.dueDate||t.due;
+  const dueStr=due?'<span style="background:var(--bg);border-radius:4px;padding:1px 5px;font-weight:600;">'+due+'</span>':'';
+  mt.innerHTML=_pl+whoLbl(who)+(dueStr?' · '+dueStr:'');
   
   body.append(nm,mt);
   item.append(chk,body);
@@ -7923,22 +8004,16 @@ function renderPcmEventList() {
       + '</div>'
       + '<button style="padding:7px 14px;background:rgba(255,255,255,.25);color:#fff;border:none;border-radius:20px;font-family:inherit;font-size:12px;font-weight:800;cursor:pointer;white-space:nowrap;-webkit-backdrop-filter:blur(4px); backdrop-filter:blur(4px);">追加する</button>';
 
-    // タスクプレビュー
+    // タスクプレビュー（全件表示、折りたたみなし）
     const body = document.createElement('div');
     body.style.cssText = 'background:#fff;padding:10px 14px;';
-    const tasks = (ev.tasks||[]).slice(0,3);
+    const tasks = ev.tasks||[];
     tasks.forEach(t => {
       const row = document.createElement('div');
       row.style.cssText = 'font-size:12px;color:var(--t1);padding:3px 0;display:flex;align-items:center;gap:6px;';
       row.innerHTML = '<i class="ph ph-dot-outline" style="font-size:14px;color:var(--teal);display:inline-flex;align-items:center;justify-content:center;line-height:1;flex-shrink:0;"></i>'+(typeof t==='string'?t:t.name||t);
       body.appendChild(row);
     });
-    if((ev.tasks||[]).length > 3) {
-      const more = document.createElement('div');
-      more.style.cssText = 'font-size:11px;color:var(--t3);padding:2px 0 2px 20px;';
-      more.textContent = '他'+((ev.tasks||[]).length-3)+'件のタスク';
-      body.appendChild(more);
-    }
 
     card.append(hdr, body);
 
@@ -8055,6 +8130,11 @@ function pcmShowStep(step){
     if(!el) return;
     el.style.display = s===step ? 'block' : 'none';
   });
+  // 入力欄の文字残りをリセット
+  const inp = document.getElementById('pcm-new-task');
+  if(inp) inp.value = '';
+  const dueinp = document.getElementById('pcm-new-due');
+  if(dueinp) dueinp.value = '';
 }
 // テンプレ選択後の目標日ピッカー（開始日〜目標日）
 function openTemplateDatePicker(tpl, onConfirm) {
@@ -8112,7 +8192,7 @@ function openTplPreviewModal(tpl) {
   const hdr = document.createElement('div');
   hdr.style.cssText='padding:16px 18px 12px;border-bottom:1px solid var(--bdr);flex-shrink:0;';
   hdr.innerHTML='<div style="display:flex;align-items:center;gap:10px;">'
-    +'<div style="width:40px;height:40px;border-radius:12px;background:'+tpl.color+';display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">'+tpl.icon+'</div>'
+    +'<div style="width:40px;height:40px;border-radius:12px;background:'+tpl.color+';display:flex;align-items:center;justify-content:center;flex-shrink:0;">'+projIcon(tpl.icon,24)+'</div>'
     +'<div style="flex:1;min-width:0;">'
     +'<div style="font-size:16px;font-weight:900;color:var(--t1);">'+tpl.title+'</div>'
     +'<div style="font-size:12px;color:var(--t2);margin-top:2px;">'+tpl.overview+'</div>'
@@ -8178,7 +8258,7 @@ function renderPcmTemplateList(){
     catHdr.innerHTML=catIcon(cat)+cat; el.appendChild(catHdr);
     PROJECT_TEMPLATES.filter(t=>t.category===cat).forEach(tpl=>{
       const row=document.createElement('div');
-      row.style.cssText='display:flex;align-items:center;gap:12px;padding:12px;background:#fff;border-radius:14px;margin-bottom:8px;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.07)';
+      row.style.cssText='display:flex;align-items:center;gap:12px;padding:12px;background:#fff;border-radius:14px;margin-bottom:10px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.07);';
       row.innerHTML='<div style="width:40px;height:40px;display:flex;align-items:center;justify-content:center;flex-shrink:0">'+projIcon(tpl.icon,28)+'</div>'
         +'<div style="flex:1;min-width:0"><div style="font-size:14px;font-weight:700;color:var(--t1)">'+tpl.title+'</div>'
         +'<div style="font-size:11px;color:var(--t2);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+tpl.overview.slice(0,28)+'</div></div>'
@@ -8204,7 +8284,7 @@ function renderPcmTemplateList(){
 }
 function renderPcmStep3(){
   const titleEl=document.getElementById('pcm-step3-title');
-  if(titleEl) titleEl.textContent=(_pcmData.icon||'')+' '+(_pcmData.name||'プロジェクト');
+  if(titleEl) titleEl.textContent=(_pcmData.name||'プロジェクト');
   const listEl=document.getElementById('pcm-task-list');
   if(!listEl) return; listEl.innerHTML='';
   if(!_pcmData.tasks.length){
@@ -8465,7 +8545,7 @@ async function renderKajiScreen() {
 
   // A. AIボタン（shop・chore共通）
   const aiArea = document.createElement('div');
-  aiArea.style.cssText = 'padding:12px 16px 0;';
+  aiArea.style.cssText = 'padding:12px 16px 16px;';
   const aiBtn = document.createElement('button');
   const aiLabel = tab==='shop' ? 'AIに追加アイテムを提案してもらう' : '今月やる家事をAIに提案してもらう';
   aiBtn.style.cssText = 'width:100%;padding:11px;border:2px dashed var(--teal);background:var(--teal-l);color:var(--teal-d);border-radius:12px;font-family:inherit;font-size:13px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;';
