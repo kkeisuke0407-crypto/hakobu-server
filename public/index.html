@@ -1260,24 +1260,40 @@ function allTasks(s){
   const projTasks = (s.projects||[]).filter(p=>p.status!=='done').flatMap(p=>(p.tasks||[]).map(t=>({
     ...t,
     projName:p.name, projIcon:p.icon, projId:p.id, projColor:p.color,
-    title: t.title||t.name, assignee:t.assignee||t.who,
-    isCompleted:t.isCompleted??t.done,
-    dueDate:t.dueDate||t.due||null, createdAt:t.createdAt||null,
+    name: t.name||t.title,
+    title: t.title||t.name,
+    who: t.who||t.assignee||'both',
+    assignee: t.assignee||t.who||'both',
+    isCompleted: t.isCompleted??t.done??false,
+    done: t.done||t.isCompleted||false,
+    dueDate:t.dueDate||t.due||null,
+    due: t.due||t.dueDate||'',
+    createdAt:t.createdAt||null,
   })));
   // 単発タスク（projName/projIconはダミー）
   const singles = (s.singleTasks||[]).map(t=>({
     ...t,
-    name:t.title, who:t.assignee,
-    done:t.isCompleted,
-    due:t.dueDate||'',
+    name: t.name||t.title,
+    title: t.title||t.name,
+    who: t.who||t.assignee||'both',
+    assignee: t.assignee||t.who||'both',
+    isCompleted: t.isCompleted||t.done||false,
+    done: t.done||t.isCompleted||false,
+    due: t.due||t.dueDate||'',
+    dueDate: t.dueDate||t.due||null,
     projName:'共有', projIcon:'map-pin', projId:'__single__', projColor:'#9FAE9F',
   }));
   // 自分専用タスク（localStorage のみ・カレンダー表示用）
   const privates = (s.privateTasks||[]).map(t=>({
     ...t,
-    name:t.title, who:t.assignee,
-    done:t.isCompleted,
-    due:t.dueDate||'',
+    name: t.name||t.title,
+    title: t.title||t.name,
+    who: t.who||t.assignee||'both',
+    assignee: t.assignee||t.who||'both',
+    isCompleted: t.isCompleted||t.done||false,
+    done: t.done||t.isCompleted||false,
+    due: t.due||t.dueDate||'',
+    dueDate: t.dueDate||t.due||null,
     projName:'自分のみ', projIcon:'lock-simple', projId:'__private__', projColor:'#9FAE9F',
     isPrivate:true,
   }));
@@ -4191,8 +4207,8 @@ async function renderTodayTasks(s){
     const bd=document.createElement('div'); bd.className='tbody';
     const nm=document.createElement('div'); nm.className='tname'+(isDone?' done':''); nm.textContent=t.name||t.title;
     const mt=document.createElement('div'); mt.className='tmeta';
-    const wc=t.who==='mama'?'wt-m':t.who==='papa'?'wt-p':'wt-b';
-    const wt=document.createElement('span'); wt.className='wtag '+wc; wt.innerHTML=whoLbl(t.who);
+    const wc=_who==='mama'?'wt-m':_who==='papa'?'wt-p':'wt-b';
+    const wt=document.createElement('span'); wt.className='wtag '+wc; wt.innerHTML=whoLbl(_who);
     mt.appendChild(wt);
     if(t._isRequest) {
       // 依頼バッジ（Phosphorアイコン）
@@ -4276,19 +4292,20 @@ function renderTaskList(s){
   }else{
     sorted.forEach(t=>{
       const row=document.createElement('div'); row.className='trow';
-    const _who=t.who||t.assignee||'both';
-    row.style.borderLeft='3px solid '+(_who==='papa'?'var(--papa)':_who==='mama'?'var(--mama)':'var(--bdr)');
+      const _who=t.who||t.assignee||'both';
+      row.style.borderLeft='3px solid '+(_who==='papa'?'var(--papa)':_who==='mama'?'var(--mama)':'var(--bdr)');
       row.dataset.taskId=t.id; row.dataset.projId=t.projId;
 
-      const chk=document.createElement('div'); chk.className='tchk'+(t.done?' done':'');
-      if(t.done) chk.textContent='✓';
+      const isDone = t.done || t.isCompleted || t.status==='done';
+      const chk=document.createElement('div'); chk.className='tchk'+(isDone?' done':'');
+      if(isDone) chk.textContent='✓';
       chk.addEventListener('click', e=>{e.stopPropagation(); toggleTask(t.id,t.projId,chk);});
 
       const bd=document.createElement('div'); bd.className='tbody';
-      const nm=document.createElement('div'); nm.className='tname'+(t.done?' done':''); nm.textContent=t.name;
+      const nm=document.createElement('div'); nm.className='tname'+(isDone?' done':''); nm.textContent=t.name||t.title;
       const mt=document.createElement('div'); mt.className='tmeta';
-      const wc=t.who==='mama'?'wt-m':t.who==='papa'?'wt-p':'wt-b';
-      const wt=document.createElement('span'); wt.className='wtag '+wc; wt.innerHTML=whoLbl(t.who);
+      const wc=_who==='mama'?'wt-m':_who==='papa'?'wt-p':'wt-b';
+      const wt=document.createElement('span'); wt.className='wtag '+wc; wt.innerHTML=whoLbl(_who);
       mt.appendChild(wt);
       const pt=document.createElement('span'); pt.className='dtag'; pt.innerHTML=projIcon(t.projIcon||'📌',11)+' '+t.projName; 
       mt.appendChild(pt);
