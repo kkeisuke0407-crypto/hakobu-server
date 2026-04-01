@@ -1,7 +1,14 @@
 const express = require('express');
 const path = require('path');
+const cors = require('cors');
 const app = express();
 
+// Capacitor (iOS/Android) からのリクエストを許可
+app.use(cors({
+  origin: ['capacitor://localhost', 'http://localhost', 'http://localhost:3000', 'https://hakobu-family.com'],
+  methods: ['GET', 'POST', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+}));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
