@@ -8011,7 +8011,7 @@ function renderPcmEventList() {
     tasks.forEach(t => {
       const row = document.createElement('div');
       row.style.cssText = 'font-size:12px;color:var(--t1);padding:3px 0;display:flex;align-items:center;gap:6px;';
-      row.innerHTML = '<i class="ph ph-dot-outline" style="font-size:14px;color:var(--teal);display:inline-flex;align-items:center;justify-content:center;line-height:1;flex-shrink:0;"></i>'+(typeof t==='string'?t:t.name||t);
+      row.innerHTML = '<i class="ph ph-circle" style="font-size:10px;color:var(--teal);display:inline-flex;align-items:center;justify-content:center;line-height:1;flex-shrink:0;"></i>'+(typeof t==='string'?t:t.name||t);
       body.appendChild(row);
     });
 
@@ -8966,7 +8966,7 @@ async function renderKajiRoutineTab(s, body) {
     partnerDone.forEach(r => {
       const row = document.createElement('div');
       row.style.cssText = 'display:flex;align-items:center;gap:8px;padding:3px 0;';
-      row.innerHTML = '<span style="font-size:16px;">'+r.icon+'</span>'
+      row.innerHTML = routineIcon(r.icon, 16)
         +'<span style="font-size:13px;font-weight:600;color:var(--t1);flex:1;">'+r.name+'</span>'
         +'<span style="font-size:11px;color:var(--t3);">'+r.doneLog[today].at+'</span>';
       banner.appendChild(row);
@@ -9084,7 +9084,7 @@ function openRoutineEditModal(s) {
     routines.forEach(r => {
       const row = document.createElement('div');
       row.style.cssText = 'display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--bdr);';
-      row.innerHTML = '<span style="font-size:20px;">'+r.icon+'</span>'
+      row.innerHTML = routineIcon(r.icon, 20)
         +'<span style="flex:1;font-size:14px;font-weight:600;color:var(--t1);">'+r.name+'</span>';
       const del = document.createElement('button');
       del.innerHTML = '<i class="ph ph-trash" style="font-size:14px;display:inline-flex;align-items:center;line-height:1;"></i>';
@@ -9166,7 +9166,7 @@ function openRoutineEditModal(s) {
   addBtn3.style.cssText = 'border:none;background:var(--teal);color:#fff;padding:10px 18px;border-radius:12px;font-size:13px;font-weight:800;cursor:pointer;font-family:inherit;white-space:nowrap;';
   addBtn3.addEventListener('click', async () => {
     const name = inp.value.trim(); if(!name) return;
-    await addRoutineItem(name, '✅', 'both');
+    await addRoutineItem(name, 'check-circle', 'both');
     bg.remove();
   });
   inp.addEventListener('keydown', e => { if(e.key==='Enter') addBtn3.click(); });
