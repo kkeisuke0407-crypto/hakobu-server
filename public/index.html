@@ -463,6 +463,7 @@ input,textarea,select{font-size:max(16px,1em)!important;}
 </style>
 <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css" onerror="this.onerror=null;this.href='https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/regular/style.css'">
 <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/bold/style.css" onerror="this.onerror=null;this.href='https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/bold/style.css'">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/fill/style.css" onerror="this.onerror=null;this.href='https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/fill/style.css'">
 
 <!-- Firebase SDK -->
 <script type="module">
@@ -855,7 +856,7 @@ window.fbSignOut = async function() {
           <input type="date" id="td-due" style="width:100%;padding:10px 12px;border:1.5px solid var(--bdr);border-radius:var(--r);font-family:inherit;font-size:14px;color:var(--t1);background:#fff">
         </div>
         <button class="btn btn-g" id="td-save" style="margin-bottom:8px">保存する</button>
-        <button class="btn btn-g" id="td-done" style="margin-bottom:8px;background:var(--gr2)">✓ 完了にする</button>
+        <button class="btn btn-g" id="td-done" style="margin-bottom:8px;background:var(--gr2);display:flex;align-items:center;justify-content:center;gap:6px"><i class="ph ph-check" style="font-size:14px;display:inline-flex;align-items:center;line-height:1;"></i>完了にする</button>
         <button class="btn btn-ghost" id="td-delete" style="margin-bottom:8px;color:var(--re)">削除する</button>
         <button class="btn btn-ghost" id="td-ai-chat" style="margin-bottom:8px;display:flex;align-items:center;justify-content:center;gap:6px;color:var(--teal);border-color:var(--teal)"><i class="ph ph-magic-wand" style="font-size:14px;display:inline-flex;align-items:center;line-height:1;"></i>このタスクをAIに相談する</button>
         <button class="btn btn-ghost" id="td-close">キャンセル</button>
@@ -1487,10 +1488,10 @@ const taskService = {
 /* ═══════════════════════════════════════════════════════
    NAVIGATION  (onclick属性なし)
 ═══════════════════════════════════════════════════════ */
-const PROJ_LUCIDE_MAP={"house":"house","warning":"warning","calendar":"calendar","target":"check-circle","chart-bar":"chart-bar","backpack":"backpack","map-pin":"map-pin","lock-simple":"lock-simple","calendar":"calendar","broom":"broom","leaf":"leaf","cloud-rain":"cloud-rain","leaf":"leaf","🌸":"leaf","✈️":"airplane","🎄":"tree-evergreen","🎂":"cake","📋":"clipboard-text","🧹":"paint-brush","🏠":"house","💰":"wallet","🎒":"backpack","🏖️":"umbrella","🎎":"users","🛡️":"shield","🚗":"car","📱":"device-mobile","🔨":"hammer","🐾":"paw-print","🥂":"wine","⛩️":"building","🍚":"list-checks","👘":"scissors","🎭":"masks-theater","🎋":"tree","👹":"smiley-angry","🤒":"thermometer","🌀":"wind","🎃":"ghost","🍫":"candy","👨‍👩‍👧":"heart","🎠":"circles-three","📦":"package","🏃":"person-simple-run","🎤":"microphone",
-  "🎍":"tree-pine","🎌":"flag","🗾":"map","🌿":"leaf","📜":"scroll-text","🌱":"sprout","🎏":"flag","🌊":"waves","⛰️":"mountain","🏮":"lamp-desk","👴":"user","🍁":"leaf","🎨":"palette","":"heart-handshake","🎆":"sparkles","💴":"banknote","🏫":"school","💉":"syringe","🌹":"flower-2","👔":"shirt","☔":"cloud-rain","⭐":"star","🌙":"moon","👶":"baby","📅":"calendar","🌻":"sun","🍱":"box","📌":"map-pin","🛒":"shopping-cart","✏️":"pencil","⚡":"zap",
-  "default":"clipboard-list"};
-function projIcon(em,size){const name=PROJ_LUCIDE_MAP[em]||"clipboard-list";const s=size||22;return `<i class="ph ph-${name}" style="font-size:20px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i>`;}
+const PROJ_LUCIDE_MAP={"house":"house","warning":"warning","calendar":"calendar","target":"check-circle","chart-bar":"chart-bar","backpack":"backpack","map-pin":"map-pin","lock-simple":"lock-simple","broom":"broom","leaf":"leaf","cloud-rain":"cloud-rain","🌸":"leaf","✈️":"airplane","🎄":"tree-evergreen","🎂":"cake","📋":"clipboard-text","🧹":"paint-brush","🏠":"house","💰":"wallet","🎒":"backpack","🏖️":"umbrella","🎎":"users","🛡️":"shield","🚗":"car","📱":"device-mobile","🔨":"hammer","🐾":"paw-print","🥂":"wine","⛩️":"building","🍚":"list-checks","👘":"scissors","🎭":"mask-happy","🎋":"tree","👹":"smiley-angry","🤒":"thermometer","🌀":"wind","🎃":"ghost","🍫":"cookie","👨‍👩‍👧":"heart","🎠":"circles-three","📦":"package","🏃":"person-simple-run","🎤":"microphone",
+  "🎍":"tree-pine","🎌":"flag","🗾":"map","🌿":"leaf","📜":"scroll","🌱":"leaf","🎏":"flag","🌊":"waves","⛰️":"mountains","🏮":"lamp","👴":"user","🍁":"leaf","🎨":"palette","":"handshake","🎆":"sparkle","💴":"currency-yen","🏫":"buildings","💉":"syringe","🌹":"flower-tulip","👔":"shirt","☔":"cloud-rain","⭐":"star","🌙":"moon","👶":"baby","📅":"calendar","🌻":"sun","🍱":"package","📌":"map-pin","🛒":"shopping-cart","✏️":"pencil","⚡":"lightning",
+  "default":"clipboard-text"};
+function projIcon(em,size){const name=PROJ_LUCIDE_MAP[em]||"clipboard-text";const s=size||22;return `<i class="ph ph-${name}" style="font-size:20px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle"></i>`;}
 
 /* ── 担当者ラベル用インラインSVG（data-lucide不要、innerHTML直書き用） ── */
 const _SVG_USER=`<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline-flex;vertical-align:middle;margin-right:2px;flex-shrink:0"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`;
@@ -2127,7 +2128,7 @@ function getFamilyScoreCard(s) {
   const grade = totalScore >= 80 ? 'AAA 最高！' : totalScore >= 60 ? 'AA 良好' : totalScore >= 40 ? '★ まあまあ' : '要改善';
 
   return {
-    id:'family_score', name:'今週のファミリースコア', icon:'bar-chart-2', type:'score',
+    id:'family_score', name:'今週のファミリースコア', icon:'chart-bar', type:'score',
     color:'#7B1FA2', bg:'linear-gradient(135deg,#6A1B9A,#9C27B0)',
     hint: totalScore+'点 / 100点 — '+grade,
     tasks:[
@@ -4151,13 +4152,13 @@ async function renderTodayTasks(s){
     heartBtn.title = 'ありがとうを送る';
     heartBtn.addEventListener('click', async(e) => {
       e.stopPropagation();
-      heartBtn.innerHTML = '<i class="ph ph-heart-fill" style="font-size:18px;color:var(--re)"></i>';
+      heartBtn.innerHTML = '<i class="ph-fill ph-heart" style="font-size:18px;color:var(--re)"></i>';
       heartBtn.style.transform = 'scale(1.4)';
       setTimeout(() => { heartBtn.style.transform = 'scale(1)'; }, 200);
       // burstエフェクト
       for(let i=0; i<5; i++) {
         setTimeout(() => {
-          const b = document.createElement('div'); b.className='burst'; b.innerHTML='<i class="ph ph-heart-fill" style="font-size:16px;color:var(--re)"></i>';
+          const b = document.createElement('div'); b.className='burst'; b.innerHTML='<i class="ph-fill ph-heart" style="font-size:16px;color:var(--re)"></i>';
           const r = heartBtn.getBoundingClientRect();
           b.style.left=(r.left+Math.random()*30-15)+'px';
           b.style.top=(r.top-10)+'px';
@@ -5973,7 +5974,7 @@ async function renderMem(){
       ? `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12h.01"/><path d="M15 12h.01"/><path d="M10 16c.5.3 1.2.5 2 .5s1.5-.2 2-.5"/><path d="M19 6.3a9 9 0 0 1 1.8 3.9 2 2 0 0 1 0 3.6 9 9 0 0 1-17.6 0 2 2 0 0 1 0-3.6A9 9 0 0 1 12 3c2 0 3.5 1.1 3.5 2.5s-.9 2.5-2 2.5c-.8 0-1.5-.4-1.5-1"/></svg>`
       : `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`;
     const heartBadgeHtml = m.hearts > 0
-      ? `<div style="display:flex;align-items:center;gap:3px;margin-left:auto"><i class="ph ph-heart-fill" style="font-size:13px;color:var(--re);display:inline-flex;align-items:center;justify-content:center;line-height:1"></i><span style="font-size:12px;font-weight:700;color:var(--re)">${m.hearts}</span></div>`
+      ? `<div style="display:flex;align-items:center;gap:3px;margin-left:auto"><i class="ph-fill ph-heart" style="font-size:13px;color:var(--re);display:inline-flex;align-items:center;justify-content:center;line-height:1"></i><span style="font-size:12px;font-weight:700;color:var(--re)">${m.hearts}</span></div>`
       : '';
     card.innerHTML = `<div class="mem-top">`
       + `<div class="mem-av" style="background:${m.avBg}">${_avSvg}</div>`
@@ -6325,7 +6326,7 @@ function renderSettingsMem(s, ss) {
         {name:childName+'（'+childAge+'歳）', color:'var(--yel)', bg:'var(--yel3)', load:0, role:'子ども',             hearts:0,     action:null, memberRole:null},
       ].map(m=>{
         const heartHtml = m.hearts > 0
-          ? '<div style="display:flex;align-items:center;gap:3px;margin-left:auto"><i class="ph ph-heart-fill" style="font-size:13px;color:var(--re);display:inline-flex;align-items:center;justify-content:center;line-height:1"></i><span style="font-size:12px;font-weight:700;color:var(--re)">'+m.hearts+'</span></div>'
+          ? '<div style="display:flex;align-items:center;gap:3px;margin-left:auto"><i class="ph-fill ph-heart" style="font-size:13px;color:var(--re);display:inline-flex;align-items:center;justify-content:center;line-height:1"></i><span style="font-size:12px;font-weight:700;color:var(--re)">'+m.hearts+'</span></div>'
           : '';
         const isMe = m.memberRole === myRole;
         return '<div class="card" style="margin-bottom:10px;padding:14px">'
@@ -9166,7 +9167,7 @@ function openRoutineEditModal(s) {
   chips.style.cssText = 'display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;';
   ROUTINE_PRESETS.filter(p => !existing.has(p.name)).forEach(p => {
     const chip = document.createElement('button');
-    chip.innerHTML = p.icon + ' ' + p.name;
+    chip.innerHTML = routineIcon(p.icon, 14) + ' ' + p.name;
     chip.style.cssText = 'border:1.5px dashed var(--bdr);background:#fff;border-radius:20px;padding:7px 13px;font-size:12px;font-weight:600;cursor:pointer;color:var(--t2);font-family:inherit;';
     chip.addEventListener('click', async () => {
       await addRoutineItem(p.name, p.icon, p.who);
