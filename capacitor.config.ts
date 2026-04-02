@@ -5,27 +5,39 @@ const config: CapacitorConfig = {
   appName: 'ハコぶ',
   webDir: 'public',
   server: {
-    // 開発時はローカルサーバーを使う場合はここにURLを設定
-    // androidScheme: 'https',
+    // FirebaseのsignInWithRedirectがcapacitor://localhostに戻ってこれるよう
+    // hostname を設定する（Firebase Console の承認済みドメインに追加要）
+    hostname: 'hakobu-app',
+    androidScheme: 'https',
+    // iosScheme はデフォルト 'ionic' → 'capacitor' に変更不要
+    // Firebase Console → Authentication → 承認済みドメインに
+    //   hakobu-app  を追加すること（セットアップガイド参照）
   },
   plugins: {
     StatusBar: {
-      style: 'dark',           // ステータスバー文字色を白に
+      style: 'dark',
       backgroundColor: '#1D3D5C',
     },
     Keyboard: {
-      resize: 'body',          // キーボード表示時にbodyをリサイズ
+      resize: 'body',
       resizeOnFullScreen: true,
     },
     SplashScreen: {
-      launchShowDuration: 0,   // スプラッシュはアプリ内で独自表示
+      launchShowDuration: 0,
+    },
+    // @capacitor/app: URLスキームによるディープリンク処理
+    App: {
+      // Firebase Auth のリダイレクト後に appUrlOpen イベントが発火する
     },
   },
   ios: {
-    contentInset: 'always',    // safe-area-insetを常に適用
+    contentInset: 'always',
     allowsLinkPreview: false,
-    scrollEnabled: false,      // ネイティブスクロールを無効（アプリ内スクロールを使用）
+    scrollEnabled: false,
     backgroundColor: '#F5F0EB',
+    // カスタムURLスキーム（Xcode で Info.plist に追加が必要）
+    // Firebase Console から GoogleService-Info.plist をダウンロードし
+    // REVERSED_CLIENT_ID の値を URLスキームとして Info.plist に登録する
   },
 };
 
