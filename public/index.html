@@ -1168,6 +1168,7 @@ function mergeState(saved) {
     privateTasks:  Array.isArray(saved.privateTasks)  ? saved.privateTasks  : def.privateTasks,
     requestTasks:  Array.isArray(saved.requestTasks)  ? saved.requestTasks  : def.requestTasks,
     dismissedEventIds: Array.isArray(saved.dismissedEventIds) ? saved.dismissedEventIds : [],
+    dismissedProjTasks: Array.isArray(saved.dismissedProjTasks) ? saved.dismissedProjTasks : [],
     thanks:       Array.isArray(saved.thanks) ? saved.thanks : [],
     schedules:    Array.isArray(saved.schedules) ? saved.schedules : [],
     sync:         Object.assign({ familyId:null, role:'mama', fbConfigured:false }, saved.sync||{}),
@@ -3576,19 +3577,20 @@ function renderEventProposals(s, extraCard) {
   const weeklyCards  = getRotatingWeeklyCards(s);
   const monthlyCard  = getMonthlyCard();
 
-  // 実データ連動カード
-  const empathyCard          = isPapa ? getPapaEmpathyCard(s) : null;
-  const stagnantCard         = getStagnantProjectCard(s);
-  const celebrationCard      = getCelebrationCard(s);
-  const mondayCard           = getMondayCard(s);
-  const fridayCard           = getFridayCard(s);
-  const childAgeCard         = getChildAgeCard(s);
-  const papaReturnCard       = !isPapa ? getPapaReturnCard(s) : null;
-  const gomiCard             = getGomiReminderCard(s);
-  const shoppingCard         = getShoppingDayCard(s);
-  const lightChoreCard       = getLightChoreCard(s);
-  const unresolvedReqCard    = getUnresolvedRequestCard(s); // 案3
-  const undecidedTaskCard    = getUndecidedTaskCard(s);     // 案5
+  // 実データ連動カード（try-catchでホーム画面クラッシュを防止）
+  const _safeCard = (fn) => { try { return fn(); } catch(e) { console.error('[card]', e); return null; } };
+  const empathyCard          = isPapa ? _safeCard(()=>getPapaEmpathyCard(s)) : null;
+  const stagnantCard         = _safeCard(()=>getStagnantProjectCard(s));
+  const celebrationCard      = _safeCard(()=>getCelebrationCard(s));
+  const mondayCard           = _safeCard(()=>getMondayCard(s));
+  const fridayCard           = _safeCard(()=>getFridayCard(s));
+  const childAgeCard         = _safeCard(()=>getChildAgeCard(s));
+  const papaReturnCard       = !isPapa ? _safeCard(()=>getPapaReturnCard(s)) : null;
+  const gomiCard             = _safeCard(()=>getGomiReminderCard(s));
+  const shoppingCard         = _safeCard(()=>getShoppingDayCard(s));
+  const lightChoreCard       = _safeCard(()=>getLightChoreCard(s));
+  const unresolvedReqCard    = _safeCard(()=>getUnresolvedRequestCard(s)); // 案3
+  const undecidedTaskCard    = _safeCard(()=>getUndecidedTaskCard(s));     // 案5
 
   // 優先順: 完了祝い → 停滞 → パパ共感 → 軽量家事 → 祝日 → 週次 → 月初 → 月次 → 季節メンテ → 子ども年齢 → パパ帰宅 → ゴミ → 買い物 → パパ振り分け
   const dismissed = new Set(s.dismissedEventIds||[]);
@@ -5191,7 +5193,7 @@ document.getElementById('td-delete').addEventListener('click', async()=>{
   else renderHome();
 });
 // td-close
-document.getElementById('td-close').addEventListener('click',()=>{ document.getElementById('task-modal').classList.remove('on'); _reopenDayOverlay(); });
+document.getElementById('td-close').addEventListener('click',()=>{ _mTask=null; document.getElementById('task-modal').classList.remove('on'); _reopenDayOverlay(); });
 
 /* ── Add task modal ── */
 let _addModalIsPrivate = false;
@@ -6010,6 +6012,7 @@ async function renderProjScreen(){
       // 配下タスクIDを収集して紐付きrequestTasksも削除
       const taskIds = new Set((proj.tasks||[]).map(t=>t.id));
       if(st.requestTasks) st.requestTasks = st.requestTasks.filter(r=>!taskIds.has(r.taskId) && !taskIds.has(r.kajiId));
+      if(st.dismissedProjTasks) st.dismissedProjTasks = st.dismissedProjTasks.filter(d=>d.projId!==proj.id);
       st.projects = st.projects.filter(p=>p.id!==proj.id);
       await saveST(st);
       toast('削除しました');
