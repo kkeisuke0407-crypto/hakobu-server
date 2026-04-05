@@ -1125,7 +1125,7 @@ function mkState(){
     singleTasks: [],
     projects: [],
     stats: { sessions:0 },
-    kaji: { shop: [], chore: [], shopHistory: [], choreHistory: [] },
+    kaji: { shop: [], chore: [], shopHistory: [], choreHistory: [], routines: [] },
     privateTasks: [],  // 自分専用（Firebase非同期）
     requestTasks:  [],  // お願いタスク（LINEで依頼→送った記録）
     schedules:     [],  // カレンダー予定 [{id, title, date, color, allDay}]
@@ -9505,7 +9505,9 @@ async function renderKajiScreen() {
     const st = await loadST();
     if (!st.kaji) st.kaji = { shop: [], chore: [], shopHistory: [], choreHistory: [] };
     if(!st.kaji[histKey]) st.kaji[histKey] = [];
-    if(!st.kaji[tab]) st.kaji[tab] = []; st.kaji[tab].unshift({ id: 'k'+Date.now()+'_'+Math.random().toString(36).slice(2,5), name, done: false, selected: false, createdAt: new Date().toISOString() });
+    if(!st.kaji[tab]) st.kaji[tab] = [];
+    if(st.kaji[tab].some(x=>(x.name||x)===name)){ toast('既にリストにあります'); return; }
+    st.kaji[tab].unshift({ id: 'k'+Date.now()+'_'+Math.random().toString(36).slice(2,5), name, done: false, selected: false, createdAt: new Date().toISOString() });
     await _recordHistory(st, name);
     await saveST(st); inp.value = ''; dd.style.display = 'none'; renderKajiScreen();
   };
