@@ -1083,7 +1083,7 @@ function toast(msg){
   const el = document.getElementById('toast');
   if(!el) return;
   clearTimeout(_tt);
-  el.textContent = msg;
+  el.textContent = msg || '';
   el.classList.add('show');
   _tt = setTimeout(()=>el.classList.remove('show'), 2800);
 }
@@ -1103,6 +1103,13 @@ function localDateStr(date) {
   const d = date || new Date();
   const jst = new Date(d.getTime() + 9 * 60 * 60 * 1000);
   return jst.toISOString().split('T')[0];
+}
+// YYYY-MM-DD文字列をローカル時刻としてパース（UTC解釈によるJST日付ズレ防止）
+function parseLocalDate(str) {
+  if(!str) return new Date(NaN);
+  const s = String(str);
+  if(/^\d{4}-\d{2}-\d{2}$/.test(s)) return new Date(s + 'T00:00:00');
+  return new Date(s);
 }
 
 function mkState(){
@@ -5515,7 +5522,7 @@ async function renderCal(){
     // 予定（3件まで表示）
     const projNames = new Set(dayProjs.map(p => p.name));
     const dayScheds = (s.schedules||[]).filter(sc => {
-      const d = new Date(sc.date); d.setHours(0,0,0,0);
+      const d = parseLocalDate(sc.date);
       return d.toDateString() === key && !projNames.has(sc.title);
     });
     const totalExtra = dayScheds.length + dayProjs.length;
@@ -5607,13 +5614,13 @@ async function openDateTaskOverlay(date, tasks, holidayName) {
   // その日のタスク（期日）
   const dateTasks = tasks.filter(t=>{
     if(!t.dueDate && !t.due) return false;
-    const d = new Date(t.dueDate||t.due); d.setHours(0,0,0,0);
+    const d = parseLocalDate(t.dueDate||t.due);
     return !isNaN(d.getTime()) && d.toDateString()===dStr;
   });
 
   // その日の予定
   const dateScheds = (s.schedules||[]).filter(sc=>{
-    const d = new Date(sc.date); d.setHours(0,0,0,0);
+    const d = parseLocalDate(sc.date);
     return d.toDateString()===dStr;
   });
 
@@ -5676,7 +5683,7 @@ async function openDateTaskOverlay(date, tasks, holidayName) {
   // プロジェクト目標日セクション
   const dateProjs = (s.projects||[]).filter(p=>{
     if(!p.goalDate && !p.deadline) return false;
-    const gd = new Date(p.goalDate||p.deadline); gd.setHours(0,0,0,0);
+    const gd = parseLocalDate(p.goalDate||p.deadline);
     return gd.toDateString()===dStr;
   });
   if(dateProjs.length > 0){
