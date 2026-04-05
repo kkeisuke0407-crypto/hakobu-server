@@ -5865,6 +5865,9 @@ function openEditScheduleModal(sc, date, parentOv) {
     if(parentOv) parentOv.remove();
     renderCal();
     toast('予定を更新しました');
+    // 日付オーバーレイを再表示
+    window._lastDayOverlay = {date, holidayName: null};
+    _reopenDayOverlay();
   });
   sheet.querySelector('#edit-sched-cancel').addEventListener('click', ()=>bg.remove());
   bg.addEventListener('click', e=>{ if(e.target===bg) bg.remove(); });
@@ -5889,7 +5892,7 @@ async function toggleProjTask(taskId,projId,el){
   if(task.done){ toast('完了！'); burst(); }
   // 進捗表示のみ更新（プロジェクト展開状態はそのまま）
   const card = el.closest('[id]');
-  setTimeout(()=>{ renderProjScreen(); },350);
+  setTimeout(()=>{ if(curScr==='proj') renderProjScreen(); },350);
 }
 
 /* ═══════════════════════════════════════════════════════
@@ -6210,7 +6213,7 @@ async function renderProjScreen(){
               await saveST(st);
               window._expandProjId = proj.id;
               toast(name + 'を追加しました');
-              setTimeout(renderProjScreen, 300);
+              setTimeout(()=>{ if(curScr==='proj') renderProjScreen(); }, 300);
             }
           });
           chipsWrap.appendChild(chip);
