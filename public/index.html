@@ -1139,7 +1139,7 @@ let ST = null;
 const LS_KEY    = 'hakobu_st';
 const LS_FB_KEY = 'hakobu_fb_config'; // Firebaseの設定をlocalStorageに保持
 
-function lsSave(data){ try{ localStorage.setItem(LS_KEY, JSON.stringify(data)); }catch(_){} }
+function lsSave(data){ try{ localStorage.setItem(LS_KEY, JSON.stringify(data)); }catch(e){ if(e && e.name==='QuotaExceededError') console.warn('[hakobu] localStorage quota exceeded'); } }
 function lsLoad(){ try{ const v=localStorage.getItem(LS_KEY); return v?JSON.parse(v):null; }catch(_){ return null; } }
 function fbConfigSave(cfg){ try{ localStorage.setItem(LS_FB_KEY, JSON.stringify(cfg)); }catch(_){} }
 function fbConfigLoad(){ try{ const v=localStorage.getItem(LS_FB_KEY); return v?JSON.parse(v):null; }catch(_){ return null; } }
@@ -1163,7 +1163,8 @@ function mergeState(saved) {
     kaji:         { shop:  Array.isArray(saved.kaji?.shop)  ? saved.kaji.shop  : def.kaji.shop,
                     chore: Array.isArray(saved.kaji?.chore) ? saved.kaji.chore : def.kaji.chore,
                     shopHistory:  Array.isArray(saved.kaji?.shopHistory)  ? saved.kaji.shopHistory  : def.kaji.shopHistory,
-                    choreHistory: Array.isArray(saved.kaji?.choreHistory) ? saved.kaji.choreHistory : def.kaji.choreHistory },
+                    choreHistory: Array.isArray(saved.kaji?.choreHistory) ? saved.kaji.choreHistory : def.kaji.choreHistory,
+                    routines:     Array.isArray(saved.kaji?.routines)     ? saved.kaji.routines     : [] },
     privateTasks:  Array.isArray(saved.privateTasks)  ? saved.privateTasks  : def.privateTasks,
     requestTasks:  Array.isArray(saved.requestTasks)  ? saved.requestTasks  : def.requestTasks,
     dismissedEventIds: Array.isArray(saved.dismissedEventIds) ? saved.dismissedEventIds : [],
@@ -8702,6 +8703,7 @@ async function afterLogin(loginResult) {
   if(!st.sync) st.sync = {};
   st.sync.uid = loginResult.uid;
   st.sync.provider = loginResult.provider;
+  await saveST(st);
   // 既にオンボーディング完了済みなら直接ホーム
   if(st.sync.onboardDone) {
     navTo('home');
