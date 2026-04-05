@@ -5233,7 +5233,7 @@ document.getElementById('add-save').addEventListener('click', async()=>{
   toast(_addModalIsPrivate ? '自分専用タスクを追加しました' : '✓ タスクを追加しました');
 });
 
-function toggleTask(taskId,projId,el){
+async function toggleTask(taskId,projId,el){
   if(!ST) return;
   if(el && el._toggling) return; // 二重タップ防止
   if(el) { el._toggling = true; setTimeout(()=>{ if(el) el._toggling=false; }, 600); }
@@ -5250,12 +5250,12 @@ function toggleTask(taskId,projId,el){
         ST.privateTasks[idx].status='pending';
         ST.privateTasks[idx].completedAt=null;
       }
-      saveST(ST);
+      await saveST(ST);
       const done=ST.privateTasks[idx].isCompleted;
       if(el){el.classList.toggle('done',done);el.textContent=done?'✓':'';}
       el?.closest('.trow')?.querySelector('.tname')?.classList.toggle('done',done);
       if(done){
-        const msgs = ['✓ おつかれさま！','✓ ナイス！','✓ 完了！','✓ えらい！'];
+        const msgs = ['おつかれさま！','ナイス！','完了！','えらい！'];
         toast(msgs[Math.floor(Math.random()*msgs.length)]);
         burst().catch(()=>{});
       }
@@ -5277,12 +5277,12 @@ function toggleTask(taskId,projId,el){
         ST.singleTasks[si].status = 'pending';
         ST.singleTasks[si].completedAt = null;
       }
-      saveST(ST);
+      await saveST(ST);
       const done = ST.singleTasks[si].isCompleted;
       el.classList.toggle('done',done); el.textContent=done?'✓':'';
       el.closest('.trow')?.querySelector('.tname')?.classList.toggle('done',done);
       if(done){
-        const msgs = ['✓ おつかれさま！','✓ ナイス！','✓ 完了！','✓ えらい！'];
+        const msgs = ['おつかれさま！','ナイス！','完了！','えらい！'];
         toast(msgs[Math.floor(Math.random()*msgs.length)]);
         burst().catch(()=>{});
       }
@@ -5312,10 +5312,10 @@ function toggleTask(taskId,projId,el){
       toast(proj.name+' 半分達成！あと少し！');
     } else if(nowPct > 0) {
       const pctNum = Math.round(nowPct*100);
-      toast('✓ 完了！（'+proj.name+' '+pctNum+'%）');
+      toast('完了！（'+proj.name+' '+pctNum+'%）');
     }
   }
-  saveST(ST);
+  await saveST(ST);
   el.classList.toggle('done',task.done); el.textContent=task.done?'✓':'';
   el.closest('.trow')?.querySelector('.tname')?.classList.toggle('done',task.done);
   if(task.done){ burst().catch(()=>{}); }
@@ -5871,7 +5871,7 @@ async function toggleProjTask(taskId,projId,el){
   const task=proj&&proj.tasks.find(t=>t.id===taskId);
   if(!task) return;
   task.done = !task.done; task.isCompleted = task.done;
-  saveST(ST);
+  await saveST(ST);
   // チェックボックスをその場で更新（再描画なし）
   el.style.background = task.done ? 'var(--teal)' : 'transparent';
   el.style.color = task.done ? '#fff' : 'transparent';
@@ -9720,7 +9720,7 @@ const NIGHT_SET   = ROUTINE_PRESETS.filter(p => p.set === 'night');
 function todayKey() { return localDateStr(); }
 
 // ルーティンアイコンをPhosphorで表示
-const CAT_ICONS = {"朝のルーティン": "sun", "夜のルーティン": "moon", "週次の掃除": "calendar-check", "月次・季節": "calendar-dots", "育児": "baby", "名もなき家事": "note", "肉・魚・卵": "check-circle", "野菜・果物": "leaf", "乳製品・豆腐": "drop", "主食・乾物": "shopping-basket", "調味料・飲料": "drop", "日用品": "package", "洗面・衛生": "sparkle", "子ども用品": "baby", "薬・医療": "first-aid"};
+const CAT_ICONS = {"朝のルーティン": "sun", "夜のルーティン": "moon", "週次の掃除": "calendar-check", "月次・季節": "calendar-dots", "育児": "baby", "名もなき家事": "note", "肉・魚・卵": "check-circle", "野菜・果物": "leaf", "乳製品・豆腐": "drop", "主食・乾物": "basket", "調味料・飲料": "drop", "日用品": "package", "洗面・衛生": "sparkle", "子ども用品": "baby", "薬・医療": "first-aid"};
 function catIcon(catName) {
   const ph = CAT_ICONS[catName] || 'list';
   return '<i class="ph ph-'+ph+'" style="font-size:14px;display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle;margin-right:6px;color:var(--teal);"></i>';
