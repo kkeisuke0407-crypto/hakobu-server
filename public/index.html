@@ -5074,10 +5074,10 @@ async function openTaskModal(taskId, projId){
   let task;
   if(projId==='__private__'){
     task = (ST.privateTasks||[]).find(t=>t.id===taskId);
-    if(task) task = {...task, name:task.title||task.name, who:task.assignee||task.who, due:task.dueDate||''};
+    if(task) task = {...task, name:task.title||task.name, who:task.assignee||task.who, due:task.dueDate||task.due||''};
   } else if(projId==='__single__'){
     task = (ST.singleTasks||[]).find(t=>t.id===taskId);
-    if(task) task = {...task, name:task.title||task.name, who:task.assignee||task.who, due:task.dueDate||''};
+    if(task) task = {...task, name:task.title||task.name, who:task.assignee||task.who, due:task.dueDate||task.due||''};
   } else {
     const proj = (ST.projects||[]).find(p=>p.id===projId);
     task = proj && proj.tasks.find(t=>t.id===taskId);
