@@ -5079,7 +5079,7 @@ async function openTaskModal(taskId, projId){
     task = (ST.singleTasks||[]).find(t=>t.id===taskId);
     if(task) task = {...task, name:task.title||task.name, who:task.assignee||task.who, due:task.dueDate||''};
   } else {
-    const proj = ST.projects.find(p=>p.id===projId);
+    const proj = (ST.projects||[]).find(p=>p.id===projId);
     task = proj && proj.tasks.find(t=>t.id===taskId);
   }
   if(!task) return;
@@ -5133,7 +5133,7 @@ document.getElementById('td-save').addEventListener('click', async()=>{
       ST.singleTasks[idx].assignee=newWho; ST.singleTasks[idx].who=newWho;
     }
   } else {
-    const proj=ST.projects.find(p=>p.id===projId);
+    const proj=(ST.projects||[]).find(p=>p.id===projId);
     const task=proj&&proj.tasks.find(t=>t.id===taskId);
     if(task){ task.name=newName; task.title=newName; task.due=newDue; task.dueDate=newDue; task.who=newWho; task.assignee=newWho; }
   }
@@ -5146,18 +5146,19 @@ document.getElementById('td-save').addEventListener('click', async()=>{
   else renderHome();
 });
 // td-done
-document.getElementById('td-done').addEventListener('click',()=>{
+document.getElementById('td-done').addEventListener('click', async()=>{
   if(!_mTask) return;
   const chkEl=document.createElement('div');
-  toggleTask(_mTask.taskId,_mTask.projId,chkEl);
-  document.getElementById('task-modal').classList.remove('on');
   const _ov = window._lastDayOverlay;
+  window._lastDayOverlay = null;
+  await toggleTask(_mTask.taskId,_mTask.projId,chkEl);
+  document.getElementById('task-modal').classList.remove('on');
   setTimeout(()=>{
     if(_ov) { window._lastDayOverlay=_ov; _reopenDayOverlay(); }
     else if(curScr==='tasks') renderTasksScreen();
     else if(curScr==='proj') renderProjScreen();
     else renderHome();
-  },400);
+  },50);
 });
 // td-delete
 document.getElementById('td-delete').addEventListener('click', async()=>{
@@ -5168,7 +5169,7 @@ document.getElementById('td-delete').addEventListener('click', async()=>{
   } else if(projId==='__single__'){
     ST.singleTasks=(ST.singleTasks||[]).filter(t=>t.id!==taskId);
   } else {
-    const proj=ST.projects.find(p=>p.id===projId);
+    const proj=(ST.projects||[]).find(p=>p.id===projId);
     if(proj) proj.tasks=proj.tasks.filter(t=>t.id!==taskId);
   }
   // 紐付きrequestTasksも削除（孤立レコード防止）
@@ -5292,7 +5293,7 @@ async function toggleTask(taskId,projId,el){
     return;
   }
   // プロジェクトタスク
-  const proj=ST.projects.find(p=>p.id===projId);
+  const proj=(ST.projects||[]).find(p=>p.id===projId);
   const task=proj&&proj.tasks.find(t=>t.id===taskId);
   if(!task) return;
   const prevDone = task.done;
@@ -5868,7 +5869,7 @@ async function toggleProjTask(taskId,projId,el){
   if(el && el._toggling) return; // 二重タップ防止
   if(el) { el._toggling = true; setTimeout(()=>{ if(el) el._toggling=false; }, 600); }
   if(!ST) return;
-  const proj=ST.projects.find(p=>p.id===projId);
+  const proj=(ST.projects||[]).find(p=>p.id===projId);
   const task=proj&&proj.tasks.find(t=>t.id===taskId);
   if(!task) return;
   task.done = !task.done; task.isCompleted = task.done;
