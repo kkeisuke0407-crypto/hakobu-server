@@ -7124,7 +7124,7 @@ function renderSettings(){
       +[
         {id:'set-privacy',  label:'プライバシーポリシー', url:_apiBase+'/privacy.html'},
         {id:'set-terms',    label:'利用規約',             url:_apiBase+'/terms.html'},
-        {id:'set-tokusho',  label:'特定商取引法に基づく表記', url:'https://hakobu.app/tokusho'},
+        {id:'set-tokusho',  label:'特定商取引法に基づく表記', url:_apiBase+'/tokusho.html'},
         {id:'set-contact',  label:'お問い合わせ',         url:'mailto:support@hakobu.app'},
       ].map((item, i, arr) =>
         `<div id="${item.id}" style="padding:13px 14px;${i<arr.length-1?'border-bottom:1px solid var(--bdr);':''}display:flex;justify-content:space-between;align-items:center;cursor:pointer;">`
@@ -7182,7 +7182,7 @@ function renderSettings(){
     // 法的情報リンク
     ss.querySelector('#set-privacy')?.addEventListener('click', ()=> { location.href = '/privacy.html'; });
     ss.querySelector('#set-terms')?.addEventListener('click',   ()=> { location.href = '/terms.html'; });
-    ss.querySelector('#set-tokusho')?.addEventListener('click', ()=> window.open('https://hakobu.app/tokusho','_blank'));
+    ss.querySelector('#set-tokusho')?.addEventListener('click', ()=> { location.href = '/tokusho.html'; });
     ss.querySelector('#set-contact')?.addEventListener('click', ()=> window.open('mailto:support@hakobu.app'));
 
     // お子さん②追加ボタン
