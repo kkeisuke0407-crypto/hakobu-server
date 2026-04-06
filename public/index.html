@@ -7180,8 +7180,8 @@ function renderSettings(){
     ss.querySelector('#set-reset')?.addEventListener('click', ()=> resetAllData());
 
     // 法的情報リンク
-    ss.querySelector('#set-privacy')?.addEventListener('click', ()=> window.open(_apiBase+'/privacy.html','_blank'));
-    ss.querySelector('#set-terms')?.addEventListener('click',   ()=> window.open(_apiBase+'/terms.html','_blank'));
+    ss.querySelector('#set-privacy')?.addEventListener('click', ()=> { location.href = '/privacy.html'; });
+    ss.querySelector('#set-terms')?.addEventListener('click',   ()=> { location.href = '/terms.html'; });
     ss.querySelector('#set-tokusho')?.addEventListener('click', ()=> window.open('https://hakobu.app/tokusho','_blank'));
     ss.querySelector('#set-contact')?.addEventListener('click', ()=> window.open('mailto:support@hakobu.app'));
 
