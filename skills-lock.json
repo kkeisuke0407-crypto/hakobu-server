@@ -5,6 +5,11 @@
       "source": "inference-sh/skills",
       "sourceType": "github",
       "computedHash": "114e97ac954ea251b92b13f3e7bcebc80f1e750a3356dd8c8b8914ae8a80d688"
+    },
+    "social-content": {
+      "source": "coreyhaines31/marketingskills",
+      "sourceType": "github",
+      "computedHash": "85ffbc05cf88939ba3ff643a315928185af16181470349dfbaad2880047c9900"
     }
   }
 }
