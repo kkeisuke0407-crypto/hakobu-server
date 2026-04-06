@@ -7122,15 +7122,15 @@ function renderSettings(){
       +'<div class="sec-lbl" style="margin-top:4px">法的情報</div>'
       +'<div class="card" style="margin-bottom:14px">'
       +[
-        {id:'set-privacy',  label:'プライバシーポリシー', url:_apiBase+'/privacy.html'},
-        {id:'set-terms',    label:'利用規約',             url:_apiBase+'/terms.html'},
-        {id:'set-tokusho',  label:'特定商取引法に基づく表記', url:_apiBase+'/tokusho.html'},
-        {id:'set-contact',  label:'お問い合わせ',         url:'mailto:support@hakobu.app'},
+        {label:'プライバシーポリシー',       href:'privacy.html'},
+        {label:'利用規約',                   href:'terms.html'},
+        {label:'特定商取引法に基づく表記',   href:'tokusho.html'},
+        {label:'お問い合わせ',               href:'mailto:support@hakobu.app'},
       ].map((item, i, arr) =>
-        `<div id="${item.id}" style="padding:13px 14px;${i<arr.length-1?'border-bottom:1px solid var(--bdr);':''}display:flex;justify-content:space-between;align-items:center;cursor:pointer;">`
+        `<a href="${item.href}" style="padding:13px 14px;${i<arr.length-1?'border-bottom:1px solid var(--bdr);':''}display:flex;justify-content:space-between;align-items:center;text-decoration:none;">`
         +`<span style="color:var(--t1);font-size:14px;">${item.label}</span>`
         +`<i class="ph ph-caret-right" style="font-size:14px;color:var(--t3);display:inline-flex;align-items:center;line-height:1;"></i>`
-        +`</div>`
+        +`</a>`
       ).join('')
       +'</div>'
 
@@ -7179,11 +7179,7 @@ function renderSettings(){
     ss.querySelector('#set-logout')?.addEventListener('click', ()=> handleLogout());
     ss.querySelector('#set-reset')?.addEventListener('click', ()=> resetAllData());
 
-    // 法的情報リンク
-    ss.querySelector('#set-privacy')?.addEventListener('click', ()=> { location.href = 'privacy.html'; });
-    ss.querySelector('#set-terms')?.addEventListener('click',   ()=> { location.href = 'terms.html'; });
-    ss.querySelector('#set-tokusho')?.addEventListener('click', ()=> { location.href = 'tokusho.html'; });
-    ss.querySelector('#set-contact')?.addEventListener('click', ()=> window.open('mailto:support@hakobu.app'));
+    // 法的情報リンクは <a href> で実装済み（リスナー不要）
 
     // お子さん②追加ボタン
     ss.querySelector('#set-add-child2')?.addEventListener('click', ()=>{
