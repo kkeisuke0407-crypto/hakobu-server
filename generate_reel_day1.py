@@ -10,15 +10,11 @@ import urllib.request
 
 # --- 依存チェック ---
 try:
-    from moviepy.editor import (
-        ColorClip, TextClip, CompositeVideoClip
-    )
+    from moviepy import ColorClip, TextClip, CompositeVideoClip
 except ImportError:
     print("MoviePy が見つかりません。インストールします...")
     os.system(f"{sys.executable} -m pip install moviepy")
-    from moviepy.editor import (
-        ColorClip, TextClip, CompositeVideoClip
-    )
+    from moviepy import ColorClip, TextClip, CompositeVideoClip
 
 # --- フォント準備 ---
 FONT_PATH = "./NotoSansJP-Bold.ttf"
@@ -87,25 +83,23 @@ ENDS = [SLIDES[i + 1][0] if i + 1 < len(SLIDES) else DURATION
 
 
 def make_text_clip(text, fontsize, font, start, end, fade_duration):
-    """フェードイン付きテキストクリップを生成"""
+    """フェードイン付きテキストクリップを生成 (MoviePy 2.x API)"""
     clip_duration = end - start
     tc = TextClip(
-        text,
-        fontsize=fontsize,
         font=font,
+        text=text,
+        font_size=fontsize,
         color=TEXT_COLOR,
-        align="center",
+        text_align="center",
         method="caption",
         size=(WIDTH - 120, None),   # 左右60pxマージン
-        kerning=2,
         interline=10,
+        duration=clip_duration,
     )
-    tc = tc.set_position("center").set_start(start).set_duration(clip_duration)
+    tc = tc.with_position("center").with_start(start)
     # フェードイン
-    tc = tc.crossfadein(fade_duration)
-    # フェードアウト（次テキストへの切り替えを滑らかに）
-    if clip_duration > fade_duration * 2:
-        tc = tc.crossfadeout(fade_duration * 0.5)
+    from moviepy.video.fx import CrossFadeIn
+    tc = tc.with_effects([CrossFadeIn(fade_duration)])
     return tc
 
 
@@ -131,7 +125,7 @@ def main():
 
     # 合成
     final = CompositeVideoClip(clips, size=(WIDTH, HEIGHT))
-    final = final.set_duration(DURATION)
+    final = final.with_duration(DURATION)
 
     print(f"\n書き出し中: {OUTPUT}")
     final.write_videofile(
