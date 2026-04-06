@@ -68,37 +68,43 @@ BG_COLOR = (0, 0, 0)      # 黒背景
 TEXT_COLOR = "white"
 OUTPUT = "reel_day1.mp4"
 
-# テキスト構成: (開始秒, テキスト, フォントサイズ, フェード時間)
+TEXT_WIDTH = WIDTH - 200   # 左右100pxマージン
+FONT_SIZE = 60             # 統一フォントサイズ
+
+# テキスト構成: (開始秒, テキスト, フェード時間)
 SLIDES = [
-    (0.0,  "育児は年収1000万円じゃ\n足りない",              90, 0.5),
-    (3.0,  "生卵を1年間、\n割らずに抱えて\n生活できますか？",   62, 0.5),
-    (6.0,  "割ったら終わり。",                              80, 0.3),
-    (7.5,  "0歳の子って、\nいつ死ぬかわからない。",            62, 0.3),
-    (9.0,  "育児のつらさって、\nそういうこと。",              66, 0.3),
+    (0.0,  "育児は年収1000万円じゃ足りない",              0.5),
+    (3.0,  "生卵を1年間、割らずに抱えて生活できますか？",   0.5),
+    (6.0,  "割ったら終わり。",                            0.3),
+    (7.5,  "0歳の子って、いつ死ぬかわからない。",          0.3),
+    (9.0,  "育児のつらさって、そういうこと。",             0.3),
 ]
 
 # 各スライドの表示終了秒（次のスライド開始 or 動画終了）
 ENDS = [SLIDES[i + 1][0] if i + 1 < len(SLIDES) else DURATION
         for i in range(len(SLIDES))]
 
+from moviepy.video.fx import CrossFadeIn
 
-def make_text_clip(text, fontsize, font, start, end, fade_duration):
+
+def make_text_clip(text, font, start, end, fade_duration):
     """フェードイン付きテキストクリップを生成 (MoviePy 2.x API)"""
     clip_duration = end - start
     tc = TextClip(
         font=font,
         text=text,
-        font_size=fontsize,
+        font_size=FONT_SIZE,
         color=TEXT_COLOR,
         text_align="center",
-        method="caption",
-        size=(WIDTH - 120, None),   # 左右60pxマージン
-        interline=10,
+        method="caption",       # 自動折り返し
+        size=(TEXT_WIDTH, None),
+        interline=14,
         duration=clip_duration,
     )
-    tc = tc.with_position("center").with_start(start)
-    # フェードイン
-    from moviepy.video.fx import CrossFadeIn
+    # 画面中央に配置（x, y ともにセンタリング）
+    x = (WIDTH - tc.w) // 2
+    y = (HEIGHT - tc.h) // 2
+    tc = tc.with_position((x, y)).with_start(start)
     tc = tc.with_effects([CrossFadeIn(fade_duration)])
     return tc
 
@@ -111,16 +117,17 @@ def main():
 
     print(f"使用フォント: {font}")
     print(f"解像度: {WIDTH}x{HEIGHT}, 尺: {DURATION}秒")
+    print(f"テキスト幅: {TEXT_WIDTH}px, フォントサイズ: {FONT_SIZE}px")
 
-    # 背景クリップ
+    # 背景クリップ（サイズ明示）
     bg = ColorClip(size=(WIDTH, HEIGHT), color=BG_COLOR, duration=DURATION)
 
     # テキストクリップ一覧
     clips = [bg]
-    for i, (start, text, fontsize, fade) in enumerate(SLIDES):
+    for i, (start, text, fade) in enumerate(SLIDES):
         end = ENDS[i]
-        print(f"  [{start:.1f}s - {end:.1f}s] {text[:20].replace(chr(10), ' ')}...")
-        tc = make_text_clip(text, fontsize, font, start, end, fade)
+        print(f"  [{start:.1f}s - {end:.1f}s] {text[:20]}...")
+        tc = make_text_clip(text, font, start, end, fade)
         clips.append(tc)
 
     # 合成
