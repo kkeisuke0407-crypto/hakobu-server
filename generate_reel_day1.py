@@ -2,142 +2,172 @@
 """
 Instagram Reel 動画生成スクリプト
 出力: reel_day1.mp4 (1080x1920, 10秒, 縦型9:16)
+PIL で直接描画 → ImageMagick 依存なし
 """
 
 import os
 import sys
+import textwrap
 import urllib.request
+import numpy as np
+from PIL import Image, ImageDraw, ImageFont
 
-# --- 依存チェック ---
+# --- MoviePy ---
 try:
-    from moviepy import ColorClip, TextClip, CompositeVideoClip
+    from moviepy import ImageClip, CompositeVideoClip, ColorClip
 except ImportError:
-    print("MoviePy が見つかりません。インストールします...")
-    os.system(f"{sys.executable} -m pip install moviepy")
-    from moviepy import ColorClip, TextClip, CompositeVideoClip
+    os.system(f"{sys.executable} -m pip install moviepy pillow numpy")
+    from moviepy import ImageClip, CompositeVideoClip, ColorClip
+
+# --- 設定 ---
+WIDTH, HEIGHT = 1080, 1920
+DURATION = 10.0
+BG_COLOR = (0, 0, 0)
+TEXT_COLOR = (255, 255, 255)
+FONT_SIZE = 60
+MARGIN_X = 100          # 左右マージン
+TEXT_MAX_W = WIDTH - MARGIN_X * 2   # 880px
+OUTPUT = "reel_day1.mp4"
+
+# テキスト構成: (開始秒, テキスト, フェード秒)
+SLIDES = [
+    (0.0,  "育児は年収1000万円じゃ足りない",             0.4),
+    (3.0,  "生卵を1年間、割らずに抱えて生活できますか？",  0.4),
+    (6.0,  "割ったら終わり。",                           0.3),
+    (7.5,  "0歳の子って、いつ死ぬかわからない。",         0.3),
+    (9.0,  "育児のつらさって、そういうこと。",            0.3),
+]
+
+ENDS = [SLIDES[i + 1][0] if i + 1 < len(SLIDES) else DURATION
+        for i in range(len(SLIDES))]
+
 
 # --- フォント準備 ---
-FONT_PATH = "./NotoSansJP-Bold.ttf"
-FONT_URL = (
-    "https://github.com/notofonts/noto-cjk/raw/main/Sans/SubsetOTF/JP/"
-    "NotoSansCJKjp-Bold.otf"
-)
-
 def ensure_font():
-    if os.path.exists(FONT_PATH):
-        return FONT_PATH
-    # フォールバック: システムフォントを探す
     candidates = [
+        "./NotoSansJP-Bold.otf",
+        "./NotoSansJP-Bold.ttf",
         "/usr/share/fonts/truetype/noto/NotoSansCJK-Bold.ttc",
         "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
-        "/usr/share/fonts/noto-cjk/NotoSansCJK-Bold.ttc",
-        "/System/Library/Fonts/ヒラギノ角ゴシック W6.ttc",
         "/usr/share/fonts/truetype/takao-gothic/TakaoGothic.ttf",
         "/usr/share/fonts/truetype/vlgothic/VL-Gothic-Regular.ttf",
     ]
     for path in candidates:
         if os.path.exists(path):
-            print(f"フォント使用: {path}")
+            print(f"フォント: {path}")
             return path
 
-    # NotoSansJP をダウンロード (Google Fonts CDN)
     print("Noto Sans JP をダウンロード中...")
-    download_url = (
-        "https://fonts.gstatic.com/s/notosansjp/v53/"
-        "-F6jfjtqLzI2JPCgQBnw7HFyzSD-AsregP8VFBEj75s.woff2"
-    )
-    # woff2 は ImageMagick/PIL が直接使えないので ttf を探す別手段
-    # GitHub releases から otf を取得
-    alt_url = (
-        "https://github.com/googlefonts/noto-cjk/raw/main/Sans/OTF/Japanese/"
-        "NotoSansCJKjp-Bold.otf"
-    )
+    url = ("https://github.com/googlefonts/noto-cjk/raw/main/Sans/OTF/Japanese/"
+           "NotoSansCJKjp-Bold.otf")
     try:
-        urllib.request.urlretrieve(alt_url, "NotoSansJP-Bold.otf")
+        urllib.request.urlretrieve(url, "NotoSansJP-Bold.otf")
         return "NotoSansJP-Bold.otf"
     except Exception as e:
-        print(f"フォントのダウンロードに失敗: {e}")
-        print("ImageMagick のデフォルトフォントを使用します（文字化けする場合あり）")
+        print(f"ダウンロード失敗: {e}")
         return None
 
 
-# --- 設定 ---
-WIDTH, HEIGHT = 1080, 1920
-DURATION = 10.0
-BG_COLOR = (0, 0, 0)      # 黒背景
-TEXT_COLOR = "white"
-OUTPUT = "reel_day1.mp4"
-
-TEXT_WIDTH = WIDTH - 200   # 左右100pxマージン
-FONT_SIZE = 60             # 統一フォントサイズ
-
-# テキスト構成: (開始秒, テキスト, フェード時間)
-SLIDES = [
-    (0.0,  "育児は年収1000万円じゃ足りない",              0.5),
-    (3.0,  "生卵を1年間、割らずに抱えて生活できますか？",   0.5),
-    (6.0,  "割ったら終わり。",                            0.3),
-    (7.5,  "0歳の子って、いつ死ぬかわからない。",          0.3),
-    (9.0,  "育児のつらさって、そういうこと。",             0.3),
-]
-
-# 各スライドの表示終了秒（次のスライド開始 or 動画終了）
-ENDS = [SLIDES[i + 1][0] if i + 1 < len(SLIDES) else DURATION
-        for i in range(len(SLIDES))]
-
-from moviepy.video.fx import CrossFadeIn
+def wrap_text(text, font, max_width, draw):
+    """文字列をmax_width内で折り返す（日本語対応）"""
+    lines = []
+    for paragraph in text.split("\n"):
+        line = ""
+        for char in paragraph:
+            test = line + char
+            bbox = draw.textbbox((0, 0), test, font=font)
+            w = bbox[2] - bbox[0]
+            if w > max_width and line:
+                lines.append(line)
+                line = char
+            else:
+                line = test
+        if line:
+            lines.append(line)
+    return lines
 
 
-def make_text_clip(text, font, start, end, fade_duration):
-    """フェードイン付きテキストクリップを生成 (MoviePy 2.x API)"""
-    clip_duration = end - start
-    tc = TextClip(
-        font=font,
-        text=text,
-        font_size=FONT_SIZE,
-        color=TEXT_COLOR,
-        text_align="center",
-        method="caption",       # 自動折り返し
-        size=(TEXT_WIDTH, None),
-        interline=14,
-        duration=clip_duration,
-    )
-    # 画面中央に配置（x, y ともにセンタリング）
-    x = (WIDTH - tc.w) // 2
-    y = (HEIGHT - tc.h) // 2
-    tc = tc.with_position((x, y)).with_start(start)
-    tc = tc.with_effects([CrossFadeIn(fade_duration)])
-    return tc
+def render_text_image(text, font, alpha=1.0):
+    """テキストをPILで1080x1920の画像に描画して numpy 配列で返す"""
+    img = Image.new("RGB", (WIDTH, HEIGHT), BG_COLOR)
+    draw = ImageDraw.Draw(img)
+
+    lines = wrap_text(text, font, TEXT_MAX_W, draw)
+
+    # 行の高さを計算
+    line_height = draw.textbbox((0, 0), "あ", font=font)[3] + 16
+    total_h = line_height * len(lines)
+
+    # 垂直中央の開始y
+    y_start = (HEIGHT - total_h) // 2
+
+    for i, line in enumerate(lines):
+        bbox = draw.textbbox((0, 0), line, font=font)
+        w = bbox[2] - bbox[0]
+        x = (WIDTH - w) // 2   # 水平中央
+        y = y_start + i * line_height
+        draw.text((x, y), line, font=font, fill=TEXT_COLOR)
+
+    arr = np.array(img).astype("uint8")
+
+    # フェード用にアルファ適用（RGBにスカラー乗算）
+    if alpha < 1.0:
+        arr = (arr * alpha).astype("uint8")
+
+    return arr
 
 
 def main():
-    font = ensure_font()
-    if font is None:
-        font = "DejaVu-Sans-Bold"
-        print(f"警告: 日本語フォントが見つかりません。'{font}' を使用します。")
+    font_path = ensure_font()
+    if font_path is None:
+        print("エラー: 日本語フォントが見つかりません")
+        sys.exit(1)
 
-    print(f"使用フォント: {font}")
-    print(f"解像度: {WIDTH}x{HEIGHT}, 尺: {DURATION}秒")
-    print(f"テキスト幅: {TEXT_WIDTH}px, フォントサイズ: {FONT_SIZE}px")
+    font = ImageFont.truetype(font_path, FONT_SIZE)
 
-    # 背景クリップ（サイズ明示）
-    bg = ColorClip(size=(WIDTH, HEIGHT), color=BG_COLOR, duration=DURATION)
+    print(f"解像度: {WIDTH}x{HEIGHT}, 尺: {DURATION}秒, フォント: {FONT_SIZE}px")
 
-    # テキストクリップ一覧
-    clips = [bg]
-    for i, (start, text, fade) in enumerate(SLIDES):
-        end = ENDS[i]
-        print(f"  [{start:.1f}s - {end:.1f}s] {text[:20]}...")
-        tc = make_text_clip(text, font, start, end, fade)
-        clips.append(tc)
+    fps = 30
+    total_frames = int(DURATION * fps)
+    frames = []
 
-    # 合成
-    final = CompositeVideoClip(clips, size=(WIDTH, HEIGHT))
-    final = final.with_duration(DURATION)
+    for frame_i in range(total_frames):
+        t = frame_i / fps
 
-    print(f"\n書き出し中: {OUTPUT}")
-    final.write_videofile(
+        # この時刻に表示するスライドを特定
+        current_slide = None
+        for i, (start, text, fade) in enumerate(SLIDES):
+            end = ENDS[i]
+            if start <= t < end:
+                elapsed = t - start
+                alpha = min(elapsed / fade, 1.0) if fade > 0 else 1.0
+                current_slide = (text, alpha)
+                break
+
+        if current_slide is None:
+            # 黒フレーム
+            frame = np.zeros((HEIGHT, WIDTH, 3), dtype="uint8")
+        else:
+            text, alpha = current_slide
+            frame = render_text_image(text, font, alpha)
+
+        frames.append(frame)
+
+    print(f"フレーム生成完了: {len(frames)}枚")
+
+    # numpy 配列の動画として書き出し
+    from moviepy import VideoClip
+
+    def make_frame(t):
+        idx = min(int(t * fps), total_frames - 1)
+        return frames[idx]
+
+    clip = VideoClip(make_frame, duration=DURATION)
+
+    print(f"書き出し中: {OUTPUT}")
+    clip.write_videofile(
         OUTPUT,
-        fps=30,
+        fps=fps,
         codec="libx264",
         audio=False,
         preset="medium",
