@@ -33,18 +33,20 @@ WIDTH, HEIGHT = 1080, 1920
 DURATION = 10.0
 BG_COLOR = (0, 0, 0)
 TEXT_COLOR = (255, 255, 255)
-FONT_SIZE = 60
-MARGIN_X = 100          # 左右マージン
-TEXT_MAX_W = WIDTH - MARGIN_X * 2   # 880px
+FONT_SIZE = 72
+MARGIN_X = 120          # 左右マージン
+TEXT_MAX_W = WIDTH - MARGIN_X * 2   # 840px
+LINE_SPACING = 0.55     # 行間 = 文字高の55%
 OUTPUT = "reel_day1.mp4"
 
 # テキスト構成: (開始秒, テキスト, フェード秒)
 SLIDES = [
-    (0.0,  "育児は年収1000万円じゃ足りない",             0.4),
-    (3.0,  "生卵を1年間、割らずに抱えて生活できますか？",  0.4),
-    (6.0,  "割ったら終わり。",                           0.3),
-    (7.5,  "0歳の子って、いつ死ぬかわからない。",         0.3),
-    (9.0,  "育児のつらさって、そういうこと。",            0.3),
+    (0.0,  "育児は年収1000万円",                          0.3),
+    (2.0,  "それは間違ってる",                            0.3),
+    (4.0,  "生卵を1年間、割らずに抱えて生活できますか？",  0.4),
+    (6.0,  "割ったら終わり。",                            0.3),
+    (7.5,  "2000万円あげるから\nやってみて",              0.3),
+    (9.0,  "それが育児。",                                0.3),
 ]
 
 ENDS = [SLIDES[i + 1][0] if i + 1 < len(SLIDES) else DURATION
@@ -118,38 +120,110 @@ def prepare_audio(duration):
     return audio
 
 
+def text_width(t, font, draw):
+    """文字列のピクセル幅を返す"""
+    if not t:
+        return 0
+    bbox = draw.textbbox((0, 0), t, font=font)
+    return bbox[2] - bbox[0]
+
+
 def wrap_text(text, font, max_width, draw):
-    """文字列をmax_width内で折り返す（日本語対応）"""
+    """
+    テキストを自然に折り返す（日本語句読点優先・行バランス重視）
+    1. 1行に収まるならそのまま
+    2. 句読点（、。！？）付近で均等分割を試みる
+    3. それでも長い場合は文字単位で折り返し
+    """
+    # \n による手動改行を尊重
+    paragraphs = text.split("\n")
+    all_lines = []
+    for para in paragraphs:
+        all_lines.extend(_wrap_paragraph(para, font, max_width, draw))
+    return all_lines
+
+
+def _wrap_paragraph(text, font, max_width, draw):
+    """1段落を折り返す"""
+    if not text:
+        return []
+
+    # 1行に収まる
+    if text_width(text, font, draw) <= max_width:
+        return [text]
+
+    # 句読点に近い中点で2分割を試みる
+    mid = len(text) // 2
+    PUNCTUATION = "、。！？・"
+
+    # 中点から前後6文字以内の句読点を探す
+    best = None
+    for delta in range(min(7, len(text) // 2)):
+        for pos in [mid - delta, mid + delta]:
+            if 1 <= pos < len(text) and text[pos - 1] in PUNCTUATION:
+                best = pos
+                break
+        if best:
+            break
+
+    # 句読点が見つかった → 2分割
+    if best:
+        l1 = text[:best]
+        l2 = text[best:]
+        w1 = text_width(l1, font, draw)
+        w2 = text_width(l2, font, draw)
+        if w1 <= max_width and w2 <= max_width:
+            return [l1, l2]
+
+    # 句読点がない or 分割後もはみ出す → 文字幅で均等分割
+    # 全体幅から想定行数を算出し、均等ブレイクを試みる
+    total_w = text_width(text, font, draw)
+    n_lines = int(total_w / max_width) + 1
+    target_chars = len(text) // n_lines
+
     lines = []
-    for paragraph in text.split("\n"):
-        line = ""
-        for char in paragraph:
-            test = line + char
-            bbox = draw.textbbox((0, 0), test, font=font)
-            w = bbox[2] - bbox[0]
-            if w > max_width and line:
-                lines.append(line)
-                line = char
+    while text:
+        if text_width(text, font, draw) <= max_width:
+            lines.append(text)
+            break
+        # target_chars 付近で区切る（句読点優先）
+        cut = target_chars
+        for delta in range(6):
+            for pos in [cut + delta, cut - delta]:
+                if 1 <= pos < len(text) and text[pos - 1] in PUNCTUATION:
+                    cut = pos
+                    break
             else:
-                line = test
-        if line:
-            lines.append(line)
+                continue
+            break
+        # 最低でも1文字は確保し、max_width超えを防ぐ
+        while cut < len(text) and text_width(text[:cut + 1], font, draw) <= max_width:
+            cut += 1
+        lines.append(text[:cut])
+        text = text[cut:]
+
     return lines
 
 
-def render_text_image(text, font, alpha=1.0):
+def render_text_image(text, font, draw_ref, alpha=1.0):
     """テキストをPILで1080x1920の画像に描画して numpy 配列で返す"""
     img = Image.new("RGB", (WIDTH, HEIGHT), BG_COLOR)
     draw = ImageDraw.Draw(img)
 
     lines = wrap_text(text, font, TEXT_MAX_W, draw)
 
-    # 行の高さを計算
-    line_height = draw.textbbox((0, 0), "あ", font=font)[3] + 16
-    total_h = line_height * len(lines)
+    # 正確なフォントメトリクスで行高を算出
+    sample_bbox = draw.textbbox((0, 0), "あ", font=font)
+    char_h = sample_bbox[3] - sample_bbox[1]   # top〜bottomの実高さ
+    top_offset = sample_bbox[1]                 # ベースラインからtopへのオフセット
+    line_gap = int(char_h * LINE_SPACING)
+    line_height = char_h + line_gap
 
-    # 垂直中央の開始y
-    y_start = (HEIGHT - total_h) // 2
+    # 全体の高さ = 最初の文字高 + 残り行 × line_height
+    total_h = char_h + line_height * (len(lines) - 1)
+
+    # 垂直中央（top_offsetで微補正）
+    y_start = (HEIGHT - total_h) // 2 - top_offset
 
     for i, line in enumerate(lines):
         bbox = draw.textbbox((0, 0), line, font=font)
@@ -160,7 +234,6 @@ def render_text_image(text, font, alpha=1.0):
 
     arr = np.array(img).astype("uint8")
 
-    # フェード用にアルファ適用（RGBにスカラー乗算）
     if alpha < 1.0:
         arr = (arr * alpha).astype("uint8")
 
@@ -195,11 +268,10 @@ def main():
                 break
 
         if current_slide is None:
-            # 黒フレーム
             frame = np.zeros((HEIGHT, WIDTH, 3), dtype="uint8")
         else:
             text, alpha = current_slide
-            frame = render_text_image(text, font, alpha)
+            frame = render_text_image(text, font, None, alpha)
 
         frames.append(frame)
 
