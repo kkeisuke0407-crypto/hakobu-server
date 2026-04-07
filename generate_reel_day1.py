@@ -3,21 +3,30 @@
 Instagram Reel 動画生成スクリプト
 出力: reel_day1.mp4 (1080x1920, 10秒, 縦型9:16)
 PIL で直接描画 → ImageMagick 依存なし
+BGM: bgm.mp3 があれば使用、なければ白ノイズを自動生成
 """
 
 import os
 import sys
-import textwrap
+import wave
+import struct
+import tempfile
 import urllib.request
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont
 
 # --- MoviePy ---
 try:
-    from moviepy import ImageClip, CompositeVideoClip, ColorClip
+    from moviepy import VideoClip, AudioFileClip
+    from moviepy.audio.fx import AudioLoop, MultiplyVolume
 except ImportError:
     os.system(f"{sys.executable} -m pip install moviepy pillow numpy")
-    from moviepy import ImageClip, CompositeVideoClip, ColorClip
+    from moviepy import VideoClip, AudioFileClip
+    from moviepy.audio.fx import AudioLoop, MultiplyVolume
+
+BGM_PATH = "bgm.mp3"
+BGM_VOLUME = 0.25       # BGMの音量（0.0〜1.0）
+NOISE_VOLUME = 0.04     # 白ノイズの音量（控えめ）
 
 # --- 設定 ---
 WIDTH, HEIGHT = 1080, 1920
@@ -66,6 +75,47 @@ def ensure_font():
     except Exception as e:
         print(f"ダウンロード失敗: {e}")
         return None
+
+
+def generate_white_noise(duration, sample_rate=44100):
+    """白ノイズをWAVファイルとして生成し、パスを返す"""
+    tmp = tempfile.NamedTemporaryFile(suffix=".wav", delete=False)
+    tmp.close()
+
+    n_samples = int(duration * sample_rate)
+    noise = (np.random.randn(n_samples) * NOISE_VOLUME * 32767).astype(np.int16)
+
+    with wave.open(tmp.name, "w") as f:
+        f.setnchannels(1)
+        f.setsampwidth(2)
+        f.setframerate(sample_rate)
+        f.writeframes(noise.tobytes())
+
+    print(f"白ノイズ生成: {duration:.1f}秒 / {sample_rate}Hz → {tmp.name}")
+    return tmp.name
+
+
+def prepare_audio(duration):
+    """BGMを準備してMoviePy AudioClipを返す"""
+    if os.path.exists(BGM_PATH):
+        print(f"BGM読み込み: {BGM_PATH}")
+        audio = AudioFileClip(BGM_PATH)
+        volume = BGM_VOLUME
+    else:
+        print(f"bgm.mp3 が見つかりません → 白ノイズを自動生成します")
+        noise_path = generate_white_noise(duration)
+        audio = AudioFileClip(noise_path)
+        volume = 1.0  # 白ノイズは生成時に音量調整済み
+
+    # 動画より短い場合はループ
+    if audio.duration < duration:
+        audio = audio.with_effects([AudioLoop(duration=duration)])
+    else:
+        audio = audio.subclipped(0, duration)
+
+    # 音量調整
+    audio = audio.with_effects([MultiplyVolume(volume)])
+    return audio
 
 
 def wrap_text(text, font, max_width, draw):
@@ -155,21 +205,22 @@ def main():
 
     print(f"フレーム生成完了: {len(frames)}枚")
 
-    # numpy 配列の動画として書き出し
-    from moviepy import VideoClip
-
     def make_frame(t):
         idx = min(int(t * fps), total_frames - 1)
         return frames[idx]
 
     clip = VideoClip(make_frame, duration=DURATION)
 
+    # BGM合成
+    audio = prepare_audio(DURATION)
+    clip = clip.with_audio(audio)
+
     print(f"書き出し中: {OUTPUT}")
     clip.write_videofile(
         OUTPUT,
         fps=fps,
         codec="libx264",
-        audio=False,
+        audio_codec="aac",
         preset="medium",
         ffmpeg_params=["-crf", "18"],
     )
