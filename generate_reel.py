@@ -110,48 +110,54 @@ def generate_background(prompt, api_key, out_path):
 
     client = genai.Client(api_key=api_key)
 
+    import base64
+
     # --- Imagen 3 で生成（最高品質） ---
-    try:
-        resp = client.models.generate_images(
-            model="imagen-3.0-generate-002",
-            prompt=prompt,
-            config=types.GenerateImagesConfig(
-                number_of_images=1,
-                aspect_ratio="9:16",
-                safety_filter_level="BLOCK_LOW_AND_ABOVE",
-                person_generation="DONT_ALLOW",
-            ),
-        )
-        img_bytes = resp.generated_images[0].image.image_bytes
-        img = Image.open(io.BytesIO(img_bytes)).convert("RGB")
-        img.save(out_path)
-        print(f"背景画像保存: {out_path} ({img.size})")
-        return True
-    except Exception as e:
-        print(f"Imagen 3 失敗: {e}")
+    for imagen_model in ["imagen-3.0-generate-002", "imagen-3.0-fast-generate-001"]:
+        try:
+            resp = client.models.generate_images(
+                model=imagen_model,
+                prompt=prompt,
+                config=types.GenerateImagesConfig(
+                    number_of_images=1,
+                    aspect_ratio="9:16",
+                    person_generation="DONT_ALLOW",
+                ),
+            )
+            img_bytes = resp.generated_images[0].image.image_bytes
+            img = Image.open(io.BytesIO(img_bytes)).convert("RGB")
+            img.save(out_path)
+            print(f"背景画像保存: {out_path} ({img.size})")
+            return True
+        except Exception as e:
+            print(f"{imagen_model} 失敗: {e}")
 
     # --- フォールバック: Gemini Flash 画像生成 ---
-    try:
-        import base64
-        resp = client.models.generate_content(
-            model="gemini-2.0-flash-preview-image-generation",
-            contents=prompt,
-            config=types.GenerateContentConfig(
+    for flash_model in [
+        "gemini-2.0-flash-exp-image-generation",
+        "gemini-2.0-flash-preview-image-generation",
+        "gemini-2.0-flash-exp",
+    ]:
+        try:
+            resp = client.models.generate_content(
+                model=flash_model,
+                contents=prompt,
+                config=types.GenerateContentConfig(
                 response_modalities=["TEXT", "IMAGE"]
             ),
         )
-        for part in resp.candidates[0].content.parts:
-            if part.inline_data:
-                raw = part.inline_data.data
-                if isinstance(raw, str):
-                    raw = base64.b64decode(raw)
-                img = Image.open(io.BytesIO(raw)).convert("RGB")
-                img.save(out_path)
-                print(f"背景画像保存: {out_path} ({img.size})")
-                return True
-        print("画像パートが見つかりませんでした")
-    except Exception as e:
-        print(f"Gemini Flash 失敗: {e}")
+            for part in resp.candidates[0].content.parts:
+                if part.inline_data:
+                    raw = part.inline_data.data
+                    if isinstance(raw, str):
+                        raw = base64.b64decode(raw)
+                    img = Image.open(io.BytesIO(raw)).convert("RGB")
+                    img.save(out_path)
+                    print(f"背景画像保存: {out_path} ({img.size})")
+                    return True
+            print(f"{flash_model}: 画像パートなし")
+        except Exception as e:
+            print(f"{flash_model} 失敗: {e}")
 
     return False
 
