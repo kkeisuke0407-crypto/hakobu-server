@@ -112,11 +112,30 @@ def generate_background(prompt, api_key, out_path):
 
     import base64
 
+    # 利用可能なモデルを確認して画像生成対応モデルを探す
+    imagen_model  = None
+    flash_model   = None
+    try:
+        for m in client.models.list():
+            name = m.name.split("/")[-1]
+            if "imagen" in name and imagen_model is None:
+                imagen_model = name
+            if "flash" in name and "image" in name and flash_model is None:
+                flash_model = name
+        print(f"[モデル検索] imagen={imagen_model}, flash={flash_model}")
+    except Exception as e:
+        print(f"[モデル一覧取得失敗] {e}")
+
     # --- Imagen 3 で生成（最高品質） ---
-    for imagen_model in ["imagen-3.0-generate-002", "imagen-3.0-fast-generate-001"]:
+    imagen_candidates = list(dict.fromkeys(filter(None, [
+        imagen_model,
+        "imagen-3.0-generate-002",
+        "imagen-3.0-fast-generate-001",
+    ])))
+    for m in imagen_candidates:
         try:
             resp = client.models.generate_images(
-                model=imagen_model,
+                model=m,
                 prompt=prompt,
                 config=types.GenerateImagesConfig(
                     number_of_images=1,
@@ -130,14 +149,16 @@ def generate_background(prompt, api_key, out_path):
             print(f"背景画像保存: {out_path} ({img.size})")
             return True
         except Exception as e:
-            print(f"{imagen_model} 失敗: {e}")
+            print(f"{m} 失敗: {e}")
 
     # --- フォールバック: Gemini Flash 画像生成 ---
-    for flash_model in [
+    flash_candidates = list(dict.fromkeys(filter(None, [
+        flash_model,
         "gemini-2.0-flash-exp-image-generation",
         "gemini-2.0-flash-preview-image-generation",
         "gemini-2.0-flash-exp",
-    ]:
+    ])))
+    for flash_model in flash_candidates:
         try:
             resp = client.models.generate_content(
                 model=flash_model,
