@@ -94,7 +94,49 @@ def build_image_prompt(slides):
 
 
 # ============================================================
-# Gemini API で背景画像生成
+# Hugging Face FLUX で背景画像生成（無料）
+# ============================================================
+def generate_background_hf(prompt, hf_token, out_path):
+    import urllib.request
+    import json
+
+    print("Hugging Face FLUX.1-schnell で背景画像を生成中...")
+    print(f"プロンプト: {prompt[:90]}...")
+
+    models = [
+        "black-forest-labs/FLUX.1-schnell",
+        "stabilityai/stable-diffusion-xl-base-1.0",
+    ]
+
+    for model in models:
+        url     = f"https://api-inference.huggingface.co/models/{model}"
+        payload = json.dumps({
+            "inputs": prompt,
+            "parameters": {"width": 576, "height": 1024},
+        }).encode()
+        req = urllib.request.Request(
+            url,
+            data=payload,
+            headers={
+                "Authorization": f"Bearer {hf_token}",
+                "Content-Type":  "application/json",
+            },
+        )
+        try:
+            with urllib.request.urlopen(req, timeout=120) as resp:
+                raw = resp.read()
+            img = Image.open(io.BytesIO(raw)).convert("RGB")
+            img.save(out_path)
+            print(f"背景画像保存: {out_path} ({img.size})")
+            return True
+        except Exception as e:
+            print(f"{model} 失敗: {e}")
+
+    return False
+
+
+# ============================================================
+# Gemini API で背景画像生成（有料プラン向け）
 # ============================================================
 def generate_background(prompt, api_key, out_path):
     print("Gemini APIで背景画像を生成中...")
@@ -351,13 +393,14 @@ def prepare_audio(duration):
 # メイン
 # ============================================================
 def main():
-    skip_bg = "--skip-bg" in sys.argv
+    skip_bg  = "--skip-bg" in sys.argv
+    hf_token = os.environ.get("HF_TOKEN")
+    api_key  = os.environ.get("GEMINI_API_KEY")
 
-    # APIキー確認
-    api_key = os.environ.get("GEMINI_API_KEY")
-    if not api_key and not skip_bg:
-        print("エラー: GEMINI_API_KEY が設定されていません")
-        print("  export GEMINI_API_KEY=your_key")
+    if not skip_bg and not hf_token and not api_key:
+        print("エラー: HF_TOKEN または GEMINI_API_KEY が必要です")
+        print("  export HF_TOKEN=your_huggingface_token   ← 無料")
+        print("  export GEMINI_API_KEY=your_key           ← 有料プラン向け")
         print("  既存の背景を使う場合は --skip-bg を指定してください")
         sys.exit(1)
 
@@ -382,7 +425,11 @@ def main():
         print(f"既存の背景を使用: {BG_IMAGE_PATH}")
     else:
         prompt = build_image_prompt(slides)
-        ok = generate_background(prompt, api_key, BG_IMAGE_PATH)
+        ok = False
+        if hf_token:
+            ok = generate_background_hf(prompt, hf_token, BG_IMAGE_PATH)
+        if not ok and api_key:
+            ok = generate_background(prompt, api_key, BG_IMAGE_PATH)
         if not ok:
             print("警告: 画像生成失敗 → 黒背景で続行")
             Image.new("RGB", (WIDTH, HEIGHT), (10, 10, 20)).save(BG_IMAGE_PATH)
