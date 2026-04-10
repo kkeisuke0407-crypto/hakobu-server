@@ -442,8 +442,6 @@ def main():
             Image.new("RGB", (WIDTH, HEIGHT), (10, 10, 20)).save(BG_IMAGE_PATH)
 
     # ── 2. ウォーターマーク除去 ──
-    remove_watermark(BG_IMAGE_PATH)
-
     # ── 3. 背景読み込み ──
     bg_base = load_background(BG_IMAGE_PATH)
 
