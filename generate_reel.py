@@ -39,8 +39,8 @@ except ImportError:
 # ============================================================
 WIDTH, HEIGHT  = 1080, 1920
 SCRIPT_FILE    = "script.txt"
-OUTPUT         = "reel_output.mp4"
-BG_IMAGE_PATH  = "reel_background.png"
+BG_IMAGE_PATH  = "backgrounds/reel_background.png"
+REELS_DIR      = "reels"
 FONT_SIZE      = 70
 MARGIN_X       = 100
 TEXT_MAX_W     = WIDTH - MARGIN_X * 2   # 880px
@@ -416,6 +416,13 @@ def main():
 
     duration = slides[-1][0] + TAIL_PADDING
     print(f"動画尺: {duration:.1f}秒")
+
+    # 出力ファイル名: reels/YYYYMMDD_HHMMss.mp4
+    from datetime import datetime
+    os.makedirs(REELS_DIR, exist_ok=True)
+    os.makedirs("backgrounds", exist_ok=True)
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    OUTPUT = os.path.join(REELS_DIR, f"reel_{timestamp}.mp4")
 
     ends = [slides[i + 1][0] if i + 1 < len(slides) else duration
             for i in range(len(slides))]
