@@ -481,5 +481,300 @@ def main():
     print(f"\n完了: {OUTPUT}")
 
 
+# ============================================================
+# 退去費用リール生成
+# ============================================================
+
+def _hex_rgb(hex_str):
+    """#RRGGBB → (R, G, B)"""
+    h = hex_str.lstrip("#")
+    return tuple(int(h[i:i+2], 16) for i in (0, 2, 4))
+
+
+def _ctr_x(text, font, draw, canvas_w=None):
+    """テキストを水平中央配置するときのx座標を返す"""
+    canvas_w = canvas_w or WIDTH
+    bb = draw.textbbox((0, 0), text, font=font)
+    return (canvas_w - (bb[2] - bb[0])) // 2
+
+
+def _slide1_chintai(fp):
+    """スライド1: フック（#111111）"""
+    BG     = _hex_rgb("#111111")
+    RED    = _hex_rgb("#E03030")
+    WHITE  = (255, 255, 255)
+    YELLOW = (255, 230, 0)
+
+    img  = Image.new("RGB", (WIDTH, HEIGHT), BG)
+    draw = ImageDraw.Draw(img)
+
+    f_tag   = ImageFont.truetype(fp, 46)
+    f_main  = ImageFont.truetype(fp, 108)
+    f_large = ImageFont.truetype(fp, 170)
+    f_med   = ImageFont.truetype(fp, 64)
+    f_arrow = ImageFont.truetype(fp, 90)
+
+    # タグ「知らないと損」赤背景白文字
+    tag = "知らないと損"
+    tb  = draw.textbbox((0, 0), tag, font=f_tag)
+    pw, ph = 50, 22
+    rw = (tb[2] - tb[0]) + pw * 2
+    rh = (tb[3] - tb[1]) + ph * 2
+    rx = (WIDTH - rw) // 2
+    ry = 230
+    draw.rectangle([rx, ry, rx + rw, ry + rh], fill=RED)
+    draw.text((rx + pw, ry + ph - tb[1]), tag, font=f_tag, fill=WHITE)
+
+    # 「246,488円」白・大・取り消し線（赤）
+    price = "246,488円"
+    pb  = draw.textbbox((0, 0), price, font=f_main)
+    pw2 = pb[2] - pb[0]
+    ph2 = pb[3] - pb[1]
+    px2 = (WIDTH - pw2) // 2
+    py2 = 490
+    draw.text((px2, py2 - pb[1]), price, font=f_main, fill=WHITE)
+    sy = py2 + ph2 // 2
+    draw.line([(px2, sy), (px2 + pw2, sy)], fill=RED, width=9)
+
+    # 矢印 ↓ 赤
+    ab = draw.textbbox((0, 0), "↓", font=f_arrow)
+    draw.text((_ctr_x("↓", f_arrow, draw), 680 - ab[1]), "↓", font=f_arrow, fill=RED)
+
+    # 「0円」黄色・大
+    zb = draw.textbbox((0, 0), "0円", font=f_large)
+    draw.text((_ctr_x("0円", f_large, draw), 840 - zb[1]), "0円", font=f_large, fill=YELLOW)
+
+    # 「+46,950円返金」白・中
+    refund = "+46,950円返金"
+    rb = draw.textbbox((0, 0), refund, font=f_med)
+    draw.text((_ctr_x(refund, f_med, draw), 1090 - rb[1]), refund, font=f_med, fill=WHITE)
+
+    return np.array(img).astype("uint8")
+
+
+def _slide2_chintai(fp):
+    """スライド2: 問題提起（#0D1B3E）"""
+    BG          = _hex_rgb("#0D1B3E")
+    WHITE       = (255, 255, 255)
+    LIGHT_WHITE = (190, 205, 225)
+    YELLOW      = (255, 230, 0)
+
+    img  = Image.new("RGB", (WIDTH, HEIGHT), BG)
+    draw = ImageDraw.Draw(img)
+
+    f_small = ImageFont.truetype(fp, 44)
+    f_main  = ImageFont.truetype(fp, 88)
+    f_box   = ImageFont.truetype(fp, 44)
+
+    # 「あなたは大丈夫？」薄白小
+    top = "あなたは大丈夫？"
+    tb  = draw.textbbox((0, 0), top, font=f_small)
+    draw.text((_ctr_x(top, f_small, draw), 220 - tb[1]), top, font=f_small, fill=LIGHT_WHITE)
+
+    # メイン2行: 「そのまま払ったら」白 / 「負けです」黄
+    line1, line2 = "そのまま払ったら", "負けです"
+    l1b  = draw.textbbox((0, 0), line1, font=f_main)
+    l2b  = draw.textbbox((0, 0), line2, font=f_main)
+    lh   = l1b[3] - l1b[1]
+    base = 540
+    draw.text((_ctr_x(line1, f_main, draw), base - l1b[1]), line1, font=f_main, fill=WHITE)
+    draw.text((_ctr_x(line2, f_main, draw), base + lh + int(lh * 0.22) - l2b[1]), line2, font=f_main, fill=YELLOW)
+
+    # 黄枠ボックス
+    box_lines = ["知らないと言われた額を", "そのまま払うだけ"]
+    sb   = draw.textbbox((0, 0), "あ", font=f_box)
+    b_ch = sb[3] - sb[1]
+    b_lh = int(b_ch * 1.45)
+    bws  = []
+    for bl in box_lines:
+        bb = draw.textbbox((0, 0), bl, font=f_box)
+        bws.append(bb[2] - bb[0])
+    bcw  = max(bws)
+    bch  = b_ch + b_lh * (len(box_lines) - 1)
+    bpx, bpy = 55, 32
+    bx   = (WIDTH - bcw - bpx * 2) // 2
+    by_  = 980
+    draw.rectangle([bx, by_, bx + bcw + bpx * 2, by_ + bch + bpy * 2], outline=YELLOW, width=4)
+    ty = by_ + bpy
+    for bl in box_lines:
+        bb  = draw.textbbox((0, 0), bl, font=f_box)
+        bw_ = bb[2] - bb[0]
+        bxo = bx + bpx + (bcw - bw_) // 2
+        draw.text((bxo, ty - bb[1]), bl, font=f_box, fill=YELLOW)
+        ty += b_lh
+
+    return np.array(img).astype("uint8")
+
+
+def _slide3_chintai(fp):
+    """スライド3: 解決（#FFFFFF）"""
+    BG    = (255, 255, 255)
+    BLACK = (20, 20, 20)
+    RED   = _hex_rgb("#E03030")
+    GRAY  = (110, 110, 110)
+    WHITE = (255, 255, 255)
+
+    img  = Image.new("RGB", (WIDTH, HEIGHT), BG)
+    draw = ImageDraw.Draw(img)
+
+    f_small  = ImageFont.truetype(fp, 44)
+    f_main   = ImageFont.truetype(fp, 80)
+    f_step   = ImageFont.truetype(fp, 44)
+    f_badge  = ImageFont.truetype(fp, 38)
+    f_bottom = ImageFont.truetype(fp, 46)
+
+    # 「やることは1つだけ」グレー小
+    top = "やることは1つだけ"
+    tb  = draw.textbbox((0, 0), top, font=f_small)
+    draw.text((_ctr_x(top, f_small, draw), 200 - tb[1]), top, font=f_small, fill=GRAY)
+
+    # メイン「サインする前にこれだけやれ」黒大（2行）
+    ml1, ml2 = "サインする前に", "これだけやれ"
+    m1b = draw.textbbox((0, 0), ml1, font=f_main)
+    m2b = draw.textbbox((0, 0), ml2, font=f_main)
+    mh  = m1b[3] - m1b[1]
+    my  = 360
+    draw.text((_ctr_x(ml1, f_main, draw), my - m1b[1]), ml1, font=f_main, fill=BLACK)
+    draw.text((_ctr_x(ml2, f_main, draw), my + mh + int(mh * 0.18) - m2b[1]), ml2, font=f_main, fill=BLACK)
+
+    # ステップ3つ（赤番号バッジ＋黒テキスト）
+    steps = [
+        "請求書を受け取っても即サインしない",
+        "管理会社に異議を伝える",
+        "ガイドラインを根拠に交渉",
+    ]
+    BR     = 32
+    LM     = 72
+    step_y = 650
+    sp     = 225
+
+    s_sb  = draw.textbbox((0, 0), "あ", font=f_step)
+    s_ch  = s_sb[3] - s_sb[1]
+    s_lh  = int(s_ch * 1.3)
+
+    for i, stext in enumerate(steps):
+        bcx = LM + BR
+        bcy = step_y + BR
+        draw.ellipse([bcx - BR, bcy - BR, bcx + BR, bcy + BR], fill=RED)
+        num = str(i + 1)
+        nb  = draw.textbbox((0, 0), num, font=f_badge)
+        draw.text(
+            (bcx - (nb[0] + nb[2]) // 2, bcy - (nb[1] + nb[3]) // 2),
+            num, font=f_badge, fill=WHITE
+        )
+
+        tx    = LM + BR * 2 + 28
+        max_w = WIDTH - tx - 50
+        lines = wrap(stext, f_step, max_w, draw)
+        ty    = step_y + max(0, (BR * 2 - s_ch) // 2)
+        for line in lines:
+            lb = draw.textbbox((0, 0), line, font=f_step)
+            draw.text((tx, ty - lb[1]), line, font=f_step, fill=BLACK)
+            ty += s_lh
+
+        step_y += sp
+
+    # 「難しい知識ゼロでOK」赤小
+    bot = "難しい知識ゼロでOK"
+    bb  = draw.textbbox((0, 0), bot, font=f_bottom)
+    draw.text((_ctr_x(bot, f_bottom, draw), 1400 - bb[1]), bot, font=f_bottom, fill=RED)
+
+    return np.array(img).astype("uint8")
+
+
+def _slide4_chintai(fp):
+    """スライド4: CTA（#C72020）"""
+    BG      = _hex_rgb("#C72020")
+    WHITE   = (255, 255, 255)
+    RED_TXT = _hex_rgb("#C72020")
+
+    img  = Image.new("RGB", (WIDTH, HEIGHT), BG)
+    draw = ImageDraw.Draw(img)
+
+    f_small = ImageFont.truetype(fp, 48)
+    f_main  = ImageFont.truetype(fp, 112)
+    f_sub   = ImageFont.truetype(fp, 52)
+    f_btn   = ImageFont.truetype(fp, 56)
+    f_arrow = ImageFont.truetype(fp, 86)
+
+    # 「交渉文テンプレ込み」白小
+    top = "交渉文テンプレ込み"
+    tb  = draw.textbbox((0, 0), top, font=f_small)
+    draw.text((_ctr_x(top, f_small, draw), 280 - tb[1]), top, font=f_small, fill=WHITE)
+
+    # 「全部まとめました」白大
+    main = "全部まとめました"
+    mb   = draw.textbbox((0, 0), main, font=f_main)
+    draw.text((_ctr_x(main, f_main, draw), 490 - mb[1]), main, font=f_main, fill=WHITE)
+
+    # 「そのまま使える文章も公開中」白小
+    sub = "そのまま使える文章も公開中"
+    sb  = draw.textbbox((0, 0), sub, font=f_sub)
+    draw.text((_ctr_x(sub, f_sub, draw), 740 - sb[1]), sub, font=f_sub, fill=WHITE)
+
+    # ボタン「▶ プロフのリンクへ」白背景赤文字角丸
+    btn  = "▶ プロフのリンクへ"
+    bb   = draw.textbbox((0, 0), btn, font=f_btn)
+    btw  = bb[2] - bb[0]
+    bth  = bb[3] - bb[1]
+    bpx, bpy = 64, 30
+    bw   = btw + bpx * 2
+    bh   = bth + bpy * 2
+    bx   = (WIDTH - bw) // 2
+    by_  = 880
+    draw.rounded_rectangle([bx, by_, bx + bw, by_ + bh], radius=bh // 2, fill=WHITE)
+    draw.text((bx + bpx, by_ + bpy - bb[1]), btn, font=f_btn, fill=RED_TXT)
+
+    # ↓ 半透明白（RGBAオーバーレイ合成）
+    ab      = draw.textbbox((0, 0), "↓", font=f_arrow)
+    ax      = _ctr_x("↓", f_arrow, draw)
+    ay      = 1100
+    overlay = Image.new("RGBA", (WIDTH, HEIGHT), (0, 0, 0, 0))
+    od      = ImageDraw.Draw(overlay)
+    od.text((ax, ay - ab[1]), "↓", font=f_arrow, fill=(255, 255, 255, 160))
+    img     = Image.alpha_composite(img.convert("RGBA"), overlay).convert("RGB")
+
+    return np.array(img).astype("uint8")
+
+
+def generate_chintai_reel():
+    """退去費用リール: 4スライド × 3秒 → reel_chintai.mp4"""
+    OUTPUT      = "reel_chintai.mp4"
+    SLIDE_SEC   = 3.0
+    TOTAL_SEC   = SLIDE_SEC * 4
+    CHINTAI_FPS = 30
+
+    font_path = ensure_font()
+    print(f"フォント: {font_path}")
+
+    print("スライド描画中...")
+    slides = [
+        _slide1_chintai(font_path),
+        _slide2_chintai(font_path),
+        _slide3_chintai(font_path),
+        _slide4_chintai(font_path),
+    ]
+    print("スライド4枚 完了")
+
+    def make_frame(t):
+        idx = min(int(t / SLIDE_SEC), len(slides) - 1)
+        return slides[idx]
+
+    print(f"動画書き出し: {OUTPUT}  ({TOTAL_SEC:.0f}秒 / {CHINTAI_FPS}fps)")
+    clip = VideoClip(make_frame, duration=TOTAL_SEC)
+    clip.write_videofile(
+        OUTPUT,
+        fps=CHINTAI_FPS,
+        codec="libx264",
+        preset="medium",
+        ffmpeg_params=["-crf", "18"],
+        logger=None,
+    )
+    print(f"\n完了: {OUTPUT}")
+
+
 if __name__ == "__main__":
-    main()
+    if "--chintai" in sys.argv:
+        generate_chintai_reel()
+    else:
+        main()
