@@ -740,7 +740,7 @@ def _slide4_chintai(fp):
 def generate_chintai_reel():
     """退去費用リール: 4スライド × 3秒 → reel_chintai.mp4"""
     OUTPUT      = "reel_chintai.mp4"
-    SLIDE_SEC   = 3.0
+    SLIDE_SEC   = 5.0
     TOTAL_SEC   = SLIDE_SEC * 4
     CHINTAI_FPS = 30
 

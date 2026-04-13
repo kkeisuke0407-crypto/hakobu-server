@@ -63,7 +63,7 @@ except ImportError:
 # ── 設定 ──────────────────────────────────────────────────────
 CHROME_PATH  = "/opt/pw-browsers/chromium-1194/chrome-linux/chrome"
 OUT_W, OUT_H = 1080, 1920
-SLIDE_SEC    = 3.0
+SLIDE_SEC    = 5.0
 FPS          = 30
 SCALE        = 3   # CSSの360×640px → 1080×1920px
 
