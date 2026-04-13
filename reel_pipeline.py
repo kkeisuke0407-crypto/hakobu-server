@@ -344,6 +344,70 @@ def make_mp4(output, frames):
     )
 
 
+# ── キャプション生成 ─────────────────────────────────────────
+
+# 賃貸・退去・引越し系の共通ハッシュタグ
+BASE_HASHTAGS = [
+    '退去費用', '退去費用交渉', '原状回復', '賃貸トラブル',
+    '賃貸', '引越し', '節約', 'AI活用', '退去費用相談',
+]
+
+
+def _clean(text):
+    """\\n や <br> を除去してプレーンテキストに"""
+    return str(text).replace('\\n', ' ').replace('\n', ' ').replace('<br>', ' ').strip()
+
+
+def generate_caption(config):
+    """YAMLコンフィグからInstagramキャプションを生成"""
+    s    = config['slides']
+    hook = s['hook']
+    prob = s['problem']
+    sol  = s['solution']
+    cta  = s['cta']
+
+    # ─ 本文 ─
+    hook_main = _clean(hook['main'])
+    hook_sub  = _clean(hook.get('sub', ''))
+    prob_main = _clean(prob['main'])
+    prob_sub  = _clean(prob.get('sub', ''))
+    sol_main  = _clean(sol['main'])
+    steps     = sol.get('steps', [])
+    sol_foot  = _clean(sol.get('foot', ''))
+    cta_main  = _clean(cta['main'])
+    cta_sub   = _clean(cta.get('sub', ''))
+    cta_btn   = _clean(cta.get('btn', '▶ プロフのリンクへ'))
+
+    # ─ ステップ行 ─
+    step_lines = '\n'.join(f'✅ {step}' for step in steps)
+
+    caption = f"""\
+【{hook_main}】
+
+{prob_main}
+
+{prob_sub}
+
+{sol_main}
+{step_lines}
+
+{sol_foot}
+
+{cta_main}
+{cta_sub}
+
+👇 {cta_btn}
+"""
+
+    # ─ ハッシュタグ ─
+    # YAMLで追加タグを指定できる（hashtags: [タグ1, タグ2]）
+    extra = config.get('hashtags', [])
+    all_tags = list(dict.fromkeys(extra + BASE_HASHTAGS))  # 重複除去・順番保持
+    hashtag_line = ' '.join(f'#{t}' for t in all_tags)
+
+    return caption.strip() + '\n\n' + hashtag_line
+
+
 # ── エントリーポイント ────────────────────────────────────────
 
 def main():
@@ -376,7 +440,19 @@ def main():
     print(f"\nStep 3: MP4生成 ({len(frames)}枚 × {SLIDE_SEC}秒)")
     make_mp4(output, frames)
     size_kb = os.path.getsize(output) // 1024
-    print(f"\n完了: {output}  ({size_kb} KB)")
+    print(f"  → {output}  ({size_kb} KB)")
+
+    print("\nStep 4: キャプション生成")
+    caption = generate_caption(config)
+    caption_path = output.replace('.mp4', '_caption.txt')
+    with open(caption_path, 'w', encoding='utf-8') as f:
+        f.write(caption)
+    print(f"  → {caption_path}")
+    print()
+    print('─' * 50)
+    print(caption)
+    print('─' * 50)
+    print(f"\n完了: {output}  /  {caption_path}")
 
 
 if __name__ == '__main__':
