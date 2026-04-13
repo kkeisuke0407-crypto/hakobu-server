@@ -1,5 +1,5 @@
 output: reel_06_senmonka.mp4
-color: coral
+# color: 省略 → reel番号から自動決定（reel_06 → yellow）
 
 slides:
   hook:

@@ -36,8 +36,10 @@ YAMLフォーマット例:
       btn: ▶ プロフのリンクへ
 """
 
+import glob
 import io
 import os
+import re
 import sys
 import numpy as np
 from PIL import Image
@@ -66,6 +68,24 @@ OUT_W, OUT_H = 1080, 1920
 SLIDE_SEC    = 5.0
 FPS          = 30
 SCALE        = 3   # CSSの360×640px → 1080×1920px
+
+# カラーローテーション順（reel番号に対応）
+# reel_01→yellow, reel_02→coral, reel_03→navy, reel_04→green, reel_05→purple, reel_06→yellow ...
+COLORS = ['', 'coral', 'navy', 'green', 'purple']  # '' = yellow(デフォルト)
+
+
+def auto_color(output_path):
+    """出力ファイル名の番号からカラーを自動決定。番号がなければ既存MP4数で決定。"""
+    m = re.search(r'reel_(\d+)', os.path.basename(output_path))
+    if m:
+        idx = (int(m.group(1)) - 1) % len(COLORS)
+    else:
+        existing = len(glob.glob('reel_*.mp4'))
+        idx = existing % len(COLORS)
+    color = COLORS[idx]
+    label = color if color else 'yellow'
+    print(f"  カラー自動決定: {label}  (index={idx})")
+    return color
 
 # ── CSS（reel_5series.html と同一デザイン）────────────────────
 CSS = """
@@ -250,7 +270,11 @@ def _slide_cta(s, color):
 
 def build_html(config):
     """YAMLコンフィグからHTMLを生成"""
-    color  = config.get('color', '')
+    color = config.get('color')
+    if not color:
+        color = auto_color(config.get('output', ''))
+    else:
+        print(f"  カラー手動指定: {color}")
     slides = config['slides']
     body   = (
         _slide_hook(slides['hook'], color) +
