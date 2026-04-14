@@ -1,24 +1,86 @@
-# HAKOBU 開発ルール
+# ikuji_no_real プロジェクト設定
 
-## 確認不要・自動実行OK
-- `public/index.html` の編集・機能追加
-- `hakobu_dashboard.html` の編集・更新（プロジェクト内）
-- git commit（メッセージ自動生成OK）
-- git push（確認不要）
-- docx/md ドキュメント更新
-- タスク完了時のダッシュボード更新
-- 実装後の進捗報告
-
-## 確認が必要
-- Firebase設定変更
-- 本番環境への反映
-- node_modules / package削除
-
-## 実装スタイル
-- 指示受け取り → 実装 → 完了報告（確認を挟まない）
-- エラーが出た場合のみ相談
-- 5分以上の作業は進捗を報告
+## プロジェクト概要
+ゆか（@ikuji_no_real）のInstagramリール自動生成パイプライン。
+働くママ向けテキストリールを毎日21時に投稿する。
 
 ---
 
-*2026-03-08 作成*
+## 台本生成のルール（必須）
+
+台本を作成するときは **必ず `RESEARCH.md` を参照すること。**
+
+参照する項目：
+- セクション2：バズる冒頭フック
+- セクション3：テキストリールの構成パターン
+- セクション4：ゆかのキャラクター設定
+- セクション5：台本フォーマット
+
+### 台本生成の手順
+1. ユーザーからテーマ or 「今日の台本作って」と言われたら RESEARCH.md を参照
+2. フック種別（質問型/告白型/ギャップ型）を選択またはユーザーに確認
+3. ゆかのトーン・キャラクターに合わせて台本を生成
+4. script.txt に直接書き込む
+5. 使用するハッシュタグも RESEARCH.md セクション6から選んで hashtags.txt に書き込む
+
+---
+
+## 毎日の運用フロー
+
+```
+1. 「今日の台本作って」or「〇〇テーマで台本作って」
+       ↓ Claude Codeが RESEARCH.md 参照して script.txt に書き込む
+       ↓ hashtags.txt にも書き込む
+
+2. Geminiで背景画像生成 → backgrounds/reel_background.png に保存
+
+3. python3 generate_reel.py --skip-script
+       ↓ 背景確認して Enter
+       ↓ 動画生成
+
+4. reels/ から動画をDL → Instagram投稿（21時）
+```
+
+---
+
+## ファイル構成
+
+```
+hakobu-server/
+├── generate_reel.py       ← メイン動画生成スクリプト
+├── script.txt             ← 今日の台本（Claude Codeが書き込む）
+├── hashtags.txt           ← 今日のハッシュタグ（Claude Codeが書き込む）
+├── RESEARCH.md            ← リサーチ資料（台本生成時に必ず参照）
+├── CLAUDE.md              ← このファイル
+├── NotoSansJP-Bold.otf    ← フォント
+├── bgm.mp3                ← BGM（任意）
+├── reels/                 ← 完成動画（自動日付命名）
+├── backgrounds/           ← 背景画像置き場
+└── scripts/               ← 旧スクリプトアーカイブ
+```
+
+---
+
+## 実行コマンド
+
+```bash
+# 通常（既存script.txtを使う）
+python3 generate_reel.py --skip-script
+
+# 背景も流用する場合
+python3 generate_reel.py --skip-script --skip-bg
+
+# 環境変数（画像自動生成したい場合）
+export HF_TOKEN=hf_xxx        # Hugging Face（無料）
+export GEMINI_API_KEY=xxx     # Gemini Imagen（有料・高品質）
+```
+
+---
+
+## 注意事項
+
+- ゆかのトーンを絶対に外さない（RESEARCH.md セクション4参照）
+- 「頑張ろう！」「大丈夫！」系の押しつけ応援は禁止
+- 台本は短文・体言止め・余白を大事に
+- 1スライド2〜12文字程度
+- 動画尺は15〜25秒に収める
