@@ -732,47 +732,29 @@ def main():
     size_kb = os.path.getsize(output) // 1024
     print(f"  → {output}  ({size_kb} KB)")
 
-    print("\nStep 4: テキストコンテンツ生成")
+    print("\nStep 4: テキスト生成")
     base = output.replace('.mp4', '')
 
-    # note記事
-    note_path = base + '_note.md'
-    with open(note_path, 'w', encoding='utf-8') as f:
-        f.write(generate_note_article(config))
-    print(f"  → {note_path}")
+    content = '\n\n'.join([
+        '═' * 50 + '\n【Instagram キャプション】\n' + '═' * 50,
+        generate_caption(config),
+        '═' * 50 + '\n【YouTube Shorts 台本】\n' + '═' * 50,
+        generate_shorts_script(config),
+        '═' * 50 + '\n【X 投稿文（3パターン）】\n' + '═' * 50,
+        generate_x_post(config),
+        '═' * 50 + '\n【Threads 投稿文】\n' + '═' * 50,
+        generate_threads_post(config),
+    ])
 
-    # Instagramキャプション
-    caption_path = base + '_caption.txt'
-    with open(caption_path, 'w', encoding='utf-8') as f:
-        f.write(generate_caption(config))
-    print(f"  → {caption_path}")
-
-    # YouTube Shorts台本
-    shorts_path = base + '_shorts.txt'
-    with open(shorts_path, 'w', encoding='utf-8') as f:
-        f.write(generate_shorts_script(config))
-    print(f"  → {shorts_path}")
-
-    # X投稿文
-    x_path = base + '_x.txt'
-    with open(x_path, 'w', encoding='utf-8') as f:
-        f.write(generate_x_post(config))
-    print(f"  → {x_path}")
-
-    # Threads投稿文
-    threads_path = base + '_threads.txt'
-    with open(threads_path, 'w', encoding='utf-8') as f:
-        f.write(generate_threads_post(config))
-    print(f"  → {threads_path}")
+    content_path = base + '_content.txt'
+    with open(content_path, 'w', encoding='utf-8') as f:
+        f.write(content)
+    print(f"  → {content_path}")
 
     print(f"""
 完了 ──────────────────────────────────────────
-  動画      : {output}  ({size_kb} KB)
-  note記事  : {note_path}
-  Instagram : {caption_path}
-  YouTube   : {shorts_path}
-  X         : {x_path}
-  Threads   : {threads_path}
+  動画   : {output}  ({size_kb} KB)
+  テキスト: {content_path}
 """)
 
 
