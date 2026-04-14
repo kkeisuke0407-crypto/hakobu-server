@@ -380,13 +380,11 @@ def make_noise(duration, sr=44100):
 def prepare_audio(duration):
     if os.path.exists(BGM_PATH):
         print(f"BGM: {BGM_PATH}")
-        audio, vol = AudioFileClip(BGM_PATH), BGM_VOLUME
-    else:
-        print("白ノイズを生成します")
-        audio, vol = AudioFileClip(make_noise(duration)), 1.0
-    audio = (audio.with_effects([AudioLoop(duration=duration)])
-             if audio.duration < duration else audio.subclipped(0, duration))
-    return audio.with_effects([MultiplyVolume(vol)])
+        audio = AudioFileClip(BGM_PATH)
+        audio = (audio.with_effects([AudioLoop(duration=duration)])
+                 if audio.duration < duration else audio.subclipped(0, duration))
+        return audio.with_effects([MultiplyVolume(BGM_VOLUME)])
+    return None
 
 
 # ============================================================
@@ -470,7 +468,8 @@ def main():
     # ── 5. 動画書き出し ──
     clip  = VideoClip(make_frame, duration=duration)
     audio = prepare_audio(duration)
-    clip  = clip.with_audio(audio)
+    if audio:
+        clip = clip.with_audio(audio)
 
     print(f"書き出し: {OUTPUT}")
     clip.write_videofile(
