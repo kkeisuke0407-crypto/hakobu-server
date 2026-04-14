@@ -346,11 +346,29 @@ def make_mp4(output, frames):
 
 # ── キャプション生成 ─────────────────────────────────────────
 
-# 賃貸・退去・引越し系の共通ハッシュタグ
+# 必須ハッシュタグ（RESEARCH_ttkenji_v2.md § 4 準拠）
 BASE_HASHTAGS = [
-    '退去費用', '退去費用交渉', '原状回復', '賃貸トラブル',
-    '賃貸', '引越し', '節約', 'AI活用', '退去費用相談',
+    '退去費用', '原状回復', '賃貸トラブル', '引越し準備',
+    '知らないと損', '節約', 'AI活用', '賃貸', '一人暮らし', '敷金',
 ]
+
+# デュアルCTA（文言固定）
+DUAL_CTA = """\
+**自分で確認・交渉したい方**
+→ https://note.com/ttkenji0232/n/n9d8308b5146e（¥500）
+
+**AIが不慣れ・一緒に進めたい方**
+→ https://note.com/ttkenji0232/n/n252503d16f7d（¥5,000サポート付き）"""
+
+# 注意事項（文言固定）
+DISCLAIMER = "【注意事項】本記事は情報提供を目的としており、法的助言ではありません。重要な判断については弁護士・消費生活センター等の専門家にご相談ください。"
+
+# 実績・統計数字（必ず使う）
+JISSEKI     = "246,488円 → 0円 ＋ 46,950円返金"
+STAT_74     = "74%の入居者が国交省ガイドラインを知らないまま全額払っている"
+STAT_82     = "交渉した人の82%が減額に成功している"
+STAT_6NEN   = "入居6年超の壁紙（クロス）は残存価値ほぼゼロ"
+CENTER_TEL  = "188（消費生活センター・全国共通・無料）"
 
 
 def _clean(text):
@@ -359,53 +377,325 @@ def _clean(text):
 
 
 def generate_caption(config):
-    """YAMLコンフィグからInstagramキャプションを生成"""
+    """YAMLコンフィグからInstagramキャプションを生成（デュアルCTA・統計付き）"""
     s    = config['slides']
     hook = s['hook']
     prob = s['problem']
     sol  = s['solution']
-    cta  = s['cta']
 
-    # ─ 本文 ─
     hook_main = _clean(hook['main'])
+    hook_num  = hook.get('big_num', '')
+    hook_unit = hook.get('big_unit', '')
     hook_sub  = _clean(hook.get('sub', ''))
     prob_main = _clean(prob['main'])
     prob_sub  = _clean(prob.get('sub', ''))
     sol_main  = _clean(sol['main'])
     steps     = sol.get('steps', [])
     sol_foot  = _clean(sol.get('foot', ''))
-    cta_main  = _clean(cta['main'])
-    cta_sub   = _clean(cta.get('sub', ''))
-    cta_btn   = _clean(cta.get('btn', '▶ プロフのリンクへ'))
 
-    # ─ ステップ行 ─
+    num_str    = f"{hook_num}{hook_unit}" if hook_num else ''
     step_lines = '\n'.join(f'✅ {step}' for step in steps)
 
     caption = f"""\
-【{hook_main}】
+{hook_main}{f'（{num_str}）' if num_str else ''}
+
+{JISSEKI} — 実際に私がやった話です。
 
 {prob_main}
-
 {prob_sub}
 
-{sol_main}
+{sol_main}：
 {step_lines}
 
 {sol_foot}
 
-{cta_main}
-{cta_sub}
+━━━━━━━━━━━━━━━━━
+▼ 詳しい手順・プロンプト全公開
+{DUAL_CTA}
+━━━━━━━━━━━━━━━━━
 
-👇 {cta_btn}
-"""
+{DISCLAIMER}"""
 
-    # ─ ハッシュタグ ─
-    # YAMLで追加タグを指定できる（hashtags: [タグ1, タグ2]）
-    extra = config.get('hashtags', [])
-    all_tags = list(dict.fromkeys(extra + BASE_HASHTAGS))  # 重複除去・順番保持
+    extra    = config.get('hashtags', [])
+    all_tags = list(dict.fromkeys(extra + BASE_HASHTAGS))
     hashtag_line = ' '.join(f'#{t}' for t in all_tags)
 
     return caption.strip() + '\n\n' + hashtag_line
+
+
+def generate_shorts_script(config):
+    """YouTube Shorts台本（RESEARCH_ttkenji_v2.md § 7 準拠）"""
+    s   = config['slides']
+    hook = s['hook']
+    prob = s['problem']
+    sol  = s['solution']
+
+    hook_main = _clean(hook['main'])
+    hook_num  = hook.get('big_num', '')
+    hook_unit = hook.get('big_unit', '')
+    hook_sub  = _clean(hook.get('sub', ''))
+    prob_main = _clean(prob['main'])
+    prob_warn = _clean(prob.get('warn', ''))
+    prob_sub  = _clean(prob.get('sub', ''))
+    steps     = sol.get('steps', [])
+    sol_foot  = _clean(sol.get('foot', ''))
+
+    num_str = f"{hook_num}{hook_unit}" if hook_num else ''
+    title   = f"{hook_main}【{prob_main}・{num_str}】" if num_str else f"{hook_main}【{prob_main}】"
+
+    # 本題ポイント（最大4つ）
+    points = []
+    if prob_warn:
+        points.append(prob_warn.replace('\\n', ' / '))
+    if prob_sub:
+        points.append(prob_sub)
+    for step in steps:
+        if len(points) >= 4:
+            break
+        points.append(step)
+    if sol_foot and len(points) < 3:
+        points.append(sol_foot)
+    body = '\n'.join(f'・{p}' for p in points)
+
+    # テロップ3つ
+    t1 = num_str if num_str else _clean(hook.get('marker', hook_main))
+    t2 = prob_sub if prob_sub else (prob_warn.split('\\n')[0] if prob_warn else prob_main)
+    t3 = sol_foot if sol_foot else (steps[0] if steps else '')
+
+    desc = f"""\
+退去費用{JISSEKI}にした方法を解説。
+
+▼詳しい手順・プロンプト全公開
+https://note.com/ttkenji0232
+
+▼無料の相談窓口
+消費生活センター：{CENTER_TEL}
+国民生活センター：https://www.kokusen.go.jp/
+
+---
+出典：国土交通省「原状回復をめぐるトラブルとガイドライン（平成23年8月再改訂版）」
+https://www.mlit.go.jp/jutakukentiku/house/jutakukentiku_house_tk3_000020.html
+
+#退去費用 #原状回復 #賃貸トラブル #AI活用 #引越し #節約"""
+
+    return f"""\
+━━ YouTube Shorts 台本 ━━━━━━━━━━━━━━━━━━
+タイトル：{title}
+
+【0〜3秒】フック
+{hook_main}、{hook_sub if hook_sub else (num_str + 'かかることがあります')}
+
+【3〜45秒】本題
+{body}
+
+・{JISSEKI}（実体験）
+
+【45〜55秒】CTA
+詳しい手順はプロフィールのnoteリンクに全部書いてあります
+
+━━ テロップ（3つ） ━━━━━━━━━━━━━━━━━━━━
+「{t1}」
+「{t2}」
+「{t3}」
+
+━━ YouTube説明欄 ━━━━━━━━━━━━━━━━━━━━━
+{desc}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"""
+
+
+def generate_x_post(config):
+    """X投稿文（140字以内・3パターン）"""
+    s     = config['slides']
+    hook  = s['hook']
+    sol   = s['solution']
+
+    hook_main = _clean(hook['main'])
+    hook_num  = hook.get('big_num', '')
+    hook_unit = hook.get('big_unit', '')
+    steps     = sol.get('steps', [])
+    sol_foot  = _clean(sol.get('foot', ''))
+    num_str   = f"{hook_num}{hook_unit}" if hook_num else ''
+
+    # A. リスト型
+    step_lines = '\n'.join(f'・{step}' for step in steps[:3])
+    post_a = f"""{hook_main}でつまずく壁：
+
+{step_lines}
+
+{sol_foot}
+#退去費用 #賃貸トラブル"""
+
+    # B. 問いかけ型
+    post_b = f"""{hook_main}に{num_str}かかると知ってましたか？
+
+{STAT_82}
+
+まず金額が正しいか確認してから動いてください。
+#退去費用 #賃貸"""
+
+    # C. コピペ用型
+    tip    = steps[0] if steps else sol_foot
+    post_c = f"""退去費用トラブルで
+
+「{tip}」
+
+という壁がある。
+AIと国交省ガイドラインで越えられます。
+#退去費用交渉 #賃貸トラブル"""
+
+    return f"""\
+━━ X投稿文（3パターン） ━━━━━━━━━━━━━━━━━━
+
+【A. リスト型（保存率高い）】
+{post_a}
+
+【B. 問いかけ型（リプ率高い）】
+{post_b}
+
+【C. コピペ用型（RT率高い）】
+{post_c}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"""
+
+
+def generate_threads_post(config):
+    """Threads投稿文（500字以内・親しみやすいトーン）"""
+    s     = config['slides']
+    hook  = s['hook']
+    prob  = s['problem']
+    sol   = s['solution']
+
+    hook_main = _clean(hook['main'])
+    hook_num  = hook.get('big_num', '')
+    hook_unit = hook.get('big_unit', '')
+    hook_sub  = _clean(hook.get('sub', ''))
+    prob_sub  = _clean(prob.get('sub', ''))
+    sol_foot  = _clean(sol.get('foot', ''))
+    steps     = sol.get('steps', [])
+    num_str   = f"{hook_num}{hook_unit}" if hook_num else ''
+
+    step_lines = '\n'.join(f'✅ {step}' for step in steps[:3])
+    opening    = f"{hook_sub}" if hook_sub else f"{num_str}かかることがあります"
+
+    post = f"""\
+{hook_main}、{opening}
+
+{JISSEKI} — これ、私の実体験です。
+
+{prob_sub}
+
+でも、{sol_foot}
+
+つまずきやすいのはここ：
+{step_lines}
+
+私が実際に使った手順を全部noteにまとめてます。
+プロフィールのリンクから確認できます。
+
+相談できるところ：消費生活センター {CENTER_TEL}"""
+
+    return f"""\
+━━ Threads投稿文（500字以内） ━━━━━━━━━━━━━━━
+
+{post}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"""
+
+
+def generate_note_article(config):
+    """note記事（無料・導線）SEO/GEO対策済み"""
+    s     = config['slides']
+    hook  = s['hook']
+    prob  = s['problem']
+    sol   = s['solution']
+
+    hook_main = _clean(hook['main'])
+    hook_num  = hook.get('big_num', '')
+    hook_unit = hook.get('big_unit', '')
+    hook_sub  = _clean(hook.get('sub', ''))
+    prob_main = _clean(prob['main'])
+    prob_warn = _clean(prob.get('warn', ''))
+    prob_sub  = _clean(prob.get('sub', ''))
+    sol_main  = _clean(sol['main'])
+    steps     = sol.get('steps', [])
+    sol_foot  = _clean(sol.get('foot', ''))
+    num_str   = f"{hook_num}{hook_unit}" if hook_num else ''
+
+    title = f"{hook_main}【{num_str}かかる前に知っておくべきこと】" if num_str else f"{hook_main}【知らないと損する基礎知識】"
+
+    step_lines = '\n'.join(f'- {step}' for step in steps)
+
+    # FAQ（3問）
+    faq1_q = f"{hook_main}は絶対に払わないといけないですか？"
+    faq1_a = f"いいえ。{STAT_82}。まず請求内容が国交省ガイドラインに沿っているか確認することが重要です。"
+    faq2_q = "自分で交渉するのは難しいですか？"
+    faq2_a = f"{sol_foot}。AIと国交省ガイドラインを使えば、法律の知識がなくても対応できるケースがあります。"
+    faq3_q = "相談できる無料の窓口はありますか？"
+    faq3_a = f"消費生活センター（{CENTER_TEL}）に相談できます。年間9万件の賃貸トラブル相談を受け付けています。"
+
+    article = f"""# {title}
+
+{JISSEKI} — これは私の実体験です。{STAT_74}。
+
+国土交通省「原状回復をめぐるトラブルとガイドライン（平成23年8月再改訂版）」では、退去費用の負担ルールが明確に定められています。この記事では「{hook_main}」について、知っておくべきことをまとめます。
+
+---
+
+## {prob_main}とは
+
+{prob_warn if prob_warn else prob_main}
+
+{prob_sub}
+
+{STAT_6NEN}。経年劣化・通常使用による傷は借主負担ではなく大家負担が原則です。
+
+---
+
+## {sol_main}
+
+{sol_foot}
+
+具体的には以下のような壁があります：
+
+{step_lines}
+
+これらの壁を越えるための具体的な手順・プロンプト・テンプレートは、有料記事（¥500）に全部まとめています。
+
+---
+
+## まとめ
+
+- {hook_main}は「払うのが当たり前」ではない
+- 国交省ガイドラインで負担ルールが決まっている
+- {STAT_82}
+- {STAT_6NEN}
+- まず請求内容が正しいか確認することが最初の一歩
+- 無料相談窓口：消費生活センター {CENTER_TEL}
+
+---
+
+## よくある質問
+
+**Q. {faq1_q}**
+A. {faq1_a}
+
+**Q. {faq2_q}**
+A. {faq2_a}
+
+**Q. {faq3_q}**
+A. {faq3_a}
+
+---
+
+{DUAL_CTA}
+
+---
+
+{DISCLAIMER}
+
+#退去費用 #原状回復 #賃貸トラブル #引越し準備 #知らないと損 #節約 #AI活用 #賃貸 #一人暮らし #敷金
+"""
+    return article
 
 
 # ── エントリーポイント ────────────────────────────────────────
@@ -442,17 +732,48 @@ def main():
     size_kb = os.path.getsize(output) // 1024
     print(f"  → {output}  ({size_kb} KB)")
 
-    print("\nStep 4: キャプション生成")
-    caption = generate_caption(config)
-    caption_path = output.replace('.mp4', '_caption.txt')
+    print("\nStep 4: テキストコンテンツ生成")
+    base = output.replace('.mp4', '')
+
+    # note記事
+    note_path = base + '_note.md'
+    with open(note_path, 'w', encoding='utf-8') as f:
+        f.write(generate_note_article(config))
+    print(f"  → {note_path}")
+
+    # Instagramキャプション
+    caption_path = base + '_caption.txt'
     with open(caption_path, 'w', encoding='utf-8') as f:
-        f.write(caption)
+        f.write(generate_caption(config))
     print(f"  → {caption_path}")
-    print()
-    print('─' * 50)
-    print(caption)
-    print('─' * 50)
-    print(f"\n完了: {output}  /  {caption_path}")
+
+    # YouTube Shorts台本
+    shorts_path = base + '_shorts.txt'
+    with open(shorts_path, 'w', encoding='utf-8') as f:
+        f.write(generate_shorts_script(config))
+    print(f"  → {shorts_path}")
+
+    # X投稿文
+    x_path = base + '_x.txt'
+    with open(x_path, 'w', encoding='utf-8') as f:
+        f.write(generate_x_post(config))
+    print(f"  → {x_path}")
+
+    # Threads投稿文
+    threads_path = base + '_threads.txt'
+    with open(threads_path, 'w', encoding='utf-8') as f:
+        f.write(generate_threads_post(config))
+    print(f"  → {threads_path}")
+
+    print(f"""
+完了 ──────────────────────────────────────────
+  動画      : {output}  ({size_kb} KB)
+  note記事  : {note_path}
+  Instagram : {caption_path}
+  YouTube   : {shorts_path}
+  X         : {x_path}
+  Threads   : {threads_path}
+""")
 
 
 if __name__ == '__main__':
