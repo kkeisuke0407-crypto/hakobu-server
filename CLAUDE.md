@@ -28,15 +28,18 @@
 ## 毎日の運用フロー
 
 ```
-1. 「今日の台本作って」or「〇〇テーマで台本作って」
-       ↓ Claude Codeが RESEARCH.md 参照して script.txt に書き込む
-       ↓ hashtags.txt にも書き込む
+1. 「今日のリール作って」or「〇〇テーマで台本作って」
+       ↓ Claude Code が RESEARCH.md 参照して
+       ↓ script.txt・hashtags.txt に書き込む
+       ↓ Gemini用の背景画像プロンプトを出力する
 
-2. Geminiで背景画像生成 → backgrounds/reel_background.png に保存
+2. ユーザーがGeminiに指示文を貼って画像を生成
+       ↓ GitHubの claude/sns-content に画像をアップロード
+       ↓ 「入れました」と報告
 
-3. python3 generate_reel.py --skip-script
-       ↓ 背景確認して Enter
-       ↓ 動画生成
+3. Claude Code が画像を pull して動画を生成
+       ↓ reels/reel_YYYYMMDD_HHMMss.mp4 に保存
+       ↓ push
 
 4. reels/ から動画をDL → Instagram投稿（21時）
 ```
