@@ -700,30 +700,10 @@ def main():
     size_kb = os.path.getsize(output) // 1024
     print(f"  → {output}  ({size_kb} KB)")
 
-    print("\nStep 4: テキスト生成")
-    base = output.replace('.mp4', '')
-
-    sep = '═' * 50
-    content = '\n\n'.join([
-        sep + '\n【YouTube】\n' + sep,
-        generate_youtube_meta(config),
-        sep + '\n【Instagram / TikTok キャプション】\n' + sep,
-        generate_instagram_tiktok_caption(config),
-        sep + '\n【X 投稿文（3パターン）】\n' + sep,
-        generate_x_post(config),
-        sep + '\n【Threads（3パターン・導線なし）】\n' + sep,
-        generate_threads_post(config),
-    ])
-
-    content_path = base + '_content.txt'
-    with open(content_path, 'w', encoding='utf-8') as f:
-        f.write(content)
-    print(f"  → {content_path}")
-
     print(f"""
 完了 ──────────────────────────────────────────
   動画   : {output}  ({size_kb} KB)
-  テキスト: {content_path}
+  画像   : {base}_slide01〜04.png
 """)
 
 
