@@ -376,8 +376,8 @@ def _clean(text):
     return str(text).replace('\\n', ' ').replace('\n', ' ').replace('<br>', ' ').strip()
 
 
-def generate_caption(config):
-    """YAMLコンフィグからInstagramキャプションを生成（デュアルCTA・統計付き）"""
+def generate_instagram_tiktok_caption(config):
+    """Instagram / TikTok 投稿キャプション"""
     s    = config['slides']
     hook = s['hook']
     prob = s['problem']
@@ -387,34 +387,25 @@ def generate_caption(config):
     hook_num  = hook.get('big_num', '')
     hook_unit = hook.get('big_unit', '')
     hook_sub  = _clean(hook.get('sub', ''))
-    prob_main = _clean(prob['main'])
     prob_sub  = _clean(prob.get('sub', ''))
-    sol_main  = _clean(sol['main'])
     steps     = sol.get('steps', [])
     sol_foot  = _clean(sol.get('foot', ''))
+    num_str   = f"{hook_num}{hook_unit}" if hook_num else ''
 
-    num_str    = f"{hook_num}{hook_unit}" if hook_num else ''
-    step_lines = '\n'.join(f'✅ {step}' for step in steps)
+    points = '\n'.join(f'・{step}' for step in steps[:4])
 
     caption = f"""\
 {hook_main}{f'（{num_str}）' if num_str else ''}
 
-{JISSEKI} — 実際に私がやった話です。
+{JISSEKI}
 
-{prob_main}
 {prob_sub}
 
-{sol_main}：
-{step_lines}
+{points}
 
 {sol_foot}
 
-━━━━━━━━━━━━━━━━━
-▼ 詳しい手順・プロンプト全公開
-{DUAL_CTA}
-━━━━━━━━━━━━━━━━━
-
-{DISCLAIMER}"""
+▶ 詳しい手順はプロフのリンクから"""
 
     extra    = config.get('hashtags', [])
     all_tags = list(dict.fromkeys(extra + BASE_HASHTAGS))
@@ -423,44 +414,23 @@ def generate_caption(config):
     return caption.strip() + '\n\n' + hashtag_line
 
 
-def generate_shorts_script(config):
-    """YouTube Shorts台本（RESEARCH_ttkenji_v2.md § 7 準拠）"""
-    s   = config['slides']
+def generate_youtube_meta(config):
+    """YouTube Shorts アップロード用：タイトル＋説明欄"""
+    s    = config['slides']
     hook = s['hook']
     prob = s['problem']
-    sol  = s['solution']
 
     hook_main = _clean(hook['main'])
     hook_num  = hook.get('big_num', '')
     hook_unit = hook.get('big_unit', '')
-    hook_sub  = _clean(hook.get('sub', ''))
     prob_main = _clean(prob['main'])
-    prob_warn = _clean(prob.get('warn', ''))
-    prob_sub  = _clean(prob.get('sub', ''))
-    steps     = sol.get('steps', [])
-    sol_foot  = _clean(sol.get('foot', ''))
+    num_str   = f"{hook_num}{hook_unit}" if hook_num else ''
 
-    num_str = f"{hook_num}{hook_unit}" if hook_num else ''
-    title   = f"{hook_main}【{prob_main}・{num_str}】" if num_str else f"{hook_main}【{prob_main}】"
-
-    # 本題ポイント（最大4つ）
-    points = []
-    if prob_warn:
-        points.append(prob_warn.replace('\\n', ' / '))
-    if prob_sub:
-        points.append(prob_sub)
-    for step in steps:
-        if len(points) >= 4:
-            break
-        points.append(step)
-    if sol_foot and len(points) < 3:
-        points.append(sol_foot)
-    body = '\n'.join(f'・{p}' for p in points)
-
-    # テロップ3つ
-    t1 = num_str if num_str else _clean(hook.get('marker', hook_main))
-    t2 = prob_sub if prob_sub else (prob_warn.split('\\n')[0] if prob_warn else prob_main)
-    t3 = sol_foot if sol_foot else (steps[0] if steps else '')
+    # タイトル：[キーワード]+[価値]+[数字]
+    if num_str:
+        title = f"{hook_main}【{prob_main}・{num_str}】"
+    else:
+        title = f"{hook_main}【{prob_main}】"
 
     desc = f"""\
 退去費用{JISSEKI}にした方法を解説。
@@ -478,74 +448,52 @@ https://www.mlit.go.jp/jutakukentiku/house/jutakukentiku_house_tk3_000020.html
 
 #退去費用 #原状回復 #賃貸トラブル #AI活用 #引越し #節約"""
 
-    return f"""\
-━━ YouTube Shorts 台本 ━━━━━━━━━━━━━━━━━━
-タイトル：{title}
-
-【0〜3秒】フック
-{hook_main}、{hook_sub if hook_sub else (num_str + 'かかることがあります')}
-
-【3〜45秒】本題
-{body}
-
-・{JISSEKI}（実体験）
-
-【45〜55秒】CTA
-詳しい手順はプロフィールのnoteリンクに全部書いてあります
-
-━━ テロップ（3つ） ━━━━━━━━━━━━━━━━━━━━
-「{t1}」
-「{t2}」
-「{t3}」
-
-━━ YouTube説明欄 ━━━━━━━━━━━━━━━━━━━━━
-{desc}
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"""
+    return f"タイトル：{title}\n\n説明欄：\n{desc}"
 
 
 def generate_x_post(config):
-    """X投稿文（140字以内・3パターン）"""
+    """X投稿文（140字以内・3パターン・URLなし）"""
     s     = config['slides']
     hook  = s['hook']
+    prob  = s['problem']
     sol   = s['solution']
 
     hook_main = _clean(hook['main'])
     hook_num  = hook.get('big_num', '')
     hook_unit = hook.get('big_unit', '')
+    prob_sub  = _clean(prob.get('sub', ''))
     steps     = sol.get('steps', [])
     sol_foot  = _clean(sol.get('foot', ''))
     num_str   = f"{hook_num}{hook_unit}" if hook_num else ''
 
-    # A. リスト型
-    step_lines = '\n'.join(f'・{step}' for step in steps[:3])
-    post_a = f"""{hook_main}でつまずく壁：
+    # A. リスト型（保存率高い）
+    items = [f'・{step}' for step in steps[:3]] if steps else [f'・{prob_sub}']
+    post_a = f"""退去費用で払わなくていいケース：
 
-{step_lines}
+{chr(10).join(items)}
 
-{sol_foot}
+74%の人が知らずに払っています。
 #退去費用 #賃貸トラブル"""
 
-    # B. 問いかけ型
-    post_b = f"""{hook_main}に{num_str}かかると知ってましたか？
+    # B. 問いかけ型（リプ率高い）
+    num_part = f"{num_str}、" if num_str else ""
+    post_b = f"""{num_part}知ってましたか？
 
 {STAT_82}
 
-まず金額が正しいか確認してから動いてください。
+まず請求額が正しいか確認してください。
 #退去費用 #賃貸"""
 
-    # C. コピペ用型
-    tip    = steps[0] if steps else sol_foot
-    post_c = f"""退去費用トラブルで
+    # C. コピペ用型（RT率高い）
+    tip = steps[0] if steps else sol_foot
+    post_c = f"""退去費用の請求書が届いたら送る一言：
 
-「{tip}」
+「請求内容の根拠と計算内訳を書面でご提示ください」
 
-という壁がある。
-AIと国交省ガイドラインで越えられます。
+これだけで状況が変わることがあります。
 #退去費用交渉 #賃貸トラブル"""
 
     return f"""\
-━━ X投稿文（3パターン） ━━━━━━━━━━━━━━━━━━
-
 【A. リスト型（保存率高い）】
 {post_a}
 
@@ -553,13 +501,11 @@ AIと国交省ガイドラインで越えられます。
 {post_b}
 
 【C. コピペ用型（RT率高い）】
-{post_c}
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"""
+{post_c}"""
 
 
 def generate_threads_post(config):
-    """Threads投稿文（500字以内・親しみやすいトーン）"""
+    """Threads投稿文（3パターン・導線なし・ハッシュタグあり）"""
     s     = config['slides']
     hook  = s['hook']
     prob  = s['problem']
@@ -569,37 +515,49 @@ def generate_threads_post(config):
     hook_num  = hook.get('big_num', '')
     hook_unit = hook.get('big_unit', '')
     hook_sub  = _clean(hook.get('sub', ''))
+    prob_main = _clean(prob['main'])
     prob_sub  = _clean(prob.get('sub', ''))
     sol_foot  = _clean(sol.get('foot', ''))
     steps     = sol.get('steps', [])
     num_str   = f"{hook_num}{hook_unit}" if hook_num else ''
 
-    step_lines = '\n'.join(f'✅ {step}' for step in steps[:3])
-    opening    = f"{hook_sub}" if hook_sub else f"{num_str}かかることがあります"
+    tags = '#退去費用 #原状回復 #賃貸トラブル #知らないと損 #賃貸 #引越し準備'
 
-    post = f"""\
-{hook_main}、{opening}
+    # A. あるあるネタ型
+    num_part = f"{num_str}って" if num_str else ""
+    post_a = f"""退去費用の請求書に{num_part}書いてあって
+「え？」となった人いますか。
 
-{JISSEKI} — これ、私の実体験です。
+知らずに全額払ってた人、けっこういると思います。
+74%の人が国交省ガイドラインを知らないらしいです。
 
-{prob_sub}
+{tags}"""
 
-でも、{sol_foot}
+    # B. 質問型
+    post_b = f"""退去費用の請求書、{prob_sub if prob_sub else prob_main}
 
-つまずきやすいのはここ：
-{step_lines}
+これ、経験したことある人いますか？
 
-私が実際に使った手順を全部noteにまとめてます。
-プロフィールのリンクから確認できます。
+{tags}"""
 
-相談できるところ：消費生活センター {CENTER_TEL}"""
+    # C. 語りかけ型
+    post_c = f"""知らなくて損した話をします。
+
+退去費用のことなんですが、{sol_foot}
+
+{prob_sub if prob_sub else ''}
+
+{tags}"""
 
     return f"""\
-━━ Threads投稿文（500字以内） ━━━━━━━━━━━━━━━
+【A. あるあるネタ型】
+{post_a}
 
-{post}
+【B. 質問型】
+{post_b}
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"""
+【C. 語りかけ型】
+{post_c}"""
 
 
 def generate_note_article(config):
@@ -745,14 +703,15 @@ def main():
     print("\nStep 4: テキスト生成")
     base = output.replace('.mp4', '')
 
+    sep = '═' * 50
     content = '\n\n'.join([
-        '═' * 50 + '\n【Instagram キャプション】\n' + '═' * 50,
-        generate_caption(config),
-        '═' * 50 + '\n【YouTube Shorts 台本】\n' + '═' * 50,
-        generate_shorts_script(config),
-        '═' * 50 + '\n【X 投稿文（3パターン）】\n' + '═' * 50,
+        sep + '\n【YouTube】\n' + sep,
+        generate_youtube_meta(config),
+        sep + '\n【Instagram / TikTok キャプション】\n' + sep,
+        generate_instagram_tiktok_caption(config),
+        sep + '\n【X 投稿文（3パターン）】\n' + sep,
         generate_x_post(config),
-        '═' * 50 + '\n【Threads 投稿文】\n' + '═' * 50,
+        sep + '\n【Threads（3パターン・導線なし）】\n' + sep,
         generate_threads_post(config),
     ])
 
