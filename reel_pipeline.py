@@ -730,6 +730,13 @@ def main():
     print("Step 2: スクショ")
     frames = screenshot_slides(html)
 
+    # スライド画像を個別保存
+    base = output.replace('.mp4', '')
+    for i, frame in enumerate(frames):
+        img_path = f"{base}_slide{i+1:02d}.png"
+        Image.fromarray(frame).save(img_path)
+        print(f"  → {img_path}")
+
     print(f"\nStep 3: MP4生成 ({len(frames)}枚 × {SLIDE_SEC}秒)")
     make_mp4(output, frames)
     size_kb = os.path.getsize(output) // 1024
