@@ -713,7 +713,10 @@ def main():
     with open(yaml_path, encoding='utf-8') as f:
         config = yaml.safe_load(f)
 
-    output   = config.get('output', 'reel_output.mp4')
+    # 出力先を reels/ に自動設定
+    out_name = config.get('output', 'reel_output.mp4')
+    os.makedirs('reels', exist_ok=True)
+    output = os.path.join('reels', os.path.basename(out_name))
     print(f"台本: {yaml_path}")
     print(f"出力: {output}\n")
 
