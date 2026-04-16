@@ -1541,7 +1541,7 @@ function navTo(id, ctx){
   if(id==='cal')      renderCal().catch(e=>{ console.error('renderCal error',e); });
   if(id==='proj')     renderProjScreen().catch(e=>{ console.error('renderProjScreen error',e); toast('画面の読み込みに失敗しました'); });
   if(id==='tasks')    renderTasksScreen().catch(e=>{ console.error('renderTasksScreen error',e); });
-  if(id==='kaji')     { syncKajiTabStyle().catch(()=>{}); renderKajiScreen().catch(e=>{ console.error('renderKajiScreen error',e); }); }
+  if(id==='kaji')     { syncKajiTabStyle().catch(()=>{}); renderKajiScreen().catch(e=>{ console.error('renderKajiScreen error',e); showDebugError('kaji: '+e.message); }); }
   if(id==='onboard')  { initOnboard(); return; }
   if(id==='settings') { renderSettings(); return; }
 }
@@ -8913,12 +8913,24 @@ async function boot(){
   // ── グローバルエラーハンドラ ──
   window.addEventListener('unhandledrejection', e => {
     console.error('[UnhandledRejection]', e.reason);
-    // ユーザーには表示しない（開発ログのみ）
+    const msg = e.reason?.message || String(e.reason);
+    showDebugError('Promise: ' + msg);
   });
   window.onerror = (msg, src, line, col, err) => {
     console.error('[GlobalError]', msg, src, line, err);
-    return false; // デフォルト動作を維持
+    showDebugError(msg + ' (line ' + line + ')');
+    return false;
   };
+  function showDebugError(msg) {
+    let dbg = document.getElementById('_debug_err');
+    if (!dbg) {
+      dbg = document.createElement('div');
+      dbg.id = '_debug_err';
+      dbg.style.cssText = 'position:fixed;bottom:80px;left:10px;right:10px;background:#c00;color:#fff;font-size:11px;padding:8px 12px;border-radius:10px;z-index:9999;word-break:break-all;white-space:pre-wrap;max-height:200px;overflow-y:auto;';
+      document.body.appendChild(dbg);
+    }
+    dbg.textContent += '\n' + msg;
+  }
 
   // ── Escapeキーでモーダル・チャットを閉じる ──
   document.addEventListener('keydown', e => {
