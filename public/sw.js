@@ -1,5 +1,5 @@
 // ハコぶ Service Worker — オフラインキャッシュ
-const CACHE = 'hakobu-v1';
+const CACHE = 'hakobu-v2';
 
 // キャッシュするアセット（アプリシェル）
 const PRECACHE = [
