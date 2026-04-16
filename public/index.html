@@ -1125,7 +1125,7 @@ function mkState(){
     singleTasks: [],
     projects: [],
     stats: { sessions:0 },
-    kaji: { shop: [], chore: [], shopHistory: [], choreHistory: [], routines: [] },
+    kaji: { shop: [], chore: [], shopHistory: [], choreHistory: [], routines: [], shopGroups: [] },
     privateTasks: [],  // 自分専用（Firebase非同期）
     requestTasks:  [],  // お願いタスク（LINEで依頼→送った記録）
     schedules:     [],  // カレンダー予定 [{id, title, date, color, allDay}]
@@ -1164,7 +1164,8 @@ function mergeState(saved) {
                     chore: Array.isArray(saved.kaji?.chore) ? saved.kaji.chore : def.kaji.chore,
                     shopHistory:  Array.isArray(saved.kaji?.shopHistory)  ? saved.kaji.shopHistory  : def.kaji.shopHistory,
                     choreHistory: Array.isArray(saved.kaji?.choreHistory) ? saved.kaji.choreHistory : def.kaji.choreHistory,
-                    routines:     Array.isArray(saved.kaji?.routines)     ? saved.kaji.routines     : [] },
+                    routines:     Array.isArray(saved.kaji?.routines)     ? saved.kaji.routines     : [],
+                    shopGroups:   Array.isArray(saved.kaji?.shopGroups)   ? saved.kaji.shopGroups   : [] },
     privateTasks:  Array.isArray(saved.privateTasks)  ? saved.privateTasks  : def.privateTasks,
     requestTasks:  Array.isArray(saved.requestTasks)  ? saved.requestTasks  : def.requestTasks,
     dismissedEventIds: Array.isArray(saved.dismissedEventIds) ? saved.dismissedEventIds : [],
@@ -9499,13 +9500,23 @@ async function renderKajiScreen() {
   const doAdd = async (nameArg) => {
     const name = (nameArg || inp.value).trim(); if (!name) return;
     const st = await loadST();
-    if (!st.kaji) st.kaji = { shop: [], chore: [], shopHistory: [], choreHistory: [] };
+    if (!st.kaji) st.kaji = { shop: [], chore: [], shopHistory: [], choreHistory: [], shopGroups: [] };
     if(!st.kaji[histKey]) st.kaji[histKey] = [];
     if(!st.kaji[tab]) st.kaji[tab] = [];
     if(st.kaji[tab].some(x=>(x.name||x)===name)){ toast('既にリストにあります'); return; }
-    st.kaji[tab].unshift({ id: 'k'+Date.now()+'_'+Math.random().toString(36).slice(2,5), name, done: false, selected: false, createdAt: new Date().toISOString() });
-    await _recordHistory(st, name);
-    await saveST(st); inp.value = ''; dd.style.display = 'none'; renderKajiScreen();
+    inp.value = ''; dd.style.display = 'none';
+    const addItem = async (groupId) => {
+      const st2 = await loadST();
+      if(!st2.kaji[tab]) st2.kaji[tab] = [];
+      st2.kaji[tab].unshift({ id:'k'+Date.now()+'_'+Math.random().toString(36).slice(2,5), name, done:false, selected:false, createdAt:new Date().toISOString(), groupId:groupId||null });
+      await _recordHistory(st2, name);
+      await saveST(st2); renderKajiScreen();
+    };
+    if(tab==='shop' && (st.kaji.shopGroups||[]).length > 0) {
+      showShopGroupPicker(st.kaji.shopGroups, addItem);
+    } else {
+      await addItem(null);
+    }
   };
   addBtn.addEventListener('click', () => doAdd());
   inp.addEventListener('keydown', e => { if (e.key === 'Enter') doAdd(); });
@@ -9529,6 +9540,18 @@ async function renderKajiScreen() {
   /* --- カテゴリチップ（非sticky） --- */
   tw.style.cssText = 'display:flex;gap:6px;flex-wrap:wrap;padding:8px 12px;background:var(--sur);';
   body.appendChild(tw);
+
+  // shop タブのみ：グループ追加ボタン
+  if(tab === 'shop') {
+    const gbw = document.createElement('div');
+    gbw.style.cssText = 'padding:0 12px 8px;display:flex;justify-content:flex-end;';
+    const gbtn = document.createElement('button');
+    gbtn.style.cssText = 'display:inline-flex;align-items:center;gap:5px;border:1.5px dashed var(--bdr);background:transparent;color:var(--t3);border-radius:20px;padding:4px 12px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;';
+    gbtn.innerHTML = '<i class="ph ph-folder-plus" style="font-size:13px;display:inline-flex;align-items:center;line-height:1;"></i>項目を追加';
+    gbtn.addEventListener('click', () => openAddGroupModal());
+    gbw.appendChild(gbtn);
+    body.appendChild(gbw);
+  }
 
   /* --- リスト --- */
   const lw = document.createElement('div');
@@ -9670,34 +9693,180 @@ async function renderKajiScreen() {
     return row;
   }
 
-  // 未完了リスト
-  for(const item of activeItems) lw.appendChild(await makeKajiRow(item));
+  // ── shop タブ：グループ対応リスト ──────────────────────────────
+  if(tab === 'shop') {
+    const groups = s.kaji.shopGroups || [];
 
-  // 完了済み折りたたみ
-  if (doneItems.length) {
-    let doneOpen = false;
-    const doneToggle = document.createElement('div');
-    doneToggle.className += ' done-toggle-row';
-    const doneList = document.createElement('div');
-    function refreshDoneToggle() {
-      doneToggle.innerHTML = `<span style="font-size:12px;color:var(--t3);margin-right:6px;">${doneOpen?'▾':'▸'}</span><span style="font-size:12px;font-weight:700;color:var(--t3);flex:1;">完了済み ${doneItems.length}件</span>`;
-      const delAll = document.createElement('button');
-      delAll.textContent = '全削除';
-      delAll.className += ' del-all-btn';
-      delAll.addEventListener('click', async e => {
+    // ドラッグ付き行を生成
+    const makeShopRow = (item) => {
+      const row = document.createElement('div');
+      row.className = 'kaji-item drag-row';
+      row.dataset.dragItem = item.id;
+      row.style.cssText = 'display:flex;align-items:center;gap:8px;padding:10px 12px;border-bottom:1px solid var(--bdr);background:#fff;';
+      // ドラッグハンドル
+      const handle = document.createElement('div');
+      handle.className = 'drag-handle';
+      handle.dataset.dragHandle = '1';
+      handle.innerHTML = '<i class="ph ph-dots-six-vertical" style="font-size:18px;color:var(--t3);display:inline-flex;align-items:center;line-height:1;"></i>';
+      handle.style.cssText = 'padding:4px 2px;cursor:grab;flex-shrink:0;touch-action:none;-webkit-user-select:none;user-select:none;';
+      // チェック
+      const chk = document.createElement('div');
+      chk.style.cssText = 'width:22px;height:22px;border-radius:50%;border:2px solid '+(item.done?'var(--teal)':'var(--bdr)')+';flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:12px;background:'+(item.done?'var(--teal)':'transparent')+';color:#fff;cursor:pointer;transition:all .15s';
+      chk.textContent = item.done ? '✓' : '';
+      chk.addEventListener('click', async e => {
         e.stopPropagation();
-        if (!confirm(`完了済み ${doneItems.length}件をすべて削除しますか？`)) return;
         const st = await loadST();
-        st.kaji[tab] = st.kaji[tab].filter(x => !x.done);
+        const it = (st.kaji.shop||[]).find(x=>x.id===item.id); if(!it) return;
+        it.done = !it.done; await saveST(st); renderKajiScreen();
+      });
+      // 名前
+      const nm = document.createElement('div');
+      nm.style.cssText = 'flex:1;font-size:14px;font-weight:600;color:'+(item.done?'var(--t3)':'var(--t1)');
+      nm.textContent = item.name;
+      // 削除
+      const del = document.createElement('button');
+      del.style.cssText = 'border:none;background:none;color:var(--t3);font-size:16px;cursor:pointer;padding:4px 6px;flex-shrink:0;opacity:.5;';
+      del.innerHTML = '&times;';
+      del.addEventListener('click', async e => {
+        e.stopPropagation();
+        const st = await loadST();
+        st.kaji.shop = (st.kaji.shop||[]).filter(x=>x.id!==item.id);
         await saveST(st); renderKajiScreen();
       });
-      doneToggle.appendChild(delAll);
-      doneList.style.display = doneOpen ? 'block' : 'none';
+      row.append(handle, chk, nm, del);
+      return row;
+    };
+
+    // 並び替え保存ハンドラ
+    const makeReorderHandler = (idSet) => async (newOrder) => {
+      const st = await loadST();
+      const shop = st.kaji.shop || [];
+      const reordered = newOrder.map(id=>shop.find(x=>x.id===id)).filter(Boolean);
+      const others = shop.filter(x=>!idSet.has(x.id));
+      const firstIdx = Math.max(0, shop.findIndex(x=>idSet.has(x.id)));
+      others.splice(firstIdx, 0, ...reordered);
+      st.kaji.shop = others;
+      await saveST(st);
+    };
+
+    // グループセクション描画ヘルパー
+    const renderGroupSection = (groupItems, groupId) => {
+      const card = document.createElement('div');
+      card.style.cssText = 'background:#fff;border-radius:16px;margin:0 12px 4px;overflow:hidden;border:1px solid var(--bdr);';
+      if(groupItems.length === 0) {
+        const emp = document.createElement('div');
+        emp.style.cssText = 'padding:14px 16px;font-size:12px;color:var(--t3);text-align:center;';
+        emp.textContent = 'アイテムなし';
+        card.appendChild(emp);
+      } else {
+        const idSet = new Set(groupItems.map(x=>x.id));
+        groupItems.forEach(item => card.appendChild(makeShopRow(item)));
+        enableDragReorder(card, makeReorderHandler(idSet));
+      }
+      return card;
+    };
+
+    if(groups.length === 0) {
+      // グループなし：フラットリスト
+      if(activeItems.length > 0) {
+        const card = renderGroupSection(activeItems, null);
+        card.style.margin = '0 12px 4px';
+        lw.appendChild(card);
+      }
+    } else {
+      // グループごとに描画
+      groups.forEach(group => {
+        const groupItems = activeItems.filter(x=>x.groupId===group.id);
+        // グループヘッダー
+        const hdr = document.createElement('div');
+        hdr.style.cssText = 'display:flex;align-items:center;padding:14px 14px 6px;';
+        hdr.innerHTML = '<i class="ph ph-folder-simple" style="font-size:14px;color:var(--teal);margin-right:6px;display:inline-flex;align-items:center;line-height:1;"></i>'
+          +'<span style="font-size:13px;font-weight:800;color:var(--t2);flex:1;">'+group.name+'</span>'
+          +'<span style="font-size:11px;color:var(--t3);margin-right:8px;">'+groupItems.length+'件</span>';
+        // 編集
+        const editBtn = document.createElement('button');
+        editBtn.style.cssText = 'border:none;background:none;color:var(--t3);cursor:pointer;padding:3px 5px;font-size:13px;';
+        editBtn.innerHTML = '<i class="ph ph-pencil-simple" style="font-size:13px;display:inline-flex;align-items:center;line-height:1;"></i>';
+        editBtn.addEventListener('click', () => openEditGroupModal(group));
+        // 削除
+        const delBtn = document.createElement('button');
+        delBtn.style.cssText = 'border:none;background:none;color:var(--t3);cursor:pointer;padding:3px 5px;font-size:13px;';
+        delBtn.innerHTML = '<i class="ph ph-trash" style="font-size:13px;display:inline-flex;align-items:center;line-height:1;"></i>';
+        delBtn.addEventListener('click', async () => {
+          if(!confirm('「'+group.name+'」を削除しますか？\n中のアイテムはグループなしに移動します。')) return;
+          const st = await loadST();
+          st.kaji.shopGroups = (st.kaji.shopGroups||[]).filter(g=>g.id!==group.id);
+          st.kaji.shop = (st.kaji.shop||[]).map(x=>x.groupId===group.id?{...x,groupId:null}:x);
+          await saveST(st); renderKajiScreen();
+        });
+        hdr.append(editBtn, delBtn);
+        lw.appendChild(hdr);
+        lw.appendChild(renderGroupSection(groupItems, group.id));
+      });
+
+      // グループなしアイテム
+      const ungrouped = activeItems.filter(x=>!x.groupId||!groups.find(g=>g.id===x.groupId));
+      if(ungrouped.length > 0) {
+        const ugHdr = document.createElement('div');
+        ugHdr.style.cssText = 'padding:14px 14px 6px;font-size:13px;font-weight:800;color:var(--t3);';
+        ugHdr.textContent = 'グループなし';
+        lw.appendChild(ugHdr);
+        lw.appendChild(renderGroupSection(ungrouped, null));
+      }
     }
-    doneToggle.addEventListener('click', () => { doneOpen = !doneOpen; refreshDoneToggle(); });
-    for(const item of doneItems) doneList.appendChild(await makeKajiRow(item));
-    refreshDoneToggle();
-    lw.append(doneToggle, doneList);
+
+    // 完了済み（shop）
+    if(doneItems.length) {
+      let doneOpen = false;
+      const doneToggle = document.createElement('div');
+      doneToggle.className = 'done-toggle-row';
+      const doneList = document.createElement('div');
+      const refreshDT = () => {
+        doneToggle.innerHTML = `<span style="font-size:12px;color:var(--t3);margin-right:6px;">${doneOpen?'▾':'▸'}</span><span style="font-size:12px;font-weight:700;color:var(--t3);flex:1;">完了済み ${doneItems.length}件</span>`;
+        const delAll = document.createElement('button');
+        delAll.textContent = '全削除'; delAll.className = 'del-all-btn';
+        delAll.addEventListener('click', async e => {
+          e.stopPropagation();
+          if(!confirm(`完了済み ${doneItems.length}件をすべて削除しますか？`)) return;
+          const st = await loadST(); st.kaji.shop = st.kaji.shop.filter(x=>!x.done);
+          await saveST(st); renderKajiScreen();
+        });
+        doneToggle.appendChild(delAll);
+        doneList.style.display = doneOpen ? 'block' : 'none';
+      };
+      doneToggle.addEventListener('click', ()=>{ doneOpen=!doneOpen; refreshDT(); });
+      doneItems.forEach(item => doneList.appendChild(makeShopRow(item)));
+      refreshDT();
+      lw.append(doneToggle, doneList);
+    }
+
+  } else {
+    // ── chore / choreDeep タブ：既存フラットリスト ──────────────
+    for(const item of activeItems) lw.appendChild(await makeKajiRow(item));
+
+    if (doneItems.length) {
+      let doneOpen = false;
+      const doneToggle = document.createElement('div');
+      doneToggle.className += ' done-toggle-row';
+      const doneList = document.createElement('div');
+      function refreshDoneToggle() {
+        doneToggle.innerHTML = `<span style="font-size:12px;color:var(--t3);margin-right:6px;">${doneOpen?'▾':'▸'}</span><span style="font-size:12px;font-weight:700;color:var(--t3);flex:1;">完了済み ${doneItems.length}件</span>`;
+        const delAll = document.createElement('button');
+        delAll.textContent = '全削除'; delAll.className += ' del-all-btn';
+        delAll.addEventListener('click', async e => {
+          e.stopPropagation();
+          if (!confirm(`完了済み ${doneItems.length}件をすべて削除しますか？`)) return;
+          const st = await loadST(); st.kaji[tab] = st.kaji[tab].filter(x => !x.done);
+          await saveST(st); renderKajiScreen();
+        });
+        doneToggle.appendChild(delAll);
+        doneList.style.display = doneOpen ? 'block' : 'none';
+      }
+      doneToggle.addEventListener('click', () => { doneOpen = !doneOpen; refreshDoneToggle(); });
+      for(const item of doneItems) doneList.appendChild(await makeKajiRow(item));
+      refreshDoneToggle();
+      lw.append(doneToggle, doneList);
+    }
   }
 
   body.appendChild(lw);
@@ -9705,6 +9874,224 @@ async function renderKajiScreen() {
   // 既存バーを削除（レガシー）
   const oldBar = document.getElementById('s-kaji')?.querySelector('.kaji-sel-bar');
   if(oldBar) oldBar.remove();
+}
+
+/* ── ショッピンググループ ヘルパー関数 ── */
+
+/** グループ選択ボトムシート */
+function showShopGroupPicker(groups, onSelect) {
+  const ex = document.getElementById('shop-group-picker'); if(ex) ex.remove();
+  const bg = document.createElement('div');
+  bg.id = 'shop-group-picker';
+  bg.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:500;display:flex;align-items:flex-end;';
+  const sh = document.createElement('div');
+  sh.style.cssText = 'background:#fff;width:100%;border-radius:24px 24px 0 0;padding:20px 16px calc(24px + env(safe-area-inset-bottom));max-height:70vh;overflow-y:auto;';
+  sh.innerHTML = '<div style="font-size:15px;font-weight:900;color:var(--navy);margin-bottom:14px;text-align:center;">追加先の項目を選択</div>';
+
+  const list = document.createElement('div');
+  list.style.cssText = 'display:flex;flex-direction:column;gap:8px;';
+
+  // 既存グループ
+  groups.forEach(g => {
+    const btn = document.createElement('button');
+    btn.style.cssText = 'display:flex;align-items:center;gap:10px;padding:13px 14px;background:var(--bg);border:none;border-radius:12px;width:100%;text-align:left;cursor:pointer;font-size:14px;font-weight:700;color:var(--navy);';
+    btn.innerHTML = '<i class="ph ph-folder" style="font-size:18px;color:var(--teal);display:inline-flex;align-items:center;line-height:1;"></i>' + g.name;
+    btn.addEventListener('click', () => { bg.remove(); onSelect(g.id); });
+    list.appendChild(btn);
+  });
+
+  // グループなし
+  const noneBtn = document.createElement('button');
+  noneBtn.style.cssText = 'display:flex;align-items:center;gap:10px;padding:13px 14px;background:var(--bg);border:none;border-radius:12px;width:100%;text-align:left;cursor:pointer;font-size:14px;color:var(--t2);';
+  noneBtn.innerHTML = '<i class="ph ph-minus-circle" style="font-size:18px;color:var(--t3);display:inline-flex;align-items:center;line-height:1;"></i>グループなし';
+  noneBtn.addEventListener('click', () => { bg.remove(); onSelect(null); });
+  list.appendChild(noneBtn);
+
+  // キャンセル
+  const cancelBtn = document.createElement('button');
+  cancelBtn.style.cssText = 'margin-top:10px;padding:13px;background:none;border:none;border-radius:12px;width:100%;font-size:14px;color:var(--t3);cursor:pointer;';
+  cancelBtn.textContent = 'キャンセル';
+  cancelBtn.addEventListener('click', () => bg.remove());
+  list.appendChild(cancelBtn);
+
+  sh.appendChild(list);
+  bg.appendChild(sh);
+  bg.addEventListener('click', e => { if(e.target===bg) bg.remove(); });
+  document.body.appendChild(bg);
+}
+
+/** 新規グループ作成モーダル */
+function openAddGroupModal() {
+  const ex = document.getElementById('add-group-modal'); if(ex) ex.remove();
+  const bg = document.createElement('div');
+  bg.id = 'add-group-modal';
+  bg.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:500;display:flex;align-items:center;justify-content:center;padding:16px;';
+  const card = document.createElement('div');
+  card.style.cssText = 'background:#fff;border-radius:20px;padding:24px;width:100%;max-width:340px;';
+  card.innerHTML = '<div style="font-size:16px;font-weight:900;color:var(--navy);margin-bottom:16px;text-align:center;">新しい項目を追加</div>';
+
+  const inp = document.createElement('input');
+  inp.type = 'text';
+  inp.placeholder = '例: すぐ必要なもの、誕生日…';
+  inp.style.cssText = 'width:100%;padding:12px 14px;border:1.5px solid var(--bdr);border-radius:12px;font-size:14px;font-family:inherit;outline:none;margin-bottom:14px;';
+  inp.addEventListener('focus', () => inp.style.borderColor = 'var(--teal)');
+  inp.addEventListener('blur',  () => inp.style.borderColor = 'var(--bdr)');
+  card.appendChild(inp);
+
+  const row = document.createElement('div');
+  row.style.cssText = 'display:flex;gap:10px;';
+
+  const cancelBtn = document.createElement('button');
+  cancelBtn.textContent = 'キャンセル';
+  cancelBtn.style.cssText = 'flex:1;padding:12px;background:var(--bg);border:none;border-radius:12px;font-size:14px;cursor:pointer;color:var(--t2);';
+  cancelBtn.addEventListener('click', () => bg.remove());
+
+  const saveBtn = document.createElement('button');
+  saveBtn.textContent = '追加';
+  saveBtn.style.cssText = 'flex:1;padding:12px;background:var(--teal);border:none;border-radius:12px;font-size:14px;font-weight:700;color:#fff;cursor:pointer;';
+  saveBtn.addEventListener('click', async () => {
+    const name = inp.value.trim(); if(!name) { inp.focus(); return; }
+    const st = await loadST();
+    if(!st.kaji) st.kaji = { shop:[], chore:[], shopHistory:[], choreHistory:[], shopGroups:[] };
+    if(!st.kaji.shopGroups) st.kaji.shopGroups = [];
+    if(st.kaji.shopGroups.some(g=>g.name===name)){ toast('同じ名前の項目が既にあります'); return; }
+    st.kaji.shopGroups.push({ id:'sg'+Date.now(), name, createdAt:new Date().toISOString() });
+    await saveST(st);
+    bg.remove();
+    renderKajiScreen();
+  });
+
+  row.append(cancelBtn, saveBtn);
+  card.appendChild(row);
+  bg.appendChild(card);
+  bg.addEventListener('click', e => { if(e.target===bg) bg.remove(); });
+  document.body.appendChild(bg);
+  setTimeout(() => inp.focus(), 100);
+}
+
+/** グループ名編集モーダル */
+function openEditGroupModal(group) {
+  const ex = document.getElementById('edit-group-modal'); if(ex) ex.remove();
+  const bg = document.createElement('div');
+  bg.id = 'edit-group-modal';
+  bg.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:500;display:flex;align-items:center;justify-content:center;padding:16px;';
+  const card = document.createElement('div');
+  card.style.cssText = 'background:#fff;border-radius:20px;padding:24px;width:100%;max-width:340px;';
+  card.innerHTML = '<div style="font-size:16px;font-weight:900;color:var(--navy);margin-bottom:16px;text-align:center;">項目名を変更</div>';
+
+  const inp = document.createElement('input');
+  inp.type = 'text';
+  inp.value = group.name;
+  inp.style.cssText = 'width:100%;padding:12px 14px;border:1.5px solid var(--teal);border-radius:12px;font-size:14px;font-family:inherit;outline:none;margin-bottom:14px;';
+  inp.addEventListener('focus', () => inp.style.borderColor = 'var(--teal)');
+  inp.addEventListener('blur',  () => inp.style.borderColor = 'var(--bdr)');
+  card.appendChild(inp);
+
+  const row = document.createElement('div');
+  row.style.cssText = 'display:flex;gap:10px;';
+
+  const cancelBtn = document.createElement('button');
+  cancelBtn.textContent = 'キャンセル';
+  cancelBtn.style.cssText = 'flex:1;padding:12px;background:var(--bg);border:none;border-radius:12px;font-size:14px;cursor:pointer;color:var(--t2);';
+  cancelBtn.addEventListener('click', () => bg.remove());
+
+  const saveBtn = document.createElement('button');
+  saveBtn.textContent = '保存';
+  saveBtn.style.cssText = 'flex:1;padding:12px;background:var(--teal);border:none;border-radius:12px;font-size:14px;font-weight:700;color:#fff;cursor:pointer;';
+  saveBtn.addEventListener('click', async () => {
+    const name = inp.value.trim(); if(!name) { inp.focus(); return; }
+    const st = await loadST();
+    const g = (st.kaji?.shopGroups||[]).find(g=>g.id===group.id);
+    if(!g) { bg.remove(); return; }
+    g.name = name;
+    await saveST(st);
+    bg.remove();
+    renderKajiScreen();
+  });
+
+  row.append(cancelBtn, saveBtn);
+  card.appendChild(row);
+  bg.appendChild(card);
+  bg.addEventListener('click', e => { if(e.target===bg) bg.remove(); });
+  document.body.appendChild(bg);
+  setTimeout(() => { inp.focus(); inp.select(); }, 100);
+}
+
+/** タッチで長押し→ドラッグ並び替え */
+function enableDragReorder(listEl, onReorder) {
+  let dragEl = null, ghost = null, placeholder = null, startY = 0, offsetY = 0;
+  let longPressTimer = null;
+
+  const getItems = () => Array.from(listEl.querySelectorAll('[data-drag-item]'));
+
+  listEl.addEventListener('touchstart', e => {
+    const handle = e.target.closest('[data-drag-handle]');
+    if(!handle) return;
+    const item = handle.closest('[data-drag-item]');
+    if(!item) return;
+
+    longPressTimer = setTimeout(() => {
+      dragEl = item;
+      const rect = item.getBoundingClientRect();
+      startY = e.touches[0].clientY;
+      offsetY = startY - rect.top;
+
+      // プレースホルダー
+      placeholder = document.createElement('div');
+      placeholder.style.cssText = `height:${rect.height}px;background:var(--teal-l,#e0f7f6);border-radius:12px;margin-bottom:8px;border:2px dashed var(--teal);`;
+      item.parentNode.insertBefore(placeholder, item);
+
+      // ゴースト（固定位置）
+      ghost = item.cloneNode(true);
+      ghost.style.cssText = `position:fixed;left:${rect.left}px;top:${rect.top}px;width:${rect.width}px;z-index:9999;opacity:.85;box-shadow:0 8px 24px rgba(0,0,0,.18);border-radius:12px;pointer-events:none;transform:scale(1.02);transition:transform .1s;background:#fff;`;
+      document.body.appendChild(ghost);
+      item.style.visibility = 'hidden';
+      if(navigator.vibrate) navigator.vibrate(40);
+    }, 400);
+  }, { passive: true });
+
+  listEl.addEventListener('touchmove', e => {
+    if(longPressTimer) { clearTimeout(longPressTimer); longPressTimer = null; }
+    if(!dragEl || !ghost) return;
+    e.preventDefault();
+
+    const y = e.touches[0].clientY;
+    ghost.style.top = (y - offsetY) + 'px';
+
+    // どこに挿入するか判定
+    const items = getItems().filter(el => el !== dragEl);
+    let inserted = false;
+    for(const it of items) {
+      const r = it.getBoundingClientRect();
+      if(y < r.top + r.height / 2) {
+        it.parentNode.insertBefore(placeholder, it);
+        inserted = true;
+        break;
+      }
+    }
+    if(!inserted && items.length) {
+      const last = items[items.length-1];
+      last.parentNode.insertBefore(placeholder, last.nextSibling);
+    }
+  }, { passive: false });
+
+  const endDrag = () => {
+    if(longPressTimer) { clearTimeout(longPressTimer); longPressTimer = null; }
+    if(!dragEl || !ghost || !placeholder) return;
+
+    placeholder.parentNode.insertBefore(dragEl, placeholder);
+    placeholder.remove();
+    ghost.remove();
+    dragEl.style.visibility = '';
+    dragEl = null; ghost = null; placeholder = null;
+
+    // 新しい順番を収集して保存
+    const newOrder = getItems().map(el => el.dataset.dragItem);
+    onReorder(newOrder);
+  };
+
+  listEl.addEventListener('touchend', endDrag, { passive: true });
+  listEl.addEventListener('touchcancel', endDrag, { passive: true });
 }
 
 /* ── 依頼タブ描画 ── */
