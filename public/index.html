@@ -486,7 +486,6 @@ window.initFirebase = async function(config) {
     window._fbDb   = getDatabase(window._fbApp);
     window._fbAuth = getAuth(window._fbApp);
     window._fbReady = true;
-    console.log('[Firebase] initialized');
     // Capacitor: リダイレクト後の認証結果を取得してboot()で処理できるよう保存
     try {
       const result = await getRedirectResult(window._fbAuth);
@@ -496,7 +495,6 @@ window.initFirebase = async function(config) {
           uid: u.uid, name: u.displayName, email: u.email, photo: u.photoURL,
           provider: u.providerData?.[0]?.providerId?.includes('google') ? 'google' : 'apple'
         };
-        console.log('[Firebase] redirect result received:', window._fbPendingRedirectUser.uid);
       }
     } catch(e) {
       console.error('[Firebase] getRedirectResult error', e);
@@ -8974,7 +8972,6 @@ async function boot(){
   // ── Capacitor: signInWithRedirect後の認証結果を処理 ──────────
   // イベントリスナー登録が完了した後で呼ぶことで、ナビゲーション・描画が正しく動く
   if(pendingRedirectUser) {
-    console.log('[boot] processing redirect login:', pendingRedirectUser.uid);
     setTimeout(() => afterLogin(pendingRedirectUser), 300);
   }
 }

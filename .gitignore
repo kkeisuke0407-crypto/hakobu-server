@@ -5,3 +5,10 @@ dist/
 .DS_Store
 *.log
 __pycache__/
+.env
+.env.local
+.env.*.local
+.vscode/
+.idea/
+*.swp
+.cache/
