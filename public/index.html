@@ -1904,16 +1904,6 @@ function getUpcomingEvents(s) {
   return result;
 }
 
-// ── イベントの緊急度（日数→ラベル・色） ────────────────────────────────────
-function getEventUrgency(ev) {
-  const d = ev.daysUntil;
-  if(d <= 7)  return { label:'今週!', color:'#C0392B' };
-  if(d <= 14) return { label:'2週間後', color:'#D4611A' };
-  if(d <= 30) return { label:'来月', color:'#B45309' };
-  if(d <= 60) return { label:'2ヶ月後', color:'#111111' };
-  return { label: Math.ceil(d/30)+'ヶ月後', color:'#5C6E5E' };
-}
-
 // ── 軽量家事提案カード（曜日・時間帯連動） ──────────────────────────────────
 // プロジェクト化せずに家事タスクに1件追加するだけの軽いカード
 function getLightChoreCard(s) {
@@ -1972,6 +1962,9 @@ function getLightChoreCard(s) {
     evDate: now, daysUntil: 0, isolated: false,
   };
 }
+
+// ── イベントの緊急度（日数→ラベル・色） ────────────────────────────────────
+function getEventUrgency(ev) {
   const d = ev.daysUntil;
   if(d < 0)   return { label:'期限超過', color:'#C0392B' };
   if(d === 0) return { label:'今日!', color:'#C0392B' };
