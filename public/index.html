@@ -9510,6 +9510,9 @@ async function renderKajiScreen() {
     if(st.kaji[histKey].length > 100) st.kaji[histKey].length = 100;
   }
 
+  // shop タブ：追加先グループID（チップで切替。初期値 null = グループなし）
+  let currentTargetGroupId = null;
+
   const doAdd = async (nameArg) => {
     const name = (nameArg || inp.value).trim(); if (!name) return;
     const st = await loadST();
@@ -9518,18 +9521,10 @@ async function renderKajiScreen() {
     if(!st.kaji[tab]) st.kaji[tab] = [];
     if(st.kaji[tab].some(x=>(x.name||x)===name)){ toast('既にリストにあります'); return; }
     inp.value = ''; dd.style.display = 'none';
-    const addItem = async (groupId) => {
-      const st2 = await loadST();
-      if(!st2.kaji[tab]) st2.kaji[tab] = [];
-      st2.kaji[tab].unshift({ id:'k'+Date.now()+'_'+Math.random().toString(36).slice(2,5), name, done:false, selected:false, createdAt:new Date().toISOString(), groupId:groupId||null });
-      await _recordHistory(st2, name);
-      await saveST(st2); renderKajiScreen();
-    };
-    if(tab==='shop' && (st.kaji.shopGroups||[]).length > 0) {
-      showShopGroupPicker(st.kaji.shopGroups, addItem);
-    } else {
-      await addItem(null);
-    }
+    const gid = (tab === 'shop') ? currentTargetGroupId : null;
+    st.kaji[tab].unshift({ id:'k'+Date.now()+'_'+Math.random().toString(36).slice(2,5), name, done:false, selected:false, createdAt:new Date().toISOString(), groupId:gid });
+    await _recordHistory(st, name);
+    await saveST(st); renderKajiScreen();
   };
   addBtn.addEventListener('click', () => doAdd());
   inp.addEventListener('keydown', e => { if (e.key === 'Enter') doAdd(); });
@@ -9548,6 +9543,35 @@ async function renderKajiScreen() {
   });
 
   iw.appendChild(ir);
+
+  // shop タブ：追加先グループ選択チップ（グループがある場合のみ）
+  if(tab === 'shop') {
+    const _tgtGroups = (s.kaji?.shopGroups) || [];
+    if(_tgtGroups.length > 0) {
+      const tgtRow = document.createElement('div');
+      tgtRow.style.cssText = 'display:flex;gap:6px;flex-wrap:wrap;align-items:center;padding-top:2px;';
+      const lbl = document.createElement('span');
+      lbl.style.cssText = 'font-size:11px;font-weight:700;color:var(--t3);margin-right:2px;';
+      lbl.textContent = '追加先:';
+      tgtRow.appendChild(lbl);
+
+      const _chipStyle = (active) => 'border:1.5px solid '+(active?'var(--teal)':'var(--bdr)')+';background:'+(active?'var(--teal)':'#fff')+';color:'+(active?'#fff':'var(--t2)')+';border-radius:16px;padding:4px 11px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .12s;';
+      const _chips = [];
+      const _gids = [null, ..._tgtGroups.map(g=>g.id)];
+      const _labels = ['グループなし', ..._tgtGroups.map(g=>g.name)];
+      const _update = () => _chips.forEach((c,i)=>{ c.style.cssText = _chipStyle(currentTargetGroupId === _gids[i]); });
+      _gids.forEach((gid, i) => {
+        const chip = document.createElement('button');
+        chip.style.cssText = _chipStyle(currentTargetGroupId === gid);
+        chip.textContent = _labels[i];
+        chip.addEventListener('click', () => { currentTargetGroupId = gid; _update(); });
+        _chips.push(chip);
+        tgtRow.appendChild(chip);
+      });
+      iw.appendChild(tgtRow);
+    }
+  }
+
   body.appendChild(iw);
 
   /* --- カテゴリチップ（非sticky） --- */
@@ -9736,6 +9760,25 @@ async function renderKajiScreen() {
       const nm = document.createElement('div');
       nm.style.cssText = 'flex:1;font-size:14px;font-weight:600;color:'+(item.done?'var(--t3)':'var(--t1)');
       nm.textContent = item.name;
+      // 項目に移動（グループが1つ以上あるときだけ表示）
+      const hasGroups = (s.kaji?.shopGroups || []).length > 0;
+      let mv = null;
+      if(hasGroups) {
+        mv = document.createElement('button');
+        mv.style.cssText = 'border:none;background:none;color:var(--t3);cursor:pointer;padding:4px 6px;flex-shrink:0;opacity:.6;';
+        mv.innerHTML = '<i class="ph ph-folder-simple" style="font-size:16px;display:inline-flex;align-items:center;line-height:1;"></i>';
+        mv.title = '項目を変更';
+        mv.addEventListener('click', async e => {
+          e.stopPropagation();
+          const st = await loadST();
+          const groups = st.kaji?.shopGroups || [];
+          showShopGroupPicker(groups, async (newGid) => {
+            const it = (st.kaji.shop||[]).find(x=>x.id===item.id); if(!it) return;
+            it.groupId = newGid;
+            await saveST(st); renderKajiScreen();
+          });
+        });
+      }
       // 削除
       const del = document.createElement('button');
       del.style.cssText = 'border:none;background:none;color:var(--t3);font-size:16px;cursor:pointer;padding:4px 6px;flex-shrink:0;opacity:.5;';
@@ -9746,7 +9789,8 @@ async function renderKajiScreen() {
         st.kaji.shop = (st.kaji.shop||[]).filter(x=>x.id!==item.id);
         await saveST(st); renderKajiScreen();
       });
-      row.append(handle, chk, nm, del);
+      if(mv) row.append(handle, chk, nm, mv, del);
+      else   row.append(handle, chk, nm, del);
       return row;
     };
 
