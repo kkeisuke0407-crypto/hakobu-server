@@ -44,19 +44,13 @@ hakobu-family.com
 代表者・所在地・設立年月は掲載しない方針（2026-08 決定）。
 ASP や広告主から求められた場合は、その都度追記して対応する。
 
-### 2. 各サブドメインのフッターに親サイトへのリンクを追加
+### 2. 各サブドメインから親サイトへのリンク
 
-各メディア側のフッターに以下を貼る（親 → 子 / 子 → 親 の相互リンクを成立させる）。
+**不採用**（2026-08 決定）。各メディアのフッターに親サイトへのリンクは置かない。
 
-```html
-<p style="text-align:center;font-size:13px;color:#5A7A99;margin-top:24px;">
-  運営：<a href="https://hakobu-family.com/" style="color:#1D8F8A;font-weight:700;">ハコぶファミリー</a><br>
-  <a href="https://hakobu-family.com/company.html" style="color:#5A7A99;">運営者情報</a> ｜
-  <a href="https://hakobu-family.com/editorial.html" style="color:#5A7A99;">編集方針</a> ｜
-  <a href="https://hakobu-family.com/advertising.html" style="color:#5A7A99;">広告掲載方針</a> ｜
-  <a href="https://hakobu-family.com/privacy.html" style="color:#5A7A99;">プライバシーポリシー</a>
-</p>
-```
+親 → 子 の一方向リンクのみになるため、親子関係は
+`hakobu-family.com/sites.html` の運営メディア一覧と、
+各メディアの運営者情報ページの記載で示す。
 
 ### 3. canonical / OGP の正規化
 
