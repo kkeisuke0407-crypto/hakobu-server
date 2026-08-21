@@ -96,7 +96,17 @@ ASP や広告主から求められた場合は、その都度追記して対応�
     </details>
 ```
 
-※ 下層ページの実URLが未確認のため、中身はまだ入れていない。
+投入済み：`kaitori.hakobu-family.com`（26ページ）。
+ソースは別リポジトリ `kkeisuke0407-crypto/gold-kaitori-site`（Astro / GitHub Pages）。
+
+一覧から意図的に外しているもの：
+
+- `/list/`・`/tools/`（管理用。サイトマップからも除外されている）
+- `/hikakaku-watch/story/`（noindex, nofollow 指定）
+- `/`（`/LP3/` への meta refresh 転送ページ）
+
+他メディア（hajimai / taisyoku / kubota / unsou-shikin）の下層ページは、
+各リポジトリを確認できれば同じ形で追加できる。
 
 ### 7. 新しいメディアを追加したとき
 
