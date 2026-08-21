@@ -7,16 +7,17 @@
 
 ```text
 hakobu-family.com
-├ /                … 家族アプリ「ハコぶ」（現状のまま）
-├ /media/          … ハコぶファミリー公式サイト（運営者情報・運営メディア一覧）
-│
-├ hajimai.hakobu-family.com       … 墓じまいガイド
-├ kaitori.hakobu-family.com       … 買取ガイド
-├ taisyoku.hakobu-family.com      … 退職・働き方ガイド
-└ unsou-shikin.hakobu-family.com  … 法人資金調達ガイド
+└ ハコぶファミリー公式サイト（メディア運営本体）
+   ├ hajimai.hakobu-family.com       … 墓じまいガイド
+   ├ kaitori.hakobu-family.com       … 買取ガイド
+   ├ taisyoku.hakobu-family.com      … 退職・働き方ガイド
+   └ unsou-shikin.hakobu-family.com  … 法人資金調達ガイド
 ```
 
-## 公式サイトのページ構成（`public/media/`）
+家族アプリ「ハコぶ」は 2026-08 にこのドメインから削除した（`public/` 配下のアプリ
+一式・PWA マニフェストを削除。コードは git 履歴に残っている）。
+
+## 公式サイトのページ構成（`public/`）
 
 | ページ | ファイル | 内容 |
 |---|---|---|
@@ -29,20 +30,18 @@ hakobu-family.com
 | プライバシーポリシー | `privacy.html` | Cookie・アクセス解析・広告配信・第三者提供 |
 | お問い合わせ | `contact.html` | 問い合わせ窓口 |
 
-共通スタイルは `public/media/style.css`。
+共通スタイルは `public/style.css`。GitHub Actions で `public/` を GitHub Pages へデプロイしている。
 
 ## 残作業
 
 ### 1. 運営者情報の記入（必須）
 
-`public/media/company.html` の `[ ]` 部分を実際の情報に差し替える。
+`public/company.html` の `[ ]` 部分を実際の情報に差し替える。
 
 - 運営者（屋号または氏名）
 - 代表者
 - 所在地
 - 設立年月
-
-同じ `[ ]` は `public/privacy.html` / `public/tokusho.html`（アプリ側）にも残っている。
 
 ### 2. メールアドレスの用意（必須）
 
@@ -55,11 +54,11 @@ hakobu-family.com
 
 ```html
 <p style="text-align:center;font-size:13px;color:#5A7A99;margin-top:24px;">
-  運営：<a href="https://hakobu-family.com/media/" style="color:#1D8F8A;font-weight:700;">ハコぶファミリー</a><br>
-  <a href="https://hakobu-family.com/media/company.html" style="color:#5A7A99;">運営者情報</a> ｜
-  <a href="https://hakobu-family.com/media/editorial.html" style="color:#5A7A99;">編集方針</a> ｜
-  <a href="https://hakobu-family.com/media/advertising.html" style="color:#5A7A99;">広告掲載方針</a> ｜
-  <a href="https://hakobu-family.com/media/privacy.html" style="color:#5A7A99;">プライバシーポリシー</a>
+  運営：<a href="https://hakobu-family.com/" style="color:#1D8F8A;font-weight:700;">ハコぶファミリー</a><br>
+  <a href="https://hakobu-family.com/company.html" style="color:#5A7A99;">運営者情報</a> ｜
+  <a href="https://hakobu-family.com/editorial.html" style="color:#5A7A99;">編集方針</a> ｜
+  <a href="https://hakobu-family.com/advertising.html" style="color:#5A7A99;">広告掲載方針</a> ｜
+  <a href="https://hakobu-family.com/privacy.html" style="color:#5A7A99;">プライバシーポリシー</a>
 </p>
 ```
 
@@ -72,13 +71,24 @@ hakobu-family.com
 サイト整理後に、判定が付いているベンダーへ再スキャン・解除申請を行う。
 （VirusTotal の各エンジン、Bitdefender など。判定は自動では消えない）
 
-### 6. 新しいメディアを追加したとき
+### 6. アプリ削除の残り（要判断）
 
-- `public/media/index.html` のカードを追加
-- `public/media/sites.html` に詳細を追加
-- `public/media/style.css` の変更は不要
-- フッター（`public/media/*.html` の運営メディア欄）にも追加
-- `public/sitemap.xml` は公式サイト分のみ管理
+サイトからは削除済み。リポジトリ側には以下が残っている。
+
+- `capacitor.config.ts`（iOS ラッパー設定）
+- `package.json` の `@capacitor/*` 依存と `cap:*` スクリプト
+- `hakobu_dashboard.html` / `hakobu_spec.html` / `FIREBASE_SETUP.md`（アプリの仕様ドキュメント）
+
+いずれも GitHub Pages には配信されないため公開サイトには影響しない。
+アプリを完全に畳むなら削除、`hakobu.app` で再開する可能性を残すならそのままでよい。
+
+### 7. 新しいメディアを追加したとき
+
+- `public/index.html` のカードを追加
+- `public/sites.html` に詳細を追加
+- `public/style.css` の変更は不要
+- フッター（`public/*.html` の運営メディア欄）にも追加
+- `public/sitemap.xml` に URL を追加
 
 ---
 
