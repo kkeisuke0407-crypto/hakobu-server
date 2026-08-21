@@ -78,7 +78,27 @@ ASP や広告主から求められた場合は、その都度追記して対応�
 いずれも GitHub Pages には配信されないため公開サイトには影響しない。
 アプリを完全に畳むなら削除、`hakobu.app` で再開する可能性を残すならそのままでよい。
 
-### 6. 新しいメディアを追加したとき
+### 6. 下層ページのプルダウン（`sites.html`）
+
+各メディアの下層ページ（サブディレクトリ）を折りたたみで見せる用のスタイルを
+`public/style.css` に用意済み（`.pages`）。`sites.html` の各メディアカードの
+`</div>` 直前に以下を入れると、そのメディアの掲載ページ一覧になる。
+
+```html
+    <details class="pages">
+      <summary>掲載ページ（N件）</summary>
+      <div class="pages-body">
+        <ul>
+          <li><a href="https://kaitori.hakobu-family.com/tokei/">時計買取ガイド
+            <span class="path">kaitori.hakobu-family.com/tokei/</span></a></li>
+        </ul>
+      </div>
+    </details>
+```
+
+※ 下層ページの実URLが未確認のため、中身はまだ入れていない。
+
+### 7. 新しいメディアを追加したとき
 
 - `public/index.html` のカードを追加
 - `public/sites.html` に詳細を追加
