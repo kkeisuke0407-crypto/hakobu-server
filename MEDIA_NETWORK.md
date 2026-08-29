@@ -96,8 +96,19 @@ ASP や広告主から求められた場合は、その都度追記して対応�
 |---|---|---|
 | kaitori.hakobu-family.com | 26 | `kkeisuke0407-crypto/gold-kaitori-site` |
 | kubota.hakobu-family.com | 15 | `kkeisuke0407-crypto/kubota` |
+| taisyoku.hakobu-family.com | 5 | `kkeisuke0407-crypto/taisyoku.sp` |
+| hajimai.hakobu-family.com | 3 | `kkeisuke0407-crypto/hakajimai` |
+| unsou-shikin.hakobu-family.com | 3 | `kkeisuke0407-crypto/unsou-shikin` |
 
-いずれも Astro / GitHub Pages。
+hajimai は素のHTML、他は Astro。いずれも GitHub Pages。
+
+一覧に載せる／載せないの基準：
+
+- 転送専用ページ（meta refresh でLPへ送るだけの `/`）は載せない
+- `noindex, nofollow` の隠しLPは載せない
+- `noindex, follow` の運営者情報・プライバシーポリシー等は載せる
+  （検索に出さないだけで、運営実体を示す材料になるため）
+- 管理用ページ（サイトマップから除外しているもの）は載せない
 
 一覧から意図的に外しているもの：
 
@@ -105,11 +116,20 @@ ASP や広告主から求められた場合は、その都度追記して対応�
 - `/hikakaku-watch/story/`（noindex, nofollow 指定）
 - `/`（`/LP3/` への meta refresh 転送ページ）
 
-残り3メディアのソースリポジトリ（未取り込み）：
+### メディア名称（実サイトの名乗りに統一済み）
 
-- 墓じまい … `kkeisuke0407-crypto/hakajimai`
-- 退職・働き方 … `kkeisuke0407-crypto/taisyoku.sp`
-- 法人資金調達 … `kkeisuke0407-crypto/unsou-shikin`
+| サブドメイン | 親サイトでの表記 |
+|---|---|
+| hajimai | 墓じまいの費用と手続きガイド |
+| kaitori | 金・プラチナ買取査定ナビ |
+| taisyoku | 退職給付金ガイド |
+| kubota | クボタ筑波 期間従業員ガイド |
+| unsou-shikin | 運送業の資金調達ガイド |
+
+### unsou-shikin に不足しているページ
+
+プライバシーポリシー・運営者情報・広告掲載についてのページが存在しない。
+他の4メディアには揃っているため、ASP審査や再審査申請の前に用意したい。
 
 ### サブドメイン外の運営サイト（一覧に未掲載・要判断）
 
