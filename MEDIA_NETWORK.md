@@ -90,8 +90,14 @@ ASP や広告主から求められた場合は、その都度追記して対応�
     </details>
 ```
 
-投入済み：`kaitori.hakobu-family.com`（26ページ）。
-ソースは別リポジトリ `kkeisuke0407-crypto/gold-kaitori-site`（Astro / GitHub Pages）。
+投入済み：
+
+| メディア | ページ数 | ソースリポジトリ |
+|---|---|---|
+| kaitori.hakobu-family.com | 26 | `kkeisuke0407-crypto/gold-kaitori-site` |
+| kubota.hakobu-family.com | 15 | `kkeisuke0407-crypto/kubota` |
+
+いずれも Astro / GitHub Pages。
 
 一覧から意図的に外しているもの：
 
@@ -99,8 +105,21 @@ ASP や広告主から求められた場合は、その都度追記して対応�
 - `/hikakaku-watch/story/`（noindex, nofollow 指定）
 - `/`（`/LP3/` への meta refresh 転送ページ）
 
-他メディア（hajimai / taisyoku / kubota / unsou-shikin）の下層ページは、
-各リポジトリを確認できれば同じ形で追加できる。
+残り3メディアのソースリポジトリ（未取り込み）：
+
+- 墓じまい … `kkeisuke0407-crypto/hakajimai`
+- 退職・働き方 … `kkeisuke0407-crypto/taisyoku.sp`
+- 法人資金調達 … `kkeisuke0407-crypto/unsou-shikin`
+
+### サブドメイン外の運営サイト（一覧に未掲載・要判断）
+
+hakobu-family.com のサブドメインではない別ドメインのサイトが2つある。
+
+- `kkeisuke0407-crypto/tekito` … vpscomparehub.com
+- `kkeisuke0407-crypto/local-support.jp` … local-support.jp
+
+運営メディアのツリーはサブドメイン前提で書いているため、載せる場合は
+「その他の運営サイト」として別枠にする必要がある。
 
 ### 7. 新しいメディアを追加したとき
 
