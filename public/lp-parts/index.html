@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>体験談ランキング型LP パーツ集</title>
+<link rel="stylesheet" href="parts.css">
+<style>
+body { margin: 0; background: #f4f4f4; font-family: "Hiragino Sans", "Noto Sans JP", Meiryo, sans-serif; color: #222; }
+.pd-wrap { max-width: 640px; margin: 0 auto; padding: 16px; background: #fff; }
+.pd-top { margin: 0 0 1.2em; padding: 1.1em; border-radius: 12px; background: #0b3d6e; color: #fff; }
+.pd-top h1 { margin: 0 0 .4em; font-size: 21px; }
+.pd-top p { margin: 0 0 .4em; font-size: 13.5px; line-height: 1.7; color: #dbe7f3; }
+.pd-top b { color: #fff100; }
+.pd-toc { display: flex; flex-wrap: wrap; gap: .4em; margin: 0 0 1.2em; padding: 0; list-style: none; }
+.pd-toc a { display: inline-block; padding: .35em .75em; border-radius: 999px; border: 1px solid #c8d6e5; background: #fff; font-size: 13px; font-weight: 700; color: #0b3d6e; text-decoration: none; }
+.pd-chapter { margin: 2.2em 0 .4em; padding: .5em .8em; border-radius: 8px; background: #e6eef7; font-size: 18px; font-weight: 900; }
+.pd-chapter__lead { margin: 0 0 1em; font-size: 13.5px; color: #666; line-height: 1.7; }
+.pd-card { margin: 1em 0 1.8em; padding: .9em .7em 1em; border: 2px dashed #c8d6e5; border-radius: 12px; background: #fbfcfe; }
+.pd-card__head { display: flex; flex-wrap: wrap; align-items: center; gap: .4em .6em; margin-bottom: .5em; }
+.pd-card__name { font-size: 17px; font-weight: 900; }
+.pd-card__cls { padding: .1em .5em; border-radius: 6px; background: #1f2733; color: #cfe3ff; font-size: 12px; font-family: ui-monospace, Consolas, monospace; }
+.pd-meta { display: grid; grid-template-columns: 5.2em 1fr; gap: .25em .6em; margin: 0 0 .8em; font-size: 13.5px; line-height: 1.65; }
+.pd-meta dt { font-weight: 900; color: #666; }
+.pd-meta dd { margin: 0; }
+.pd-meta .pd-ng { color: #c62828; }
+.pd-sample { padding: .3em .8em .6em; border-radius: 10px; background: #fff; border: 1px solid #e3e8ef; overflow: hidden; }
+.pd-sample__lbl { margin: 0 0 .2em; font-size: 11px; font-weight: 900; letter-spacing: .1em; color: #9aa7b6; }
+.pd-code { margin-top: .6em; position: relative; }
+.pd-code summary { cursor: pointer; font-size: 13px; font-weight: 700; color: #0b3d6e; }
+.pd-code pre { margin: .5em 0 0; padding: .8em; border-radius: 8px; background: #1f232c; color: #e9e3d0; font-size: 12px; line-height: 1.55; overflow-x: auto; }
+.pd-copy { position: absolute; right: 0; top: 0; padding: .2em .8em; border: 1px solid #c8d6e5; border-radius: 6px; background: #fff; font-size: 12px; cursor: pointer; }
+.pd-table { width: 100%; border-collapse: collapse; font-size: 13.5px; line-height: 1.6; }
+.pd-table th, .pd-table td { border: 1px solid #dbe3ec; padding: .5em .6em; text-align: left; vertical-align: top; }
+.pd-table th { background: #f3f6fa; white-space: nowrap; }
+.pd-sample .mt-sticky { position: static; transform: none; margin: .6em -.8em -.6em; }
+</style>
+</head>
+<body>
+<div class="pd-wrap">
+  <div class="pd-top">
+    <h1>体験談ランキング型LP パーツ集</h1>
+    <p>「◯◯はやばい？使った感想＆実際に◯◯できた5選」型の記事LPを組むための部品です。参考サイトの<b>見せ方の型だけ</b>を抜き出して作り直しました（文章・画像・サービス名は使っていません）。</p>
+    <p>全46パーツ。CSSは <code>parts.css</code> 1ファイル。LPで使うときは parts.css を読み込み、本文を <code>class="mt-body"</code> で囲む。</p>
+  </div>
+  <ul class="pd-toc"><li><a href="#flow">基本の流れ</a></li><li><a href="#imgrule">画像の入れ方</a></li><li><a href="#head">A. 見出し</a></li><li><a href="#text">B. 本文と強調</a></li><li><a href="#compare">C. 比較・結論</a></li><li><a href="#voice">D. 口コミ・体験談</a></li><li><a href="#rank">E. ランキングの中身</a></li><li><a href="#cta">F. ボタン（CTA）</a></li><li><a href="#how">G. 使い方・手順</a></li><li><a href="#frame">H. 枠まわり</a></li><li><a href="#image">I. 画像</a></li></ul>
+
+  <p class="pd-chapter" id="flow">基本の流れとルール</p>
+  <table class="pd-table">
+    <tr><th>流れ</th><td>タイトル → アイキャッチ → 悩みの問いかけ → 共感（私も同じだった）→ 答えの予告（黄マーカー）［この3つは「導入の会話」1つに置き換えてもよい］→ PR・年齢注記 → 比較表 → 結論ボックス → 比較相手の口コミ（良い・悪い）→ 自分の体験（目的で選ぶ）→ ランキング（各順位：見出し・バナー・実体験・特徴リスト・ボタン）→ 1位だけ深掘り（コツ・会話例・体験談・登録手順）→ まとめ → 全順位のボタン → 関連記事</td></tr>
+    <tr><th>色</th><td>青＝見出し・ボタン／<span class="mt-red">赤</span>＝強調・注意／<span class="mt-mark">黄マーカー</span>＝結論</td></tr>
+    <tr><th>口調</th><td>1人称の体験談。語りかけ（「〜ですよね」「w」は1記事で数回まで）。1段落1〜2文、改行多め</td></tr>
+    <tr><th>ボタン</th><td>大ボタンの上に「＼ひとこと／」、下に注記。ひとことは毎回変える。大ボタンの合間にテキストリンクのボタン</td></tr>
+    <tr><th>必ず入れる</th><td>冒頭のPR表記・年齢制限の注記・口コミや体験談の「※個人の感想です」。体験していないことは書かない</td></tr>
+  </table>
+  <p class="pd-chapter" id="imgrule">画像の入れ方（台本からLPを作るとき）</p>
+  <table class="pd-table">
+    <tr><th>手順</th><td>台本を受け取る → パーツで本文を組む → スマホ幅で画像のない区間を測る → 置き場所を決め、そこに「画像指示枠」（I章）を入れる → 既存素材を先に割り当て、足りない所だけ新規生成のプロンプトを書く → 画像ができたら「本文画像」に差し替える</td></tr>
+    <tr><th>配置</th><td>スマホ1画面（約800px）に画像・会話・表・CTAのどれか1つ以上。文章だけの区間は最大1.5画面。H2の直下は扉の画像（H2と同じ見出しを画像に入れない）。画像が先、文章が後</td></tr>
+    <tr><th>役割</th><td>扉（写真）／説明図（図解）／感情（表情アイコン・挿絵）／証拠（数字・実例）／行動（手順・登録）。同じ役割を3連続にしない。前半＝共感 → 中盤＝理解 → 後半＝行動</td></tr>
+    <tr><th>作り方</th><td>図解も含めて全部、画像生成AIで作る「画像」にする。HTMLやSVGで図を自作しない。既存素材があれば先に使う。推すサービスの紹介の扉は広告主バナー（ASP素材を改変しない・計測リンク・PR表記）</td></tr>
+    <tr><th>画像内の文字</th><td>台本（本文）からそのまま。足さない・言い換えない。生成後に1字ずつ照合し、誤字・余計な文字は再生成</td></tr>
+    <tr><th>テイスト</th><td>1本のLPの図解は同じテイストにそろえる。既にある図解を参照画像として一緒に渡す</td></tr>
+    <tr><th>人物・ロゴ</th><td>ASPの画像制約（人物NGなど）を先に確認。分からなければ人物なしで設計。ロゴ・認証マークは許可なく使わない。写真風の人物には「※写真はイメージです」</td></tr>
+    <tr><th>公開前</th><td>画像指示枠（mt-imgslot）が1つも残っていない／全画像に alt・width・height／表示されない画像がない／375pxで横スクロールなし</td></tr>
+  </table>
+
+  <p class="pd-chapter" id="head">A. 見出し</p>
+  <p class="pd-chapter__lead">見出しは青でそろえる。h2＝青ベタ帯、h3＝青い下線、h4＝左の青線。</p>
+
+    <section class="pd-card" id="head-1">
+      <div class="pd-card__head"><span class="pd-card__name">大見出し（青ベタ帯）</span><code class="pd-card__cls">mt-h2</code></div>
+      <dl class="pd-meta"><dt>使う場面</dt><dd>セクションの始まり。</dd><dt>ルール</dt><dd>1セクションに1つ。20字前後。</dd><dt class="pd-ng">NG</dt><dd>青以外の色にする</dd></dl>
+      <div class="pd-sample"><p class="pd-sample__lbl">見本</p><div class="mt-body"><h2 class="mt-h2">サービスA vs 人気サービス</h2></div></div>
+      <details class="pd-code"><summary>HTMLを見る・コピー</summary><button type="button" class="pd-copy">コピー</button><pre><code>&lt;h2 class="mt-h2"&gt;サービスA vs 人気サービス&lt;/h2&gt;</code></pre></details>
+    </section>
+
+    <section class="pd-card" id="head-2">
+      <div class="pd-card__head"><span class="pd-card__name">中見出し・順位見出し（青い下線）</span><code class="pd-card__cls">mt-h3</code></div>
+      <dl class="pd-meta"><dt>使う場面</dt><dd>ランキングの各順位／h2の中の小分け。</dd><dt>ルール</dt><dd>順位はメダルの絵文字＋「第◯位：サービス名｜ひとこと」。</dd><dt class="pd-ng">NG</dt><dd>順位見出しにひとことを入れない</dd></dl>
+      <div class="pd-sample"><p class="pd-sample__lbl">見本</p><div class="mt-body"><h3 class="mt-h3"><span class="mt-h3__rank">🥇</span>第1位：サービスA｜登録初日に予定が決まった</h3></div></div>
+      <details class="pd-code"><summary>HTMLを見る・コピー</summary><button type="button" class="pd-copy">コピー</button><pre><code>&lt;h3 class="mt-h3"&gt;&lt;span class="mt-h3__rank"&gt;🥇&lt;/span&gt;第1位：サービスA｜登録初日に予定が決まった&lt;/h3&gt;</code></pre></details>
+    </section>
+
+    <section class="pd-card" id="head-3">
+      <div class="pd-card__head"><span class="pd-card__name">小見出し（左の青線）</span><code class="pd-card__cls">mt-h4</code></div>
+      <dl class="pd-meta"><dt>使う場面</dt><dd>順位の中で話題を変えるとき。</dd><dt>ルール</dt><dd>キーワードを1つだけ赤＋マーカーに。</dd><dt class="pd-ng">NG</dt><dd>赤を2か所以上</dd></dl>
+      <div class="pd-sample"><p class="pd-sample__lbl">見本</p><div class="mt-body"><h4 class="mt-h4">毎日増える「<em>新しい会員</em>」をねらえ！</h4></div></div>
+      <details class="pd-code"><summary>HTMLを見る・コピー</summary><button type="button" class="pd-copy">コピー</button><pre><code>&lt;h4 class="mt-h4"&gt;毎日増える「&lt;em&gt;新しい会員&lt;/em&gt;」をねらえ！&lt;/h4&gt;</code></pre></details>
+    </section>
+
+  <p class="pd-chapter" id="text">B. 本文と強調</p>
+  <p class="pd-chapter__lead">語りかける口調。赤＝強調、黄マーカー＝結論。</p>
+
+    <section class="pd-card" id="text-1">
+      <div class="pd-card__head"><span class="pd-card__name">悩みの問いかけ（赤）</span><code class="pd-card__cls">mt-worry</code></div>
+      <dl class="pd-meta"><dt>使う場面</dt><dd>記事の冒頭。読者の悩みをそのまま言う。</dd><dt>ルール</dt><dd>カギカッコで2行まで。</dd><dt class="pd-ng">NG</dt><dd>3行以上</dd></dl>
+      <div class="pd-sample"><p class="pd-sample__lbl">見本</p><div class="mt-body"><p class="mt-worry">「本当に会えるの？」<br>「そもそも相手が見つからない…」</p></div></div>
+      <details class="pd-code"><summary>HTMLを見る・コピー</summary><button type="button" class="pd-copy">コピー</button><pre><code>&lt;p class="mt-worry"&gt;「本当に会えるの？」&lt;br&gt;「そもそも相手が見つからない…」&lt;/p&gt;</code></pre></details>
+    </section>
+
+    <section class="pd-card" id="text-2">
+      <div class="pd-card__head"><span class="pd-card__name">黄マーカー太字</span><code class="pd-card__cls">mt-mark</code></div>
+      <dl class="pd-meta"><dt>使う場面</dt><dd>そのセクションの結論・答え。</dd><dt>ルール</dt><dd>1セクションに2か所まで。</dd><dt class="pd-ng">NG</dt><dd>段落ごとに付ける</dd></dl>
+      <div class="pd-sample"><p class="pd-sample__lbl">見本</p><div class="mt-body"><p>私が悩みから抜け出せた理由、それは<span class="mt-mark">ちゃんと会えるサービス</span>を見つけたからです。</p></div></div>
+      <details class="pd-code"><summary>HTMLを見る・コピー</summary><button type="button" class="pd-copy">コピー</button><pre><code>&lt;p&gt;私が悩みから抜け出せた理由、それは&lt;span class="mt-mark"&gt;ちゃんと会えるサービス&lt;/span&gt;を見つけたからです。&lt;/p&gt;</code></pre></details>
+    </section>
+
+    <section class="pd-card" id="text-3">
+      <div class="pd-card__head"><span class="pd-card__name">赤文字</span><code class="pd-card__cls">mt-red</code></div>
+      <dl class="pd-meta"><dt>使う場面</dt><dd>意外な事実・数字・注意。</dd><dt>ルール</dt><dd>1段落に1か所。</dd><dt class="pd-ng">NG</dt><dd>マーカーと同じ語に重ねる</dd></dl>
+      <div class="pd-sample"><p class="pd-sample__lbl">見本</p><div class="mt-body"><p>ところが、サービスを変えただけで<span class="mt-red">驚くほど簡単に</span>会えるようになりました。</p></div></div>
+      <details class="pd-code"><summary>HTMLを見る・コピー</summary><button type="button" class="pd-copy">コピー</button><pre><code>&lt;p&gt;ところが、サービスを変えただけで&lt;span class="mt-red"&gt;驚くほど簡単に&lt;/span&gt;会えるようになりました。&lt;/p&gt;</code></pre></details>
+    </section>
+
+    <section class="pd-card" id="text-4">
+      <div class="pd-card__head"><span class="pd-card__name">ひとことの強調（1行）</span><code class="pd-card__cls">mt-oneline</code></div>
+      <dl class="pd-meta"><dt>使う場面</dt><dd>学んだこと・一番言いたいことを1行で。</dd><dt>ルール</dt><dd>前後に「ということ。」などの受けの文を置く。</dd><dt class="pd-ng">NG</dt><dd>長い文</dd></dl>
+      <div class="pd-sample"><p class="pd-sample__lbl">見本</p><div class="mt-body"><p class="mt-oneline"><span>「ちゃんと会いたい」</span></p></div></div>
+      <details class="pd-code"><summary>HTMLを見る・コピー</summary><button type="button" class="pd-copy">コピー</button><pre><code>&lt;p class="mt-oneline"&gt;&lt;span&gt;「ちゃんと会いたい」&lt;/span&gt;&lt;/p&gt;</code></pre></details>
+    </section>
+
+    <section class="pd-card" id="text-5">
+      <div class="pd-card__head"><span class="pd-card__name">サービス名の登場（つなぎ）</span><code class="pd-card__cls">mt-bridge</code></div>
+      <dl class="pd-meta"><dt>使う場面</dt><dd>悩み・手間の話から、推すサービスへ切り替える1か所。</dd><dt>ルール</dt><dd>上に「そこで候補になるのが、」などの受けの1行。サービス名は＼／で挟んで中央・大きく。スマホで1行に収まる15字まで。ページに1回。</dd><dt class="pd-ng">NG</dt><dd>何度も使う／サービス名ではなくキャッチコピーを入れる</dd></dl>
+      <div class="pd-sample"><p class="pd-sample__lbl">見本</p><div class="mt-body"><div class="mt-bridge"><p class="mt-bridge__s">そこで候補になるのが、</p><p class="mt-bridge__name">＼<span>サービスA</span>／</p></div></div></div>
+      <details class="pd-code"><summary>HTMLを見る・コピー</summary><button type="button" class="pd-copy">コピー</button><pre><code>&lt;div class="mt-bridge"&gt;&lt;p class="mt-bridge__s"&gt;そこで候補になるのが、&lt;/p&gt;&lt;p class="mt-bridge__name"&gt;＼&lt;span&gt;サービスA&lt;/span&gt;／&lt;/p&gt;&lt;/div&gt;</code></pre></details>
+    </section>
+
+    <section class="pd-card" id="text-6">
+      <div class="pd-card__head"><span class="pd-card__name">注記（小さい灰色）</span><code class="pd-card__cls">mt-small</code></div>
+      <dl class="pd-meta"><dt>使う場面</dt><dd>PR表記・年齢制限・個人の感想など。</dd><dt>ルール</dt><dd>冒頭のPR表記は必ず入れる。</dd><dt class="pd-ng">NG</dt><dd>PR表記を省く</dd></dl>
+      <div class="pd-sample"><p class="pd-sample__lbl">見本</p><div class="mt-body"><p class="mt-small">※18歳未満の方はご利用いただけません。<br>※本ページにはプロモーションが含まれています。</p></div></div>
+      <details class="pd-code"><summary>HTMLを見る・コピー</summary><button type="button" class="pd-copy">コピー</button><pre><code>&lt;p class="mt-small"&gt;※18歳未満の方はご利用いただけません。&lt;br&gt;※本ページにはプロモーションが含まれています。&lt;/p&gt;</code></pre></details>
+    </section>
+
+    <section class="pd-card" id="text-7">
+      <div class="pd-card__head"><span class="pd-card__name">アイキャッチ（悩みの吹き出し）</span><code class="pd-card__cls">mt-eyecatch</code></div>
+      <dl class="pd-meta"><dt>使う場面</dt><dd>タイトル直下。</dd><dt>ルール</dt><dd>吹き出しは「◯◯って本当？」の問い1つ。実際は画像にする。</dd><dt class="pd-ng">NG</dt><dd>文字を詰め込む</dd></dl>
+      <div class="pd-sample"><p class="pd-sample__lbl">見本</p><div class="mt-body"><div class="mt-eyecatch"><span class="mt-eyecatch__bubble">◯◯って会える…？</span></div></div></div>
+      <details class="pd-code"><summary>HTMLを見る・コピー</summary><button type="button" class="pd-copy">コピー</button><pre><code>&lt;div class="mt-eyecatch"&gt;&lt;span class="mt-eyecatch__bubble"&gt;◯◯って会える…？&lt;/span&gt;&lt;/div&gt;</code></pre></details>
+    </section>
+
+    <section class="pd-card" id="text-8">
+      <div class="pd-card__head"><span class="pd-card__name">導入の会話（FV直下）</span><code class="pd-card__cls">mt-talk</code></div>
+      <dl class="pd-meta"><dt>使う場面</dt><dd>アイキャッチの直下。悩みの問いかけ → 共感 → 答えの予告を、会話1つで見せる。</dd><dt>ルール</dt><dd>2人だけ。右＝悩む人（赤）、左＝筆者（青）。吹き出しは4〜6個、1つ2行まで。黄マーカーは答えの予告の1か所だけ。最後の吹き出しで本文へ渡す。心の声は <code>mt-talk__row--think</code>。アイコンは実際は画像（<code>&lt;img&gt;</code>）。吹き出しは読み込み時に順番に出る（動きを減らす設定の人には出ない）。</dd><dt class="pd-ng">NG</dt><dd>会話の中でサービス名を出す（PR表記より前になる）／7個以上／筆者が体験していないことを話させる</dd></dl>
+      <div class="pd-sample"><p class="pd-sample__lbl">見本</p><div class="mt-body"><div class="mt-eyecatch"><span class="mt-eyecatch__bubble">◯◯って会える…？</span></div>
+<div class="mt-talk">
+  <div class="mt-talk__row mt-talk__row--r"><div class="mt-talk__who"><span class="mt-talk__icon">友人</span><span class="mt-talk__name">友人</span></div><div class="mt-talk__b">登録してみたけど、<span class="mt-red">全然会えない</span>んだけど…</div></div>
+  <div class="mt-talk__row"><div class="mt-talk__who"><span class="mt-talk__icon">私</span><span class="mt-talk__name">筆者</span></div><div class="mt-talk__b">わかる！<br>私も最初はまったく同じだったよ</div></div>
+  <div class="mt-talk__row mt-talk__row--r"><div class="mt-talk__who"><span class="mt-talk__icon">友人</span><span class="mt-talk__name">友人</span></div><div class="mt-talk__b">え、じゃあ今はどうしてるの？</div></div>
+  <div class="mt-talk__row"><div class="mt-talk__who"><span class="mt-talk__icon">私</span><span class="mt-talk__name">筆者</span></div><div class="mt-talk__b">実はね、<span class="mt-mark">使うサービスを変えただけ</span>なんだ</div></div>
+  <div class="mt-talk__row mt-talk__row--r mt-talk__row--think"><div class="mt-talk__who"><span class="mt-talk__icon">友人</span><span class="mt-talk__name">友人</span></div><div class="mt-talk__b">（変えるだけで、そんなに違うの…？）</div></div>
+  <div class="mt-talk__row"><div class="mt-talk__who"><span class="mt-talk__icon">私</span><span class="mt-talk__name">筆者</span></div><div class="mt-talk__b">違いは表にまとめたから、下で見せるね！</div></div>
+</div></div></div>
+      <details class="pd-code"><summary>HTMLを見る・コピー</summary><button type="button" class="pd-copy">コピー</button><pre><code>&lt;div class="mt-talk"&gt;
+  &lt;div class="mt-talk__row mt-talk__row--r"&gt;&lt;div class="mt-talk__who"&gt;&lt;span class="mt-talk__icon"&gt;&lt;img src="friend.png" alt=""&gt;&lt;/span&gt;&lt;span class="mt-talk__name"&gt;友人&lt;/span&gt;&lt;/div&gt;&lt;div class="mt-talk__b"&gt;登録してみたけど、&lt;span class="mt-red"&gt;全然会えない&lt;/span&gt;んだけど…&lt;/div&gt;&lt;/div&gt;
+  &lt;div class="mt-talk__row"&gt;&lt;div class="mt-talk__who"&gt;&lt;span class="mt-talk__icon"&gt;&lt;img src="me.png" alt=""&gt;&lt;/span&gt;&lt;span class="mt-talk__name"&gt;筆者&lt;/span&gt;&lt;/div&gt;&lt;div class="mt-talk__b"&gt;わかる！&lt;br&gt;私も最初はまったく同じだったよ&lt;/div&gt;&lt;/div&gt;
+  &lt;div class="mt-talk__row mt-talk__row--r"&gt;&lt;div class="mt-talk__who"&gt;&lt;span class="mt-talk__icon"&gt;&lt;img src="friend.png" alt=""&gt;&lt;/span&gt;&lt;span class="mt-talk__name"&gt;友人&lt;/span&gt;&lt;/div&gt;&lt;div class="mt-talk__b"&gt;え、じゃあ今はどうしてるの？&lt;/div&gt;&lt;/div&gt;
+  &lt;div class="mt-talk__row"&gt;&lt;div class="mt-talk__who"&gt;&lt;span class="mt-talk__icon"&gt;&lt;img src="me.png" alt=""&gt;&lt;/span&gt;&lt;span class="mt-talk__name"&gt;筆者&lt;/span&gt;&lt;/div&gt;&lt;div class="mt-talk__b"&gt;実はね、&lt;span class="mt-mark"&gt;使うサービスを変えただけ&lt;/span&gt;なんだ&lt;/div&gt;&lt;/div&gt;
+  &lt;div class="mt-talk__row mt-talk__row--r mt-talk__row--think"&gt;&lt;div class="mt-talk__who"&gt;&lt;span class="mt-talk__icon"&gt;&lt;img src="friend.png" alt=""&gt;&lt;/span&gt;&lt;span class="mt-talk__name"&gt;友人&lt;/span&gt;&lt;/div&gt;&lt;div class="mt-talk__b"&gt;（変えるだけで、そんなに違うの…？）&lt;/div&gt;&lt;/div&gt;
+  &lt;div class="mt-talk__row"&gt;&lt;div class="mt-talk__who"&gt;&lt;span class="mt-talk__icon"&gt;&lt;img src="me.png" alt=""&gt;&lt;/span&gt;&lt;span class="mt-talk__name"&gt;筆者&lt;/span&gt;&lt;/div&gt;&lt;div class="mt-talk__b"&gt;違いは表にまとめたから、下で見せるね！&lt;/div&gt;&lt;/div&gt;
+&lt;/div&gt;</code></pre></details>
+    </section>
+
+    <section class="pd-card" id="text-9">
+      <div class="pd-card__head"><span class="pd-card__name">ひとことつぶやき（単発の吹き出し）</span><code class="pd-card__cls">mt-say</code></div>
+      <dl class="pd-meta"><dt>使う場面</dt><dd>本文の途中で、読者の本音を1つだけ差し込むとき。文章が続いて単調になる所の区切りに。</dd><dt>ルール</dt><dd>1つ2行まで。言うのは読者（赤）の本音だけで、答えや説明は本文に書く。アイコンは実際は画像（<code>&lt;img&gt;</code>）で、導入の会話と同じ人物にそろえる。1セクションに1つまで。</dd><dt class="pd-ng">NG</dt><dd>つぶやきを連続で並べる（会話にしたいときは mt-talk）／つぶやきに答えや宣伝を言わせる</dd></dl>
+      <div class="pd-sample"><p class="pd-sample__lbl">見本</p><div class="mt-body"><div class="mt-say"><span class="mt-say__icon">読者</span><p class="mt-say__b">今の職場、変えたいな…。</p></div></div></div>
+      <details class="pd-code"><summary>HTMLを見る・コピー</summary><button type="button" class="pd-copy">コピー</button><pre><code>&lt;div class="mt-say"&gt;&lt;span class="mt-say__icon"&gt;&lt;img src="talk-a.webp" alt=""&gt;&lt;/span&gt;&lt;p class="mt-say__b"&gt;今の職場、変えたいな…。&lt;/p&gt;&lt;/div&gt;</code></pre></details>
+    </section>
+
+    <section class="pd-card" id="text-10">
+      <div class="pd-card__head"><span class="pd-card__name">要点ボックス（この記事でわかること）</span><code class="pd-card__cls">mt-summary</code></div>
+      <dl class="pd-meta"><dt>使う場面</dt><dd>導入の会話・悩みの問いかけのすぐ下。先に答えの地図を見せて離脱を防ぐ。</dd><dt>ルール</dt><dd>3〜4項目。1項目1行。本文に実際にある内容だけ。</dd><dt class="pd-ng">NG</dt><dd>本文にない約束を書く</dd></dl>
+      <div class="pd-sample"><p class="pd-sample__lbl">見本</p><div class="mt-body"><div class="mt-summary"><p class="mt-summary__ttl">この記事でわかること</p><ul><li>「会えない」原因はサービス選びにある理由</li><li>人気5サービスの比較と、目的別の選び方</li><li>登録してから会うまでの流れ</li></ul></div></div></div>
+      <details class="pd-code"><summary>HTMLを見る・コピー</summary><button type="button" class="pd-copy">コピー</button><pre><code>&lt;div class="mt-summary"&gt;&lt;p class="mt-summary__ttl"&gt;この記事でわかること&lt;/p&gt;&lt;ul&gt;&lt;li&gt;「会えない」原因はサービス選びにある理由&lt;/li&gt;&lt;li&gt;人気5サービスの比較と、目的別の選び方&lt;/li&gt;&lt;li&gt;登録してから会うまでの流れ&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;</code></pre></details>
+    </section>
+
+    <section class="pd-card" id="text-11">
+      <div class="pd-card__head"><span class="pd-card__name">注意ボックス（落とし穴）</span><code class="pd-card__cls">mt-caution</code></div>
+      <dl class="pd-meta"><dt>使う場面</dt><dd>損をしやすいポイント・よくある失敗を伝えるとき。</dd><dt>ルール</dt><dd>タイトルは「◯◯に注意」の形。本文は2段落まで。赤はこの箱だけで、中に赤文字を足さない。</dd><dt class="pd-ng">NG</dt><dd>不安をあおるだけで対策を書かない</dd></dl>
+      <div class="pd-sample"><p class="pd-sample__lbl">見本</p><div class="mt-body"><div class="mt-caution"><p class="mt-caution__ttl">無料ポイントの使い切りに注意</p><p>最初にもらえるポイントは、プロフィールをしっかり埋めてから使うのがコツです。</p></div></div></div>
+      <details class="pd-code"><summary>HTMLを見る・コピー</summary><button type="button" class="pd-copy">コピー</button><pre><code>&lt;div class="mt-caution"&gt;&lt;p class="mt-caution__ttl"&gt;無料ポイントの使い切りに注意&lt;/p&gt;&lt;p&gt;最初にもらえるポイントは、プロフィールをしっかり埋めてから使うのがコツです。&lt;/p&gt;&lt;/div&gt;</code></pre></details>
+    </section>
+
+  <p class="pd-chapter" id="compare">C. 比較・結論</p>
+  <p class="pd-chapter__lead">表で一覧 → 結論ボックスで答えを言い切る。</p>
+
+    <section class="pd-card" id="compare-1">
+      <div class="pd-card__head"><span class="pd-card__name">横スクロール比較表</span><code class="pd-card__cls">mt-scroll + mt-table</code></div>
+      <dl class="pd-meta"><dt>使う場面</dt><dd>記事の最初の h2 の直後。</dd><dt>ルール</dt><dd>左の列（サービス名）は固定。上下に「横にスクロール」の案内。推す行に is-pick。</dd><dt class="pd-ng">NG</dt><dd>スマホで横スクロールの案内を出さない</dd></dl>
+      <div class="pd-sample"><p class="pd-sample__lbl">見本</p><div class="mt-body"><p class="mt-hint">表は横にスクロール可能</p>
+<div class="mt-scroll">
+  <table class="mt-table">
+    <thead><tr><th>サービス</th><th>総合評価</th><th>無料で<br>会えた人数</th><th>会いやすさ</th><th>安全性</th><th>年齢層</th></tr></thead>
+    <tbody>
+      <tr class="is-pick"><td><span class="mt-ico" style="background:#1e88e5">A</span><a class="mt-mini-btn" href="#sample">無料登録</a></td><td><span class="mt-name">サービスA</span><span class="mt-stars">★★★★★</span><span class="mt-score">97点</span><span class="mt-badge">人気No.1</span></td><td>2人</td><td>めちゃ会える</td><td>安全</td><td>20〜60代</td></tr>
+      <tr><td><span class="mt-ico" style="background:#8e24aa">B</span><a class="mt-mini-btn" href="#sample">無料登録</a></td><td><span class="mt-name">サービスB</span><span class="mt-stars">★★★★☆</span><span class="mt-score">93点</span></td><td>2人</td><td>会える</td><td>安全</td><td>20〜30代</td></tr>
+    </tbody>
+  </table>
+</div>
+<p class="mt-hint">表は横にスクロール可能</p></div></div>
+      <details class="pd-code"><summary>HTMLを見る・コピー</summary><button type="button" class="pd-copy">コピー</button><pre><code>&lt;p class="mt-hint"&gt;表は横にスクロール可能&lt;/p&gt;
+&lt;div class="mt-scroll"&gt;
+  &lt;table class="mt-table"&gt;
+    &lt;thead&gt;&lt;tr&gt;&lt;th&gt;サービス&lt;/th&gt;&lt;th&gt;総合評価&lt;/th&gt;&lt;th&gt;無料で&lt;br&gt;会えた人数&lt;/th&gt;&lt;th&gt;会いやすさ&lt;/th&gt;&lt;th&gt;安全性&lt;/th&gt;&lt;th&gt;年齢層&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
+    &lt;tbody&gt;
+      &lt;tr class="is-pick"&gt;&lt;td&gt;&lt;span class="mt-ico" style="background:#1e88e5"&gt;A&lt;/span&gt;&lt;a class="mt-mini-btn" href="#sample"&gt;無料登録&lt;/a&gt;&lt;/td&gt;&lt;td&gt;&lt;span class="mt-name"&gt;サービスA&lt;/span&gt;&lt;span class="mt-stars"&gt;★★★★★&lt;/span&gt;&lt;span class="mt-score"&gt;97点&lt;/span&gt;&lt;span class="mt-badge"&gt;人気No.1&lt;/span&gt;&lt;/td&gt;&lt;td&gt;2人&lt;/td&gt;&lt;td&gt;めちゃ会える&lt;/td&gt;&lt;td&gt;安全&lt;/td&gt;&lt;td&gt;20〜60代&lt;/td&gt;&lt;/tr&gt;
+      &lt;tr&gt;&lt;td&gt;&lt;span class="mt-ico" style="background:#8e24aa"&gt;B&lt;/span&gt;&lt;a class="mt-mini-btn" href="#sample"&gt;無料登録&lt;/a&gt;&lt;/td&gt;&lt;td&gt;&lt;span class="mt-name"&gt;サービスB&lt;/span&gt;&lt;span class="mt-stars"&gt;★★★★☆&lt;/span&gt;&lt;span class="mt-score"&gt;93点&lt;/span&gt;&lt;/td&gt;&lt;td&gt;2人&lt;/td&gt;&lt;td&gt;会える&lt;/td&gt;&lt;td&gt;安全&lt;/td&gt;&lt;td&gt;20〜30代&lt;/td&gt;&lt;/tr&gt;
+    &lt;/tbody&gt;
+  &lt;/table&gt;
+&lt;/div&gt;
+&lt;p class="mt-hint"&gt;表は横にスクロール可能&lt;/p&gt;</code></pre></details>
+    </section>
+
+    <section class="pd-card" id="compare-2">
+      <div class="pd-card__head"><span class="pd-card__name">結論ボックス（点線）</span><code class="pd-card__cls">mt-conclusion</code></div>
+      <dl class="pd-meta"><dt>使う場面</dt><dd>比較表のすぐ下。</dd><dt>ルール</dt><dd>【結論】＋2段落。2段落目で「初心者なら◯◯」と1つに絞る。</dd><dt class="pd-ng">NG</dt><dd>推しを2つ以上にする</dd></dl>
+      <div class="pd-sample"><p class="pd-sample__lbl">見本</p><div class="mt-body"><div class="mt-conclusion"><p class="mt-conclusion__ttl">【結論】</p><p>「サービスX」は、運が良ければ会えるが、<span class="mt-mark">ライバルが多く効率が悪い</span>。</p><p>初心者が無料で始めるなら、<a href="#sample">「サービスA」</a>がおすすめ。</p></div></div></div>
+      <details class="pd-code"><summary>HTMLを見る・コピー</summary><button type="button" class="pd-copy">コピー</button><pre><code>&lt;div class="mt-conclusion"&gt;&lt;p class="mt-conclusion__ttl"&gt;【結論】&lt;/p&gt;&lt;p&gt;「サービスX」は、運が良ければ会えるが、&lt;span class="mt-mark"&gt;ライバルが多く効率が悪い&lt;/span&gt;。&lt;/p&gt;&lt;p&gt;初心者が無料で始めるなら、&lt;a href="#sample"&gt;「サービスA」&lt;/a&gt;がおすすめ。&lt;/p&gt;&lt;/div&gt;</code></pre></details>
+    </section>
+
+    <section class="pd-card" id="compare-3">
+      <div class="pd-card__head"><span class="pd-card__name">2社比較（◎○△×）</span><code class="pd-card__cls">mt-vs</code></div>
+      <dl class="pd-meta"><dt>使う場面</dt><dd>推すサービスと比較相手を1対1で並べるとき。比較表（横スクロール）より絞った場面で。</dd><dt>ルール</dt><dd>3列固定で横スクロールなし。項目は4〜6個。推す列に is-pick。記号の下に一言（small）。</dd><dt class="pd-ng">NG</dt><dd>推す側を全部◎にする（弱い項目も正直に）</dd></dl>
+      <div class="pd-sample"><p class="pd-sample__lbl">見本</p><div class="mt-body"><table class="mt-vs">
+  <thead><tr><th></th><th class="is-pick">サービスA</th><th>サービスX</th></tr></thead>
+  <tbody>
+    <tr><th>会いやすさ</th><td class="is-pick"><span class="mt-mk mt-mk--best">◎</span><small>近くの人が多い</small></td><td><span class="mt-mk mt-mk--fair">△</span><small>ライバルが多い</small></td></tr>
+    <tr><th>料金</th><td class="is-pick"><span class="mt-mk mt-mk--good">○</span><small>ポイント制</small></td><td><span class="mt-mk mt-mk--good">○</span><small>月額制</small></td></tr>
+    <tr><th>年齢層</th><td class="is-pick"><span class="mt-mk mt-mk--good">○</span><small>20〜60代</small></td><td><span class="mt-mk mt-mk--bad">×</span><small>20代が中心</small></td></tr>
+  </tbody>
+</table></div></div>
+      <details class="pd-code"><summary>HTMLを見る・コピー</summary><button type="button" class="pd-copy">コピー</button><pre><code>&lt;table class="mt-vs"&gt;
+  &lt;thead&gt;&lt;tr&gt;&lt;th&gt;&lt;/th&gt;&lt;th class="is-pick"&gt;サービスA&lt;/th&gt;&lt;th&gt;サービスX&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;&lt;th&gt;会いやすさ&lt;/th&gt;&lt;td class="is-pick"&gt;&lt;span class="mt-mk mt-mk--best"&gt;◎&lt;/span&gt;&lt;small&gt;近くの人が多い&lt;/small&gt;&lt;/td&gt;&lt;td&gt;&lt;span class="mt-mk mt-mk--fair"&gt;△&lt;/span&gt;&lt;small&gt;ライバルが多い&lt;/small&gt;&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;th&gt;料金&lt;/th&gt;&lt;td class="is-pick"&gt;&lt;span class="mt-mk mt-mk--good"&gt;○&lt;/span&gt;&lt;small&gt;ポイント制&lt;/small&gt;&lt;/td&gt;&lt;td&gt;&lt;span class="mt-mk mt-mk--good"&gt;○&lt;/span&gt;&lt;small&gt;月額制&lt;/small&gt;&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;th&gt;年齢層&lt;/th&gt;&lt;td class="is-pick"&gt;&lt;span class="mt-mk mt-mk--good"&gt;○&lt;/span&gt;&lt;small&gt;20〜60代&lt;/small&gt;&lt;/td&gt;&lt;td&gt;&lt;span class="mt-mk mt-mk--bad"&gt;×&lt;/span&gt;&lt;small&gt;20代が中心&lt;/small&gt;&lt;/td&gt;&lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;</code></pre></details>
+    </section>
+
+    <section class="pd-card" id="compare-4">
+      <div class="pd-card__head"><span class="pd-card__name">メリット・デメリット</span><code class="pd-card__cls">mt-proscons</code></div>
+      <dl class="pd-meta"><dt>使う場面</dt><dd>推すサービスの良い点と悪い点をセットで見せるとき。</dd><dt>ルール</dt><dd>メリット3・デメリット2程度。デメリットは必ず入れる。</dd><dt class="pd-ng">NG</dt><dd>デメリットを「特になし」にする</dd></dl>
+      <div class="pd-sample"><p class="pd-sample__lbl">見本</p><div class="mt-body"><div class="mt-proscons">
+  <div class="mt-proscons__box"><p class="mt-proscons__ttl">メリット</p><ul><li>近くに住んでいる人が見つかりやすい</li><li>登録は1分で終わる</li></ul></div>
+  <div class="mt-proscons__box mt-proscons__box--con"><p class="mt-proscons__ttl">デメリット</p><ul><li>ポイントを使いすぎると割高になる</li></ul></div>
+</div></div></div>
+      <details class="pd-code"><summary>HTMLを見る・コピー</summary><button type="button" class="pd-copy">コピー</button><pre><code>&lt;div class="mt-proscons"&gt;
+  &lt;div class="mt-proscons__box"&gt;&lt;p class="mt-proscons__ttl"&gt;メリット&lt;/p&gt;&lt;ul&gt;&lt;li&gt;近くに住んでいる人が見つかりやすい&lt;/li&gt;&lt;li&gt;登録は1分で終わる&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;
+  &lt;div class="mt-proscons__box mt-proscons__box--con"&gt;&lt;p class="mt-proscons__ttl"&gt;デメリット&lt;/p&gt;&lt;ul&gt;&lt;li&gt;ポイントを使いすぎると割高になる&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;
+&lt;/div&gt;</code></pre></details>
+    </section>
+
+    <section class="pd-card" id="compare-5">
+      <div class="pd-card__head"><span class="pd-card__name">補足ボックス（用語・対処法）</span><code class="pd-card__cls">mt-info / mt-info--tip</code></div>
+      <dl class="pd-meta"><dt>使う場面</dt><dd>本文の流れを止めずに、用語の説明（ⓘ）や「こうすれば大丈夫」という対処法（電球 mt-info--tip）を添えるとき。</dd><dt>ルール</dt><dd>タイトルは「◯◯とは？」「それでも心配なら」の形。本文は3行まで、または箇条書き3つまで。事実だけを書く。</dd><dt class="pd-ng">NG</dt><dd>注意・警告に使う（注意は mt-caution）／本文と同じ内容を繰り返す</dd></dl>
+      <div class="pd-sample"><p class="pd-sample__lbl">見本</p><div class="mt-body"><div class="mt-info"><p class="mt-info__ttl">非公開求人とは？</p><p>求人サイトなどで一般に公開されず、転職エージェントを通じて紹介される求人のことです。</p></div>
+<div class="mt-info mt-info--tip"><p class="mt-info__ttl">それでも心配なら</p><ul><li>連絡してほしい方法・時間帯を最初に伝える</li><li>合わないと思ったら担当の変更を相談する</li></ul></div></div></div>
+      <details class="pd-code"><summary>HTMLを見る・コピー</summary><button type="button" class="pd-copy">コピー</button><pre><code>&lt;div class="mt-info"&gt;&lt;p class="mt-info__ttl"&gt;非公開求人とは？&lt;/p&gt;&lt;p&gt;求人サイトなどで一般に公開されず、転職エージェントを通じて紹介される求人のことです。&lt;/p&gt;&lt;/div&gt;
+&lt;div class="mt-info mt-info--tip"&gt;&lt;p class="mt-info__ttl"&gt;それでも心配なら&lt;/p&gt;&lt;ul&gt;&lt;li&gt;連絡してほしい方法・時間帯を最初に伝える&lt;/li&gt;&lt;li&gt;合わないと思ったら担当の変更を相談する&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;</code></pre></details>
+    </section>
+
+    <section class="pd-card" id="compare-6">
+      <div class="pd-card__head"><span class="pd-card__name">向いている人／向いていない人</span><code class="pd-card__cls">mt-fit</code></div>
+      <dl class="pd-meta"><dt>使う場面</dt><dd>ランキングの各順位の最後、ボタンの前。読者に「自分向きか」を判断させる。</dd><dt>ルール</dt><dd>左右2列。各3つまで、1つ1行。向いていない人には代わりの選択肢を本文で示す。</dd><dt class="pd-ng">NG</dt><dd>向いていない人を書かない</dd></dl>
+      <div class="pd-sample"><p class="pd-sample__lbl">見本</p><div class="mt-body"><div class="mt-fit">
+  <div class="mt-fit__col"><p class="mt-fit__ttl">向いている人</p><ul><li>近場で相手を探したい</li><li>まずは無料で試したい</li></ul></div>
+  <div class="mt-fit__col mt-fit__col--ng"><p class="mt-fit__ttl">向いていない人</p><ul><li>定額で使い放題にしたい</li><li>20代だけに絞りたい</li></ul></div>
+</div></div></div>
+      <details class="pd-code"><summary>HTMLを見る・コピー</summary><button type="button" class="pd-copy">コピー</button><pre><code>&lt;div class="mt-fit"&gt;
+  &lt;div class="mt-fit__col"&gt;&lt;p class="mt-fit__ttl"&gt;向いている人&lt;/p&gt;&lt;ul&gt;&lt;li&gt;近場で相手を探したい&lt;/li&gt;&lt;li&gt;まずは無料で試したい&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;
+  &lt;div class="mt-fit__col mt-fit__col--ng"&gt;&lt;p class="mt-fit__ttl"&gt;向いていない人&lt;/p&gt;&lt;ul&gt;&lt;li&gt;定額で使い放題にしたい&lt;/li&gt;&lt;li&gt;20代だけに絞りたい&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;
+&lt;/div&gt;</code></pre></details>
+    </section>
+
+    <section class="pd-card" id="compare-7">
+      <div class="pd-card__head"><span class="pd-card__name">チェックリスト（当てはまったら）</span><code class="pd-card__cls">mt-check</code></div>
+      <dl class="pd-meta"><dt>使う場面</dt><dd>比較表の前後で「自分のことだ」と思わせる自己診断。</dd><dt>ルール</dt><dd>4〜5項目。読者の状況を短く。下の一言で「1つでも当てはまったら」と次へつなぐ。</dd><dt class="pd-ng">NG</dt><dd>商品の特徴を並べる（読者の状況を書く）</dd></dl>
+      <div class="pd-sample"><p class="pd-sample__lbl">見本</p><div class="mt-body"><div class="mt-check"><p class="mt-check__ttl">こんな人は読んでみて</p><ul><li>登録したのにメッセージが返ってこない</li><li>何を書けばいいかわからない</li><li>近くに住む人が見つからない</li></ul><p class="mt-check__foot">1つでも当てはまったら、<span class="mt-mark">サービス選びを見直すタイミング</span>です</p></div></div></div>
+      <details class="pd-code"><summary>HTMLを見る・コピー</summary><button type="button" class="pd-copy">コピー</button><pre><code>&lt;div class="mt-check"&gt;&lt;p class="mt-check__ttl"&gt;こんな人は読んでみて&lt;/p&gt;&lt;ul&gt;&lt;li&gt;登録したのにメッセージが返ってこない&lt;/li&gt;&lt;li&gt;何を書けばいいかわからない&lt;/li&gt;&lt;li&gt;近くに住む人が見つからない&lt;/li&gt;&lt;/ul&gt;&lt;p class="mt-check__foot"&gt;1つでも当てはまったら、&lt;span class="mt-mark"&gt;サービス選びを見直すタイミング&lt;/span&gt;です&lt;/p&gt;&lt;/div&gt;</code></pre></details>
+    </section>
+
+  <p class="pd-chapter" id="voice">D. 口コミ・体験談</p>
+  <p class="pd-chapter__lead">良い口コミと悪い口コミの両方を見せてから、体験談で背中を押す。</p>
+
+    <section class="pd-card" id="voice-1">
+      <div class="pd-card__head"><span class="pd-card__name">良い口コミ／悪い口コミ</span><code class="pd-card__cls">mt-voice / mt-voice--bad</code></div>
+      <dl class="pd-meta"><dt>使う場面</dt><dd>比較している相手サービスの評判を見せるとき。</dd><dt>ルール</dt><dd>良い2つ・悪い3つ程度。末尾に（年代・性別）。下に「※個人の感想です」。</dd><dt class="pd-ng">NG</dt><dd>良い口コミだけ</dd></dl>
+      <div class="pd-sample"><p class="pd-sample__lbl">見本</p><div class="mt-body"><div class="mt-voice"><span class="mt-voice__lbl"><i>○</i>良い口コミ</span><ul><li>近くの人を探しやすい。<small>(20代男性)</small></li><li>写真が多くて雰囲気がつかみやすい。<small>(20代女性)</small></li></ul></div>
+<div class="mt-voice mt-voice--bad"><span class="mt-voice__lbl"><i>×</i>悪い口コミ</span><ul><li>会うまでに時間がかかる。<small>(30代女性)</small></li><li><b>勧誘目的の人が多い。</b><small>(40代男性)</small></li></ul></div>
+<p class="mt-small" style="text-align:right">※個人の感想です。</p></div></div>
+      <details class="pd-code"><summary>HTMLを見る・コピー</summary><button type="button" class="pd-copy">コピー</button><pre><code>&lt;div class="mt-voice"&gt;&lt;span class="mt-voice__lbl"&gt;&lt;i&gt;○&lt;/i&gt;良い口コミ&lt;/span&gt;&lt;ul&gt;&lt;li&gt;近くの人を探しやすい。&lt;small&gt;(20代男性)&lt;/small&gt;&lt;/li&gt;&lt;li&gt;写真が多くて雰囲気がつかみやすい。&lt;small&gt;(20代女性)&lt;/small&gt;&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;
+&lt;div class="mt-voice mt-voice--bad"&gt;&lt;span class="mt-voice__lbl"&gt;&lt;i&gt;×&lt;/i&gt;悪い口コミ&lt;/span&gt;&lt;ul&gt;&lt;li&gt;会うまでに時間がかかる。&lt;small&gt;(30代女性)&lt;/small&gt;&lt;/li&gt;&lt;li&gt;&lt;b&gt;勧誘目的の人が多い。&lt;/b&gt;&lt;small&gt;(40代男性)&lt;/small&gt;&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;
+&lt;p class="mt-small" style="text-align:right"&gt;※個人の感想です。&lt;/p&gt;</code></pre></details>
+    </section>
+
+    <section class="pd-card" id="voice-2">
+      <div class="pd-card__head"><span class="pd-card__name">口コミカード（属性見出し＋本文）</span><code class="pd-card__cls">mt-review</code></div>
+      <dl class="pd-meta"><dt>使う場面</dt><dd>公式サイトなどに載っている口コミ・体験談を、1件ずつカードで見せるとき。</dd><dt>ルール</dt><dd>見出しは属性（年代・性別・職種）か、希望の要約。本文は元の口コミの抜粋か要約。星（<code>mt-review__stars</code>）は元の資料に評価があるときだけ付ける。カードの下に出典（「※公式サイト掲載の体験談を要約」など）。</dd><dt class="pd-ng">NG</dt><dd>作り話・言い換えで意味を変える／元にない星や点数を付ける</dd></dl>
+      <div class="pd-sample"><p class="pd-sample__lbl">見本</p><div class="mt-body"><div class="mt-review"><div class="mt-review__head"><span class="mt-review__icon" aria-hidden="true"></span><p class="mt-review__who">30代女性・鍼灸師<span class="mt-review__stars">★★★★★</span></p></div><p>希望を伝えたら、条件に合う求人をいくつか紹介してもらえました。日程調整もお任せできて助かりました。</p></div>
+<p class="mt-small">※公式サイト掲載の口コミを抜粋したものです。個人の感想です。</p></div></div>
+      <details class="pd-code"><summary>HTMLを見る・コピー</summary><button type="button" class="pd-copy">コピー</button><pre><code>&lt;div class="mt-review"&gt;&lt;div class="mt-review__head"&gt;&lt;span class="mt-review__icon" aria-hidden="true"&gt;&lt;/span&gt;&lt;p class="mt-review__who"&gt;30代女性・鍼灸師&lt;span class="mt-review__stars"&gt;★★★★★&lt;/span&gt;&lt;/p&gt;&lt;/div&gt;&lt;p&gt;希望を伝えたら、条件に合う求人をいくつか紹介してもらえました。日程調整もお任せできて助かりました。&lt;/p&gt;&lt;/div&gt;
+&lt;p class="mt-small"&gt;※公式サイト掲載の口コミを抜粋したものです。個人の感想です。&lt;/p&gt;</code></pre></details>
+    </section>
+
+    <section class="pd-card" id="voice-3">
+      <div class="pd-card__head"><span class="pd-card__name">もっと見る（開閉）</span><code class="pd-card__cls">mt-more</code></div>
+      <dl class="pd-meta"><dt>使う場面</dt><dd>口コミが多いとき。</dd><dt>ルール</dt><dd>最初は閉じておく。</dd><dt class="pd-ng">NG</dt><dd>大事な情報を中に隠す</dd></dl>
+      <div class="pd-sample"><p class="pd-sample__lbl">見本</p><div class="mt-body"><details class="mt-more"><summary>もっと口コミを見る▼</summary><p>（ここに追加の口コミ）</p></details></div></div>
+      <details class="pd-code"><summary>HTMLを見る・コピー</summary><button type="button" class="pd-copy">コピー</button><pre><code>&lt;details class="mt-more"&gt;&lt;summary&gt;もっと口コミを見る▼&lt;/summary&gt;&lt;p&gt;（ここに追加の口コミ）&lt;/p&gt;&lt;/details&gt;</code></pre></details>
+    </section>
+
+    <section class="pd-card" id="voice-4">
+      <div class="pd-card__head"><span class="pd-card__name">体験談ボックス</span><code class="pd-card__cls">mt-story</code></div>
+      <dl class="pd-meta"><dt>使う場面</dt><dd>推すサービスの紹介のあと、ボタンの前。</dd><dt>ルール</dt><dd>5段落まで。最後に「※個人の感想です」。</dd><dt class="pd-ng">NG</dt><dd>作り話</dd></dl>
+      <div class="pd-sample"><p class="pd-sample__lbl">見本</p><div class="mt-body"><div class="mt-story"><p class="mt-story__who">利用者の声（30代男性）</p><p>プロフィールに共通の趣味が書いてあった人にメッセージを送ったのがきっかけでした。</p><p>「もっと早く使っておけばよかった」そう感じたサービスでした。</p></div></div></div>
+      <details class="pd-code"><summary>HTMLを見る・コピー</summary><button type="button" class="pd-copy">コピー</button><pre><code>&lt;div class="mt-story"&gt;&lt;p class="mt-story__who"&gt;利用者の声（30代男性）&lt;/p&gt;&lt;p&gt;プロフィールに共通の趣味が書いてあった人にメッセージを送ったのがきっかけでした。&lt;/p&gt;&lt;p&gt;「もっと早く使っておけばよかった」そう感じたサービスでした。&lt;/p&gt;&lt;/div&gt;</code></pre></details>
+    </section>
+
+  <p class="pd-chapter" id="rank">E. ランキングの中身</p>
+  <p class="pd-chapter__lead">順位見出し → バナー → 悩み → 実体験 → 特徴リスト → ボタン、の順。</p>
+
+    <section class="pd-card" id="rank-1">
+      <div class="pd-card__head"><span class="pd-card__name">バナー＋PR表記</span><code class="pd-card__cls">mt-banner</code></div>
+      <dl class="pd-meta"><dt>使う場面</dt><dd>順位見出しの直後。</dd><dt>ルール</dt><dd>右上に必ず「PR」。実際は公式バナー画像。</dd><dt class="pd-ng">NG</dt><dd>PR表記なし</dd></dl>
+      <div class="pd-sample"><p class="pd-sample__lbl">見本</p><div class="mt-body"><a class="mt-banner" href="#sample"><span class="mt-banner__img">公式バナー画像（16:9）</span><span class="mt-banner__pr">PR</span></a></div></div>
+      <details class="pd-code"><summary>HTMLを見る・コピー</summary><button type="button" class="pd-copy">コピー</button><pre><code>&lt;a class="mt-banner" href="#sample"&gt;&lt;span class="mt-banner__img"&gt;公式バナー画像（16:9）&lt;/span&gt;&lt;span class="mt-banner__pr"&gt;PR&lt;/span&gt;&lt;/a&gt;</code></pre></details>
+    </section>
+
+    <section class="pd-card" id="rank-2">
+      <div class="pd-card__head"><span class="pd-card__name">サービス早見（おすすめポイント＋評価表＋ボタン）</span><code class="pd-card__cls">mt-spec</code></div>
+      <dl class="pd-meta"><dt>使う場面</dt><dd>推すサービスの紹介の頭（バナーの直後）。読まずに決めたい人に、強みと評価を1箱で見せてボタンへ。</dd><dt>ルール</dt><dd>おすすめポイントは3〜5つ、1つ1行。赤（<code>em</code>）は1行に1か所。評価表は4つ＋横長2つまで、評価は◎○△で、下に根拠を短く。中身はすべて公式サイト・公式バナーで確認できる事実だけ。ボタンは公式サイトへ。</dd><dt class="pd-ng">NG</dt><dd>公式で確認できない数字・「No.1」などの最上級表現を入れる／全部の項目を◎にするための項目選び</dd></dl>
+      <div class="pd-sample"><p class="pd-sample__lbl">見本</p><div class="mt-body"><div class="mt-spec">
+  <p class="mt-spec__ttl">おすすめポイント</p>
+  <ul class="mt-spec__points">
+    <li>利用者の多い<em>定番サービス</em>が運営</li>
+    <li>登録後すぐに<em>担当者</em>から連絡がくる</li>
+    <li>利用は<em>完全無料</em></li>
+  </ul>
+  <dl class="mt-spec__grid">
+    <div class="mt-spec__cell"><dt class="mt-spec__k">料金</dt><dd class="mt-spec__mark">◎</dd><dd class="mt-spec__v">無料</dd></div>
+    <div class="mt-spec__cell"><dt class="mt-spec__k">会員数</dt><dd class="mt-spec__mark">◎</dd><dd class="mt-spec__v">多い</dd></div>
+    <div class="mt-spec__cell"><dt class="mt-spec__k">サポート</dt><dd class="mt-spec__mark">○</dd><dd class="mt-spec__v">メール</dd></div>
+    <div class="mt-spec__cell"><dt class="mt-spec__k">対応エリア</dt><dd class="mt-spec__mark">△</dd><dd class="mt-spec__v">都市部中心</dd></div>
+    <div class="mt-spec__cell mt-spec__cell--wide"><dt class="mt-spec__k">運営</dt><dd class="mt-spec__mark">◎</dd><dd class="mt-spec__v">上場企業</dd></div>
+    <div class="mt-spec__cell mt-spec__cell--wide"><dt class="mt-spec__k">実績</dt><dd class="mt-spec__mark">◎</dd><dd class="mt-spec__v">運営10年以上</dd></div>
+  </dl>
+  <div class="mt-cta"><p class="mt-cta__micro">＼登録は無料／</p><a class="mt-cta__btn" href="#sample">サービスA 公式サイト</a></div>
+</div></div></div>
+      <details class="pd-code"><summary>HTMLを見る・コピー</summary><button type="button" class="pd-copy">コピー</button><pre><code>&lt;div class="mt-spec"&gt;
+  &lt;p class="mt-spec__ttl"&gt;おすすめポイント&lt;/p&gt;
+  &lt;ul class="mt-spec__points"&gt;
+    &lt;li&gt;利用者の多い&lt;em&gt;定番サービス&lt;/em&gt;が運営&lt;/li&gt;
+    &lt;li&gt;登録後すぐに&lt;em&gt;担当者&lt;/em&gt;から連絡がくる&lt;/li&gt;
+    &lt;li&gt;利用は&lt;em&gt;完全無料&lt;/em&gt;&lt;/li&gt;
+  &lt;/ul&gt;
+  &lt;dl class="mt-spec__grid"&gt;
+    &lt;div class="mt-spec__cell"&gt;&lt;dt class="mt-spec__k"&gt;料金&lt;/dt&gt;&lt;dd class="mt-spec__mark"&gt;◎&lt;/dd&gt;&lt;dd class="mt-spec__v"&gt;無料&lt;/dd&gt;&lt;/div&gt;
+    &lt;div class="mt-spec__cell"&gt;&lt;dt class="mt-spec__k"&gt;会員数&lt;/dt&gt;&lt;dd class="mt-spec__mark"&gt;◎&lt;/dd&gt;&lt;dd class="mt-spec__v"&gt;多い&lt;/dd&gt;&lt;/div&gt;
+    &lt;div class="mt-spec__cell"&gt;&lt;dt class="mt-spec__k"&gt;サポート&lt;/dt&gt;&lt;dd class="mt-spec__mark"&gt;○&lt;/dd&gt;&lt;dd class="mt-spec__v"&gt;メール&lt;/dd&gt;&lt;/div&gt;
+    &lt;div class="mt-spec__cell"&gt;&lt;dt class="mt-spec__k"&gt;対応エリア&lt;/dt&gt;&lt;dd class="mt-spec__mark"&gt;△&lt;/dd&gt;&lt;dd class="mt-spec__v"&gt;都市部中心&lt;/dd&gt;&lt;/div&gt;
+    &lt;div class="mt-spec__cell mt-spec__cell--wide"&gt;&lt;dt class="mt-spec__k"&gt;運営&lt;/dt&gt;&lt;dd class="mt-spec__mark"&gt;◎&lt;/dd&gt;&lt;dd class="mt-spec__v"&gt;上場企業&lt;/dd&gt;&lt;/div&gt;
+    &lt;div class="mt-spec__cell mt-spec__cell--wide"&gt;&lt;dt class="mt-spec__k"&gt;実績&lt;/dt&gt;&lt;dd class="mt-spec__mark"&gt;◎&lt;/dd&gt;&lt;dd class="mt-spec__v"&gt;運営10年以上&lt;/dd&gt;&lt;/div&gt;
+  &lt;/dl&gt;
+  &lt;div class="mt-cta"&gt;&lt;p class="mt-cta__micro"&gt;＼登録は無料／&lt;/p&gt;&lt;a class="mt-cta__btn" href="#sample"&gt;サービスA 公式サイト&lt;/a&gt;&lt;/div&gt;
+&lt;/div&gt;</code></pre></details>
+    </section>
+
+    <section class="pd-card" id="rank-3">
+      <div class="pd-card__head"><span class="pd-card__name">写真3枚（お店・実物）</span><code class="pd-card__cls">mt-photos</code></div>
+      <dl class="pd-meta"><dt>使う場面</dt><dd>順位の紹介の中で、お店や実物の雰囲気を見せるとき。</dd><dt>ルール</dt><dd>3枚。下に「※店舗により内装は異なります」などの注記。</dd><dt class="pd-ng">NG</dt><dd>ほかのお店の写真／フリー素材を実物のように見せる</dd></dl>
+      <div class="pd-sample"><p class="pd-sample__lbl">見本</p><div class="mt-body"><div class="mt-photos"><span class="mt-banner__img" style="aspect-ratio:3/2;font-size:11px">店内の写真</span><span class="mt-banner__img" style="aspect-ratio:3/2;font-size:11px">査定カウンター</span><span class="mt-banner__img" style="aspect-ratio:3/2;font-size:11px">査定スペース</span></div></div></div>
+      <details class="pd-code"><summary>HTMLを見る・コピー</summary><button type="button" class="pd-copy">コピー</button><pre><code>&lt;div class="mt-photos"&gt;&lt;span class="mt-banner__img" style="aspect-ratio:3/2;font-size:11px"&gt;店内の写真&lt;/span&gt;&lt;span class="mt-banner__img" style="aspect-ratio:3/2;font-size:11px"&gt;査定カウンター&lt;/span&gt;&lt;span class="mt-banner__img" style="aspect-ratio:3/2;font-size:11px"&gt;査定スペース&lt;/span&gt;&lt;/div&gt;</code></pre></details>
+    </section>
+
+    <section class="pd-card" id="rank-4">
+      <div class="pd-card__head"><span class="pd-card__name">特徴リスト（黄色い箱）</span><code class="pd-card__cls">mt-points</code></div>
+      <dl class="pd-meta"><dt>使う場面</dt><dd>実体験のあとに、特徴を事実で並べる。</dd><dt>ルール</dt><dd>3〜4項目。数字を1つは入れる。</dd><dt class="pd-ng">NG</dt><dd>感想を入れる（感想は本文へ）</dd></dl>
+      <div class="pd-sample"><p class="pd-sample__lbl">見本</p><div class="mt-body"><div class="mt-points"><ul><li>2002年運営開始の老舗で安心</li><li>累計会員数が多く、地方でも使える</li><li>無料登録でお試しポイントあり</li></ul></div></div></div>
+      <details class="pd-code"><summary>HTMLを見る・コピー</summary><button type="button" class="pd-copy">コピー</button><pre><code>&lt;div class="mt-points"&gt;&lt;ul&gt;&lt;li&gt;2002年運営開始の老舗で安心&lt;/li&gt;&lt;li&gt;累計会員数が多く、地方でも使える&lt;/li&gt;&lt;li&gt;無料登録でお試しポイントあり&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;</code></pre></details>
+    </section>
+
+    <section class="pd-card" id="rank-5">
+      <div class="pd-card__head"><span class="pd-card__name">ランキング早見</span><code class="pd-card__cls">mt-podium</code></div>
+      <dl class="pd-meta"><dt>使う場面</dt><dd>ランキングの頭。1〜3位を先に一覧で見せて、読まずに決めたい人を拾う。</dd><dt>ルール</dt><dd>3位まで。各行：メダル・アイコン・サービス名＋一言・小ボタン。1位の行だけ黄色。</dd><dt class="pd-ng">NG</dt><dd>順位の根拠を本文に書かない</dd></dl>
+      <div class="pd-sample"><p class="pd-sample__lbl">見本</p><div class="mt-body"><ol class="mt-podium">
+  <li><span class="mt-podium__rank">🥇</span><span class="mt-ico" style="background:#1e88e5">A</span><span class="mt-podium__name">サービスA<small>初日から予定を決めるなら</small></span><a class="mt-mini-btn" href="#sample">無料登録</a></li>
+  <li><span class="mt-podium__rank">🥈</span><span class="mt-ico" style="background:#8e24aa">B</span><span class="mt-podium__name">サービスB<small>ノリの合う相手を探すなら</small></span><a class="mt-mini-btn" href="#sample">無料登録</a></li>
+  <li><span class="mt-podium__rank">🥉</span><span class="mt-ico" style="background:#43a047">C</span><span class="mt-podium__name">サービスC<small>地方で探すなら</small></span><a class="mt-mini-btn" href="#sample">無料登録</a></li>
+</ol></div></div>
+      <details class="pd-code"><summary>HTMLを見る・コピー</summary><button type="button" class="pd-copy">コピー</button><pre><code>&lt;ol class="mt-podium"&gt;
+  &lt;li&gt;&lt;span class="mt-podium__rank"&gt;🥇&lt;/span&gt;&lt;span class="mt-ico" style="background:#1e88e5"&gt;A&lt;/span&gt;&lt;span class="mt-podium__name"&gt;サービスA&lt;small&gt;初日から予定を決めるなら&lt;/small&gt;&lt;/span&gt;&lt;a class="mt-mini-btn" href="#sample"&gt;無料登録&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;span class="mt-podium__rank"&gt;🥈&lt;/span&gt;&lt;span class="mt-ico" style="background:#8e24aa"&gt;B&lt;/span&gt;&lt;span class="mt-podium__name"&gt;サービスB&lt;small&gt;ノリの合う相手を探すなら&lt;/small&gt;&lt;/span&gt;&lt;a class="mt-mini-btn" href="#sample"&gt;無料登録&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;span class="mt-podium__rank"&gt;🥉&lt;/span&gt;&lt;span class="mt-ico" style="background:#43a047"&gt;C&lt;/span&gt;&lt;span class="mt-podium__name"&gt;サービスC&lt;small&gt;地方で探すなら&lt;/small&gt;&lt;/span&gt;&lt;a class="mt-mini-btn" href="#sample"&gt;無料登録&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;</code></pre></details>
+    </section>
+
+  <p class="pd-chapter" id="cta">F. ボタン（CTA）</p>
+  <p class="pd-chapter__lead">ボタンの上に「＼ひとこと／」、下に年齢などの注記。これが1セット。</p>
+
+    <section class="pd-card" id="cta-1">
+      <div class="pd-card__head"><span class="pd-card__name">大ボタン（ひとこと＋注記つき）</span><code class="pd-card__cls">mt-cta</code></div>
+      <dl class="pd-meta"><dt>使う場面</dt><dd>各順位の紹介の最後。</dd><dt>ルール</dt><dd>上のひとことは「＼◯◯／」の形で毎回変える。ボタンは【順位】＋サービス名＋「無料登録」。ボタンには光が走るアニメーション付き（動きを減らす設定の人には出ない）。</dd><dt class="pd-ng">NG</dt><dd>ひとことを全部同じにする</dd></dl>
+      <div class="pd-sample"><p class="pd-sample__lbl">見本</p><div class="mt-body"><div class="mt-cta"><p class="mt-cta__micro">＼簡単1分！匿名登録OK／</p><a class="mt-cta__btn" href="#sample">【1位】サービスA 無料登録</a><p class="mt-cta__note">-18歳未満利用禁止-</p></div></div></div>
+      <details class="pd-code"><summary>HTMLを見る・コピー</summary><button type="button" class="pd-copy">コピー</button><pre><code>&lt;div class="mt-cta"&gt;&lt;p class="mt-cta__micro"&gt;＼簡単1分！匿名登録OK／&lt;/p&gt;&lt;a class="mt-cta__btn" href="#sample"&gt;【1位】サービスA 無料登録&lt;/a&gt;&lt;p class="mt-cta__note"&gt;-18歳未満利用禁止-&lt;/p&gt;&lt;/div&gt;</code></pre></details>
+    </section>
+
+    <section class="pd-card" id="cta-2">
+      <div class="pd-card__head"><span class="pd-card__name">テキストリンクのボタン</span><code class="pd-card__cls">mt-textlink</code></div>
+      <dl class="pd-meta"><dt>使う場面</dt><dd>体験談やコツの直後。大ボタンの合間に。</dd><dt>ルール</dt><dd>「▶◯◯に無料登録してみる」＋下に注記。</dd><dt class="pd-ng">NG</dt><dd>大ボタンと同じ位置に並べる</dd></dl>
+      <div class="pd-sample"><p class="pd-sample__lbl">見本</p><div class="mt-body"><p class="mt-textlink">▶<a href="#sample">サービスAに無料登録してみる</a><small>└18歳未満利用禁止</small></p></div></div>
+      <details class="pd-code"><summary>HTMLを見る・コピー</summary><button type="button" class="pd-copy">コピー</button><pre><code>&lt;p class="mt-textlink"&gt;▶&lt;a href="#sample"&gt;サービスAに無料登録してみる&lt;/a&gt;&lt;small&gt;└18歳未満利用禁止&lt;/small&gt;&lt;/p&gt;</code></pre></details>
+    </section>
+
+    <section class="pd-card" id="cta-3">
+      <div class="pd-card__head"><span class="pd-card__name">最後のボタン一覧</span><code class="pd-card__cls">mt-cta-stack</code></div>
+      <dl class="pd-meta"><dt>使う場面</dt><dd>記事の最後。全順位のボタンを並べる。</dd><dt>ルール</dt><dd>順位ごとに「＼こんな人なら！／」のひとことを変える。</dd><dt class="pd-ng">NG</dt><dd>ひとことなしで並べる</dd></dl>
+      <div class="pd-sample"><p class="pd-sample__lbl">見本</p><div class="mt-body"><div class="mt-cta-stack"><div class="mt-cta"><p class="mt-cta__micro">＼初日から予定を決めるなら！／</p><a class="mt-cta__btn" href="#sample">【1位】サービスA 無料登録</a></div><div class="mt-cta"><p class="mt-cta__micro">＼ノリの合う相手を探すなら！／</p><a class="mt-cta__btn" href="#sample">【2位】サービスB 無料登録</a></div></div></div></div>
+      <details class="pd-code"><summary>HTMLを見る・コピー</summary><button type="button" class="pd-copy">コピー</button><pre><code>&lt;div class="mt-cta-stack"&gt;&lt;div class="mt-cta"&gt;&lt;p class="mt-cta__micro"&gt;＼初日から予定を決めるなら！／&lt;/p&gt;&lt;a class="mt-cta__btn" href="#sample"&gt;【1位】サービスA 無料登録&lt;/a&gt;&lt;/div&gt;&lt;div class="mt-cta"&gt;&lt;p class="mt-cta__micro"&gt;＼ノリの合う相手を探すなら！／&lt;/p&gt;&lt;a class="mt-cta__btn" href="#sample"&gt;【2位】サービスB 無料登録&lt;/a&gt;&lt;/div&gt;&lt;/div&gt;</code></pre></details>
+    </section>
+
+  <p class="pd-chapter" id="how">G. 使い方・手順</p>
+  <p class="pd-chapter__lead">「どうやればいいか」を具体的に見せて、行動のハードルを下げる。</p>
+
+    <section class="pd-card" id="how-1">
+      <div class="pd-card__head"><span class="pd-card__name">メッセージ例（会話）</span><code class="pd-card__cls">mt-chat</code></div>
+      <dl class="pd-meta"><dt>使う場面</dt><dd>「会うまでの流れ」を見せるとき。</dd><dt>ルール</dt><dd>3往復まで。コツは吹き出しの下に赤い小さい字で。</dd><dt class="pd-ng">NG</dt><dd>4往復以上</dd></dl>
+      <div class="pd-sample"><p class="pd-sample__lbl">見本</p><div class="mt-body"><div class="mt-chat"><p class="mt-chat__ttl">▼メッセージ例</p>
+  <div class="mt-chat__m mt-chat__m--r"><span class="mt-chat__b">はじめまして、よろしくです！</span></div>
+  <p class="mt-chat__tip">※最初はフランクなほうが返信しやすい</p>
+  <div class="mt-chat__m"><span class="mt-chat__b">はじめまして！こちらこそ</span></div>
+</div></div></div>
+      <details class="pd-code"><summary>HTMLを見る・コピー</summary><button type="button" class="pd-copy">コピー</button><pre><code>&lt;div class="mt-chat"&gt;&lt;p class="mt-chat__ttl"&gt;▼メッセージ例&lt;/p&gt;
+  &lt;div class="mt-chat__m mt-chat__m--r"&gt;&lt;span class="mt-chat__b"&gt;はじめまして、よろしくです！&lt;/span&gt;&lt;/div&gt;
+  &lt;p class="mt-chat__tip"&gt;※最初はフランクなほうが返信しやすい&lt;/p&gt;
+  &lt;div class="mt-chat__m"&gt;&lt;span class="mt-chat__b"&gt;はじめまして！こちらこそ&lt;/span&gt;&lt;/div&gt;
+&lt;/div&gt;</code></pre></details>
+    </section>
+
+    <section class="pd-card" id="how-2">
+      <div class="pd-card__head"><span class="pd-card__name">登録手順</span><code class="pd-card__cls">mt-steps</code></div>
+      <dl class="pd-meta"><dt>使う場面</dt><dd>「登録は1分」を見せるとき。</dd><dt>ルール</dt><dd>入力項目を5つまで。補足は small で。</dd><dt class="pd-ng">NG</dt><dd>手順を多く見せて面倒に感じさせる</dd></dl>
+      <div class="pd-sample"><p class="pd-sample__lbl">見本</p><div class="mt-body"><ol class="mt-steps"><li>ニックネーム <small>(本名じゃなくてOK)</small></li><li>性別</li><li>エリア</li><li>生年月日 <small>(公開されません)</small></li></ol></div></div>
+      <details class="pd-code"><summary>HTMLを見る・コピー</summary><button type="button" class="pd-copy">コピー</button><pre><code>&lt;ol class="mt-steps"&gt;&lt;li&gt;ニックネーム &lt;small&gt;(本名じゃなくてOK)&lt;/small&gt;&lt;/li&gt;&lt;li&gt;性別&lt;/li&gt;&lt;li&gt;エリア&lt;/li&gt;&lt;li&gt;生年月日 &lt;small&gt;(公開されません)&lt;/small&gt;&lt;/li&gt;&lt;/ol&gt;</code></pre></details>
+    </section>
+
+    <section class="pd-card" id="how-3">
+      <div class="pd-card__head"><span class="pd-card__name">画面の画像＋手書き風の注釈</span><code class="pd-card__cls">mt-shot</code></div>
+      <dl class="pd-meta"><dt>使う場面</dt><dd>アプリ画面など、実物を見せるとき。</dd><dt>ルール</dt><dd>注釈は1つだけ、赤で斜めに。個人が分かる部分はぼかす。</dd><dt class="pd-ng">NG</dt><dd>注釈を2つ以上</dd></dl>
+      <div class="pd-sample"><p class="pd-sample__lbl">見本</p><div class="mt-body"><div class="mt-shot"><div class="mt-shot__img">スマホ画面のスクショ</div><span class="mt-shot__note">毎日、新しい<br>登録が多い！</span></div></div></div>
+      <details class="pd-code"><summary>HTMLを見る・コピー</summary><button type="button" class="pd-copy">コピー</button><pre><code>&lt;div class="mt-shot"&gt;&lt;div class="mt-shot__img"&gt;スマホ画面のスクショ&lt;/div&gt;&lt;span class="mt-shot__note"&gt;毎日、新しい&lt;br&gt;登録が多い！&lt;/span&gt;&lt;/div&gt;</code></pre></details>
+    </section>
+
+    <section class="pd-card" id="how-4">
+      <div class="pd-card__head"><span class="pd-card__name">タイムライン（登録から◯◯まで）</span><code class="pd-card__cls">mt-timeline</code></div>
+      <dl class="pd-meta"><dt>使う場面</dt><dd>「どれくらいで結果が出るか」を時間の流れで見せる。</dd><dt>ルール</dt><dd>4〜5段階。最後（ゴール）に is-goal。期間は筆者の実際の記録だけ。</dd><dt class="pd-ng">NG</dt><dd>期間を保証のように書く</dd></dl>
+      <div class="pd-sample"><p class="pd-sample__lbl">見本</p><div class="mt-body"><ol class="mt-timeline">
+  <li><span class="mt-timeline__when">1日目</span><span class="mt-timeline__what">登録してプロフィールを書く</span></li>
+  <li><span class="mt-timeline__when">2日目</span><span class="mt-timeline__what">気になる人に5通メッセージ</span></li>
+  <li><span class="mt-timeline__when">4日目</span><span class="mt-timeline__what">2人とやりとりが続く</span></li>
+  <li class="is-goal"><span class="mt-timeline__when">7日目</span><span class="mt-timeline__what">1人と会う予定が決まる</span></li>
+</ol>
+<p class="mt-small">※筆者の場合。個人の感想です。</p></div></div>
+      <details class="pd-code"><summary>HTMLを見る・コピー</summary><button type="button" class="pd-copy">コピー</button><pre><code>&lt;ol class="mt-timeline"&gt;
+  &lt;li&gt;&lt;span class="mt-timeline__when"&gt;1日目&lt;/span&gt;&lt;span class="mt-timeline__what"&gt;登録してプロフィールを書く&lt;/span&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;span class="mt-timeline__when"&gt;2日目&lt;/span&gt;&lt;span class="mt-timeline__what"&gt;気になる人に5通メッセージ&lt;/span&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;span class="mt-timeline__when"&gt;4日目&lt;/span&gt;&lt;span class="mt-timeline__what"&gt;2人とやりとりが続く&lt;/span&gt;&lt;/li&gt;
+  &lt;li class="is-goal"&gt;&lt;span class="mt-timeline__when"&gt;7日目&lt;/span&gt;&lt;span class="mt-timeline__what"&gt;1人と会う予定が決まる&lt;/span&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p class="mt-small"&gt;※筆者の場合。個人の感想です。&lt;/p&gt;</code></pre></details>
+    </section>
+
+    <section class="pd-card" id="how-5">
+      <div class="pd-card__head"><span class="pd-card__name">よくある質問（開閉）</span><code class="pd-card__cls">mt-faq</code></div>
+      <dl class="pd-meta"><dt>使う場面</dt><dd>まとめの前。登録前の不安（料金・安全・バレないか）をつぶす。</dd><dt>ルール</dt><dd>4〜6問。質問は読者の言葉で。答えは2〜3文。料金・条件は公式で確認した内容だけ。</dd><dt class="pd-ng">NG</dt><dd>答えで別のサービスを売り込む</dd></dl>
+      <div class="pd-sample"><p class="pd-sample__lbl">見本</p><div class="mt-body"><div class="mt-faq">
+  <details><summary>本当に無料で使えますか？</summary><p class="mt-faq__a">登録は無料です。メッセージを送るときにポイントを使います（最初にお試しポイントあり）。</p></details>
+  <details><summary>家族や知り合いにバレませんか？</summary><p class="mt-faq__a">ニックネームで登録でき、明細にはサービス名が出ない仕組みです。</p></details>
+</div></div></div>
+      <details class="pd-code"><summary>HTMLを見る・コピー</summary><button type="button" class="pd-copy">コピー</button><pre><code>&lt;div class="mt-faq"&gt;
+  &lt;details&gt;&lt;summary&gt;本当に無料で使えますか？&lt;/summary&gt;&lt;p class="mt-faq__a"&gt;登録は無料です。メッセージを送るときにポイントを使います（最初にお試しポイントあり）。&lt;/p&gt;&lt;/details&gt;
+  &lt;details&gt;&lt;summary&gt;家族や知り合いにバレませんか？&lt;/summary&gt;&lt;p class="mt-faq__a"&gt;ニックネームで登録でき、明細にはサービス名が出ない仕組みです。&lt;/p&gt;&lt;/details&gt;
+&lt;/div&gt;</code></pre></details>
+    </section>
+
+  <p class="pd-chapter" id="frame">H. 枠まわり</p>
+  <p class="pd-chapter__lead">ページの上下。</p>
+
+    <section class="pd-card" id="frame-1">
+      <div class="pd-card__head"><span class="pd-card__name">サイト名の帯</span><code class="pd-card__cls">mt-sitebar</code></div>
+      <dl class="pd-meta"><dt>使う場面</dt><dd>ページの一番上と一番下。</dd><dt>ルール</dt><dd>青。サイト名だけ。</dd><dt class="pd-ng">NG</dt><dd>広告を入れる</dd></dl>
+      <div class="pd-sample"><p class="pd-sample__lbl">見本</p><div class="mt-body"><div class="mt-sitebar">サイト名</div></div></div>
+      <details class="pd-code"><summary>HTMLを見る・コピー</summary><button type="button" class="pd-copy">コピー</button><pre><code>&lt;div class="mt-sitebar"&gt;サイト名&lt;/div&gt;</code></pre></details>
+    </section>
+
+    <section class="pd-card" id="frame-2">
+      <div class="pd-card__head"><span class="pd-card__name">関連記事</span><code class="pd-card__cls">mt-related</code></div>
+      <dl class="pd-meta"><dt>使う場面</dt><dd>ページの最後。</dd><dt>ルール</dt><dd>5〜7本。</dd><dt class="pd-ng">NG</dt><dd>関係ない記事</dd></dl>
+      <div class="pd-sample"><p class="pd-sample__lbl">見本</p><div class="mt-body"><ul class="mt-related"><li><a href="#sample">初対面で好印象を残すコツ</a></li><li><a href="#sample">自己紹介の例文まとめ</a></li></ul></div></div>
+      <details class="pd-code"><summary>HTMLを見る・コピー</summary><button type="button" class="pd-copy">コピー</button><pre><code>&lt;ul class="mt-related"&gt;&lt;li&gt;&lt;a href="#sample"&gt;初対面で好印象を残すコツ&lt;/a&gt;&lt;/li&gt;&lt;li&gt;&lt;a href="#sample"&gt;自己紹介の例文まとめ&lt;/a&gt;&lt;/li&gt;&lt;/ul&gt;</code></pre></details>
+    </section>
+
+    <section class="pd-card" id="frame-3">
+      <div class="pd-card__head"><span class="pd-card__name">PR・更新日の帯</span><code class="pd-card__cls">mt-prbar</code></div>
+      <dl class="pd-meta"><dt>使う場面</dt><dd>タイトルのすぐ下（アイキャッチや導入の会話より上）。</dd><dt>ルール</dt><dd>PR表記と更新日をセットで。更新日は内容を見直した日。</dd><dt class="pd-ng">NG</dt><dd>PR表記を下の方や小さい注記だけにする</dd></dl>
+      <div class="pd-sample"><p class="pd-sample__lbl">見本</p><div class="mt-body"><div class="mt-prbar"><span><b>PR</b> 本ページはプロモーションを含みます</span><span>更新日：2026年9月28日</span></div></div></div>
+      <details class="pd-code"><summary>HTMLを見る・コピー</summary><button type="button" class="pd-copy">コピー</button><pre><code>&lt;div class="mt-prbar"&gt;&lt;span&gt;&lt;b&gt;PR&lt;/b&gt; 本ページはプロモーションを含みます&lt;/span&gt;&lt;span&gt;更新日：2026年9月28日&lt;/span&gt;&lt;/div&gt;</code></pre></details>
+    </section>
+
+    <section class="pd-card" id="frame-4">
+      <div class="pd-card__head"><span class="pd-card__name">目次</span><code class="pd-card__cls">mt-toc</code></div>
+      <dl class="pd-meta"><dt>使う場面</dt><dd>要点ボックスの下、最初の h2 の前。</dd><dt>ルール</dt><dd>h2を番号付き、h3は2つまで。リンクは各見出しのidへ。</dd><dt class="pd-ng">NG</dt><dd>全部のh4まで載せて長くする</dd></dl>
+      <div class="pd-sample"><p class="pd-sample__lbl">見本</p><div class="mt-body"><nav class="mt-toc"><p class="mt-toc__ttl">目次</p><ol>
+  <li><a href="#sample">サービスA vs 人気サービス</a></li>
+  <li><a href="#sample">目的別おすすめランキング</a><ol><li><a href="#sample">第1位：サービスA</a></li><li><a href="#sample">第2位：サービスB</a></li></ol></li>
+  <li><a href="#sample">よくある質問</a></li>
+</ol></nav></div></div>
+      <details class="pd-code"><summary>HTMLを見る・コピー</summary><button type="button" class="pd-copy">コピー</button><pre><code>&lt;nav class="mt-toc"&gt;&lt;p class="mt-toc__ttl"&gt;目次&lt;/p&gt;&lt;ol&gt;
+  &lt;li&gt;&lt;a href="#sample"&gt;サービスA vs 人気サービス&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="#sample"&gt;目的別おすすめランキング&lt;/a&gt;&lt;ol&gt;&lt;li&gt;&lt;a href="#sample"&gt;第1位：サービスA&lt;/a&gt;&lt;/li&gt;&lt;li&gt;&lt;a href="#sample"&gt;第2位：サービスB&lt;/a&gt;&lt;/li&gt;&lt;/ol&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="#sample"&gt;よくある質問&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;&lt;/nav&gt;</code></pre></details>
+    </section>
+
+    <section class="pd-card" id="frame-5">
+      <div class="pd-card__head"><span class="pd-card__name">筆者プロフィール</span><code class="pd-card__cls">mt-author</code></div>
+      <dl class="pd-meta"><dt>使う場面</dt><dd>記事の最後（関連記事の前）、または導入の直後。</dd><dt>ルール</dt><dd>実在する筆者だけ。何を・どれくらい使ったかを事実で2〜3行。</dd><dt class="pd-ng">NG</dt><dd>経歴や利用歴を盛る</dd></dl>
+      <div class="pd-sample"><p class="pd-sample__lbl">見本</p><div class="mt-body"><div class="mt-author"><span class="mt-author__icon">私</span><div><p class="mt-author__name">ゆうき<small>この記事を書いた人</small></p><p class="mt-author__txt">30代・会社員。3つのサービスを実際に登録して、半年間使い比べました。</p></div></div></div></div>
+      <details class="pd-code"><summary>HTMLを見る・コピー</summary><button type="button" class="pd-copy">コピー</button><pre><code>&lt;div class="mt-author"&gt;&lt;span class="mt-author__icon"&gt;私&lt;/span&gt;&lt;div&gt;&lt;p class="mt-author__name"&gt;ゆうき&lt;small&gt;この記事を書いた人&lt;/small&gt;&lt;/p&gt;&lt;p class="mt-author__txt"&gt;30代・会社員。3つのサービスを実際に登録して、半年間使い比べました。&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;</code></pre></details>
+    </section>
+
+    <section class="pd-card" id="frame-6">
+      <div class="pd-card__head"><span class="pd-card__name">追従ボタン（画面下に固定）</span><code class="pd-card__cls">mt-sticky</code></div>
+      <dl class="pd-meta"><dt>使う場面</dt><dd>ページ全体。最初の大ボタンを過ぎたら画面の下に出る。</dd><dt>ルール</dt><dd>1位のボタンだけ。上に短いひとこと。ページの一番下に下のscriptを1回だけ置く。本文が隠れないよう body に padding-bottom:90px。</dd><dt class="pd-ng">NG</dt><dd>最初から出す（FVをふさぐ）／2つ以上並べる</dd></dl>
+      <div class="pd-sample"><p class="pd-sample__lbl">見本</p><div class="mt-body"><div class="mt-sticky"><p class="mt-sticky__micro">＼1位はこちら／</p><div class="mt-cta"><a class="mt-cta__btn" href="#sample">【1位】サービスA 無料登録</a></div></div></div></div>
+      <details class="pd-code"><summary>HTMLを見る・コピー</summary><button type="button" class="pd-copy">コピー</button><pre><code>&lt;div class="mt-sticky"&gt;&lt;p class="mt-sticky__micro"&gt;＼1位はこちら／&lt;/p&gt;&lt;div class="mt-cta"&gt;&lt;a class="mt-cta__btn" href="#sample"&gt;【1位】サービスA 無料登録&lt;/a&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;script&gt;
+(function () {
+  var s = document.querySelector('.mt-sticky'), t = document.querySelector('.mt-cta');
+  if (!s || !t || !('IntersectionObserver' in window)) { if (s) s.classList.add('is-show'); return; }
+  new IntersectionObserver(function (e) {
+    s.classList.toggle('is-show', !e[0].isIntersecting &amp;&amp; e[0].boundingClientRect.top &lt; 0);
+  }).observe(t);
+})();
+&lt;/script&gt;</code></pre></details>
+    </section>
+
+  <p class="pd-chapter" id="image">I. 画像</p>
+  <p class="pd-chapter__lead">LPを作るときは、画像を入れる場所すべてに「画像指示枠」を置く。画像ができたら「本文画像」に差し替える。置き方のルールはページ上の「画像の入れ方」。</p>
+
+    <section class="pd-card" id="image-1">
+      <div class="pd-card__head"><span class="pd-card__name">画像指示枠（LP作成中に置く）</span><code class="pd-card__cls">mt-imgslot / --have / --ad</code></div>
+      <dl class="pd-meta"><dt>使う場面</dt><dd>台本からLPを組むとき、画像を入れる場所すべて。画像を作る人（ユーザー）への指示書を兼ねる。</dd><dt>ルール</dt><dd>1枠＝1枚。見出しに ID・種類・役割・形。種類で色が変わる（紫＝新規生成、青＝既存素材、橙＝広告主バナー）。中身は「何を見せるか」「置き場所」「画像内の文字（本文からそのまま）」「alt」「生成プロンプト」。新規生成はプロンプト必須。図解の共通スタイル（色・カード・文字・人物の有無）は、LPで最初の新規生成の枠のプロンプトの先頭に全文を書き、2枚目以降は「（このLPの図解の共通スタイル）」で参照する。</dd><dt class="pd-ng">NG</dt><dd>公開ページに枠を残す／画像内の文字を本文と変える／図をHTMLやSVGで自作して済ませる</dd></dl>
+      <div class="pd-sample"><p class="pd-sample__lbl">見本</p><div class="mt-body"><figure class="mt-imgslot" data-img="IMG-01">
+  <figcaption class="mt-imgslot__head"><span class="mt-imgslot__id">IMG-01</span><span class="mt-imgslot__kind">新規生成</span><span>行動・横3:2</span><span class="mt-imgslot__todo">公開前に画像へ差し替え</span></figcaption>
+  <div class="mt-imgslot__box" style="aspect-ratio:3/2">登録から紹介までの3ステップを、左から右へ並べた図解</div>
+  <dl class="mt-imgslot__spec">
+    <dt>置き場所</dt><dd>最後のCTAの直前（手順の直後）</dd>
+    <dt>画像内の文字</dt><dd>「STEP1」「無料で登録」「STEP2」「希望を伝える」「STEP3」「提案を受ける」</dd>
+    <dt>alt</dt><dd>登録の流れ：STEP1 無料で登録、STEP2 希望を伝える、STEP3 提案を受ける</dd>
+    <dt>メモ</dt><dd>人物なし。同じLPの図解と同じテイスト（参照画像を一緒に渡す）</dd>
+  </dl>
+  <details class="mt-imgslot__prompt"><summary>生成プロンプト</summary><pre>（このLPの図解の共通スタイル）
+横長3:2。左から右へ3つのステップを横一列に並べ、細い線でつなぐ。各ステップの上に丸いアイコンで「STEP1」「STEP2」「STEP3」。
+STEP1：スマホと申し込みフォームの線アイコン。文字「無料で登録」
+STEP2：吹き出しの線アイコン。文字「希望を伝える」
+STEP3：書類とチェックの線アイコン。文字「提案を受ける」
+画像内の文字は「」で指定した文言だけ。人物・ロゴ・透かしは入れない。</pre></details>
+</figure>
+<figure class="mt-imgslot mt-imgslot--have" data-img="IMG-02">
+  <figcaption class="mt-imgslot__head"><span class="mt-imgslot__id">IMG-02</span><span class="mt-imgslot__kind">既存素材</span><span>感情・4:3</span><span class="mt-imgslot__todo">公開前に画像へ差し替え</span></figcaption>
+  <div class="mt-imgslot__box" style="aspect-ratio:4/3">（素材ID）職場選びで迷う人物の挿絵</div>
+  <dl class="mt-imgslot__spec">
+    <dt>ファイル</dt><dd>images/〇〇.webp（台帳の素材ID）</dd>
+    <dt>alt</dt><dd>職場選びで迷う人（イメージ）</dd>
+    <dt>メモ</dt><dd>人物入り。ASPの画像制約を確認してから置く。下に「※写真はイメージです」</dd>
+  </dl>
+</figure>
+<figure class="mt-imgslot mt-imgslot--ad" data-img="IMG-03">
+  <figcaption class="mt-imgslot__head"><span class="mt-imgslot__id">IMG-03</span><span class="mt-imgslot__kind">広告主バナー</span><span>扉・ASP素材のサイズ</span><span class="mt-imgslot__todo">公開前に画像へ差し替え</span></figcaption>
+  <div class="mt-imgslot__box" style="aspect-ratio:6/5">ASP管理画面のバナー素材をそのまま（改変しない）</div>
+  <dl class="mt-imgslot__spec">
+    <dt>差し替え先</dt><dd>パーツ「バナー＋PR表記」（mt-banner）</dd>
+    <dt>リンク</dt><dd>ASP発行の計測リンク。右上に「PR」</dd>
+    <dt>alt</dt><dd>サービス名</dd>
+  </dl>
+</figure></div></div>
+      <details class="pd-code"><summary>HTMLを見る・コピー</summary><button type="button" class="pd-copy">コピー</button><pre><code>&lt;figure class="mt-imgslot" data-img="IMG-01"&gt;
+  &lt;figcaption class="mt-imgslot__head"&gt;&lt;span class="mt-imgslot__id"&gt;IMG-01&lt;/span&gt;&lt;span class="mt-imgslot__kind"&gt;新規生成&lt;/span&gt;&lt;span&gt;行動・横3:2&lt;/span&gt;&lt;span class="mt-imgslot__todo"&gt;公開前に画像へ差し替え&lt;/span&gt;&lt;/figcaption&gt;
+  &lt;div class="mt-imgslot__box" style="aspect-ratio:3/2"&gt;登録から紹介までの3ステップを、左から右へ並べた図解&lt;/div&gt;
+  &lt;dl class="mt-imgslot__spec"&gt;
+    &lt;dt&gt;置き場所&lt;/dt&gt;&lt;dd&gt;最後のCTAの直前（手順の直後）&lt;/dd&gt;
+    &lt;dt&gt;画像内の文字&lt;/dt&gt;&lt;dd&gt;「STEP1」「無料で登録」「STEP2」「希望を伝える」「STEP3」「提案を受ける」&lt;/dd&gt;
+    &lt;dt&gt;alt&lt;/dt&gt;&lt;dd&gt;登録の流れ：STEP1 無料で登録、STEP2 希望を伝える、STEP3 提案を受ける&lt;/dd&gt;
+    &lt;dt&gt;メモ&lt;/dt&gt;&lt;dd&gt;人物なし。同じLPの図解と同じテイスト（参照画像を一緒に渡す）&lt;/dd&gt;
+  &lt;/dl&gt;
+  &lt;details class="mt-imgslot__prompt"&gt;&lt;summary&gt;生成プロンプト&lt;/summary&gt;&lt;pre&gt;（このLPの図解の共通スタイル）
+横長3:2。左から右へ3つのステップを横一列に並べ、細い線でつなぐ。各ステップの上に丸いアイコンで「STEP1」「STEP2」「STEP3」。
+STEP1：スマホと申し込みフォームの線アイコン。文字「無料で登録」
+STEP2：吹き出しの線アイコン。文字「希望を伝える」
+STEP3：書類とチェックの線アイコン。文字「提案を受ける」
+画像内の文字は「」で指定した文言だけ。人物・ロゴ・透かしは入れない。&lt;/pre&gt;&lt;/details&gt;
+&lt;/figure&gt;
+&lt;figure class="mt-imgslot mt-imgslot--have" data-img="IMG-02"&gt;
+  &lt;figcaption class="mt-imgslot__head"&gt;&lt;span class="mt-imgslot__id"&gt;IMG-02&lt;/span&gt;&lt;span class="mt-imgslot__kind"&gt;既存素材&lt;/span&gt;&lt;span&gt;感情・4:3&lt;/span&gt;&lt;span class="mt-imgslot__todo"&gt;公開前に画像へ差し替え&lt;/span&gt;&lt;/figcaption&gt;
+  &lt;div class="mt-imgslot__box" style="aspect-ratio:4/3"&gt;（素材ID）職場選びで迷う人物の挿絵&lt;/div&gt;
+  &lt;dl class="mt-imgslot__spec"&gt;
+    &lt;dt&gt;ファイル&lt;/dt&gt;&lt;dd&gt;images/〇〇.webp（台帳の素材ID）&lt;/dd&gt;
+    &lt;dt&gt;alt&lt;/dt&gt;&lt;dd&gt;職場選びで迷う人（イメージ）&lt;/dd&gt;
+    &lt;dt&gt;メモ&lt;/dt&gt;&lt;dd&gt;人物入り。ASPの画像制約を確認してから置く。下に「※写真はイメージです」&lt;/dd&gt;
+  &lt;/dl&gt;
+&lt;/figure&gt;
+&lt;figure class="mt-imgslot mt-imgslot--ad" data-img="IMG-03"&gt;
+  &lt;figcaption class="mt-imgslot__head"&gt;&lt;span class="mt-imgslot__id"&gt;IMG-03&lt;/span&gt;&lt;span class="mt-imgslot__kind"&gt;広告主バナー&lt;/span&gt;&lt;span&gt;扉・ASP素材のサイズ&lt;/span&gt;&lt;span class="mt-imgslot__todo"&gt;公開前に画像へ差し替え&lt;/span&gt;&lt;/figcaption&gt;
+  &lt;div class="mt-imgslot__box" style="aspect-ratio:6/5"&gt;ASP管理画面のバナー素材をそのまま（改変しない）&lt;/div&gt;
+  &lt;dl class="mt-imgslot__spec"&gt;
+    &lt;dt&gt;差し替え先&lt;/dt&gt;&lt;dd&gt;パーツ「バナー＋PR表記」（mt-banner）&lt;/dd&gt;
+    &lt;dt&gt;リンク&lt;/dt&gt;&lt;dd&gt;ASP発行の計測リンク。右上に「PR」&lt;/dd&gt;
+    &lt;dt&gt;alt&lt;/dt&gt;&lt;dd&gt;サービス名&lt;/dd&gt;
+  &lt;/dl&gt;
+&lt;/figure&gt;</code></pre></details>
+    </section>
+
+    <section class="pd-card" id="image-2">
+      <div class="pd-card__head"><span class="pd-card__name">本文画像（差し替え後）</span><code class="pd-card__cls">mt-img</code></div>
+      <dl class="pd-meta"><dt>使う場面</dt><dd>画像指示枠の画像ができたら、この形に置き換える（広告主バナーは mt-banner）。</dd><dt>ルール</dt><dd>全幅。alt・width・height を必ず入れる。FV以外は loading="lazy"。写真・人物・写真風のAI画像は下に「※写真はイメージです」。</dd><dt class="pd-ng">NG</dt><dd>altを空にする／小さい画像を浮かせる</dd></dl>
+      <div class="pd-sample"><p class="pd-sample__lbl">見本</p><div class="mt-body"><figure class="mt-img"><span class="mt-banner__img">画像（16:9）</span><figcaption class="mt-img__note">※写真はイメージです</figcaption></figure></div></div>
+      <details class="pd-code"><summary>HTMLを見る・コピー</summary><button type="button" class="pd-copy">コピー</button><pre><code>&lt;figure class="mt-img"&gt;&lt;img src="images/〇〇.webp" alt="画像内の文字・内容を全部" width="1080" height="608" loading="lazy"&gt;&lt;figcaption class="mt-img__note"&gt;※写真はイメージです&lt;/figcaption&gt;&lt;/figure&gt;</code></pre></details>
+    </section>
+</div>
+<script>
+document.querySelectorAll('a[href="#sample"]').forEach(function (a) { a.addEventListener('click', function (e) { e.preventDefault(); }); });
+document.querySelectorAll('.pd-copy').forEach(function (b) { b.addEventListener('click', function () { var t = b.parentNode.querySelector('code').textContent; (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).then(function () { b.textContent = 'コピーしました'; setTimeout(function () { b.textContent = 'コピー'; }, 1500); }).catch(function () { b.textContent = '選択してコピーしてください'; }); }); });
+</script>
+</body>
+</html>
