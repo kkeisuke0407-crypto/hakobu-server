@@ -245,7 +245,7 @@ body { margin: 0; background: #f4f4f4; font-family: "Hiragino Sans", "Noto Sans 
 
     <section class="pd-card" id="compare-4">
       <div class="pd-card__head"><span class="pd-card__name">縦型比較表（3社・総合評価つき）</span><code class="pd-card__cls">mt-cmpv</code></div>
-      <dl class="pd-meta"><dt>使う場面</dt><dd>記事の最初の h2 の直後。3社をスマホで横スクロールさせずに比べたいとき（4社以上は横スクロール比較表）。</dd><dt>ルール</dt><dd>3社まで（左の項目列＋3列）。上の段に順位・ロゴ・名前、一番上の行に総合評価（点数＋星）、一番下の行に公式サイトボタン（光るボタン）。項目は4〜6個で、記号（◎◯△×）の下に根拠を10字前後。推す列に is-pick（オレンジの太枠＋濃い黄色）。総合評価は記号から計算（◎3・◯2・△1・×0点の合計を5点満点に換算）し、計算方法を表の下に注記する。星は <code>span</code> の width（点数÷5）で塗る。丸は小さく出る端末があるので「◯」（大きい丸）を使う。</dd><dt class="pd-ng">NG</dt><dd>推す列を全部◎にする／点数の根拠を書かない／4社以上を詰め込む</dd></dl>
+      <dl class="pd-meta"><dt>使う場面</dt><dd>記事の最初の h2 の直後。3社をスマホで横スクロールさせずに比べたいとき（4社以上は横スクロール比較表）。</dd><dt>ルール</dt><dd>3社まで（左の項目列＋3列）。上の段に順位・ロゴ・名前、一番上の行に総合評価（点数＋星）、一番下の行に公式サイトボタン（光るボタン）。項目は4〜6個で、記号（◎◯△×）の下に根拠を10字前後。推す列に is-pick（オレンジの太枠＋濃い黄色）。総合評価は記号から計算（◎3・◯2・△1・×0点の合計を5点満点に換算）。表の下の注記は不要。星は <code>span</code> の width（点数÷5）で塗る。丸は小さく出る端末があるので「◯」（大きい丸）を使う。</dd><dt class="pd-ng">NG</dt><dd>推す列を全部◎にする／4社以上を詰め込む</dd></dl>
       <div class="pd-sample"><p class="pd-sample__lbl">見本</p><div class="mt-body"><table class="mt-cmpv">
   <thead><tr><th></th><th class="is-pick"><span class="mt-cmpv__rank">1位</span><span class="mt-cmpv__logo"><span class="mt-ico" style="background:#1e88e5">A</span></span><span class="mt-cmpv__name">サービスA</span></th><th><span class="mt-cmpv__rank">2位</span><span class="mt-cmpv__logo"><span class="mt-ico" style="background:#8e24aa">B</span></span><span class="mt-cmpv__name">サービスB</span></th><th><span class="mt-cmpv__rank">3位</span><span class="mt-cmpv__logo"><span class="mt-ico" style="background:#43a047">C</span></span><span class="mt-cmpv__name">サービスC</span></th></tr></thead>
   <tbody>
@@ -255,8 +255,7 @@ body { margin: 0; background: #f4f4f4; font-family: "Hiragino Sans", "Noto Sans 
     <tr><th>年齢層</th><td class="is-pick"><span class="mt-mk mt-mk--best">◎</span><small>20〜60代</small></td><td><span class="mt-mk mt-mk--good">◯</span><small>20〜40代</small></td><td><span class="mt-mk mt-mk--bad">×</span><small>20代が中心</small></td></tr>
   </tbody>
   <tfoot><tr><th>公式</th><td class="is-pick"><a class="mt-cmpv__btn" href="#sample">公式サイト</a></td><td><a class="mt-cmpv__btn" href="#sample">公式サイト</a></td><td><a class="mt-cmpv__btn" href="#sample">公式サイト</a></td></tr></tfoot>
-</table>
-<p class="mt-small">※総合評価は◎3点・◯2点・△1点・×0点の合計を5点満点に換算。</p></div></div>
+</table></div></div>
       <details class="pd-code"><summary>HTMLを見る・コピー</summary><button type="button" class="pd-copy">コピー</button><pre><code>&lt;table class="mt-cmpv"&gt;
   &lt;thead&gt;&lt;tr&gt;&lt;th&gt;&lt;/th&gt;&lt;th class="is-pick"&gt;&lt;span class="mt-cmpv__rank"&gt;1位&lt;/span&gt;&lt;span class="mt-cmpv__logo"&gt;&lt;span class="mt-ico" style="background:#1e88e5"&gt;A&lt;/span&gt;&lt;/span&gt;&lt;span class="mt-cmpv__name"&gt;サービスA&lt;/span&gt;&lt;/th&gt;&lt;th&gt;&lt;span class="mt-cmpv__rank"&gt;2位&lt;/span&gt;&lt;span class="mt-cmpv__logo"&gt;&lt;span class="mt-ico" style="background:#8e24aa"&gt;B&lt;/span&gt;&lt;/span&gt;&lt;span class="mt-cmpv__name"&gt;サービスB&lt;/span&gt;&lt;/th&gt;&lt;th&gt;&lt;span class="mt-cmpv__rank"&gt;3位&lt;/span&gt;&lt;span class="mt-cmpv__logo"&gt;&lt;span class="mt-ico" style="background:#43a047"&gt;C&lt;/span&gt;&lt;/span&gt;&lt;span class="mt-cmpv__name"&gt;サービスC&lt;/span&gt;&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
   &lt;tbody&gt;
@@ -266,8 +265,7 @@ body { margin: 0; background: #f4f4f4; font-family: "Hiragino Sans", "Noto Sans 
     &lt;tr&gt;&lt;th&gt;年齢層&lt;/th&gt;&lt;td class="is-pick"&gt;&lt;span class="mt-mk mt-mk--best"&gt;◎&lt;/span&gt;&lt;small&gt;20〜60代&lt;/small&gt;&lt;/td&gt;&lt;td&gt;&lt;span class="mt-mk mt-mk--good"&gt;◯&lt;/span&gt;&lt;small&gt;20〜40代&lt;/small&gt;&lt;/td&gt;&lt;td&gt;&lt;span class="mt-mk mt-mk--bad"&gt;×&lt;/span&gt;&lt;small&gt;20代が中心&lt;/small&gt;&lt;/td&gt;&lt;/tr&gt;
   &lt;/tbody&gt;
   &lt;tfoot&gt;&lt;tr&gt;&lt;th&gt;公式&lt;/th&gt;&lt;td class="is-pick"&gt;&lt;a class="mt-cmpv__btn" href="#sample"&gt;公式サイト&lt;/a&gt;&lt;/td&gt;&lt;td&gt;&lt;a class="mt-cmpv__btn" href="#sample"&gt;公式サイト&lt;/a&gt;&lt;/td&gt;&lt;td&gt;&lt;a class="mt-cmpv__btn" href="#sample"&gt;公式サイト&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tfoot&gt;
-&lt;/table&gt;
-&lt;p class="mt-small"&gt;※総合評価は◎3点・◯2点・△1点・×0点の合計を5点満点に換算。&lt;/p&gt;</code></pre></details>
+&lt;/table&gt;</code></pre></details>
     </section>
 
     <section class="pd-card" id="compare-5">
