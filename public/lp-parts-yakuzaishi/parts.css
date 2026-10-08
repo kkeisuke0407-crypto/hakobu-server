@@ -1,0 +1,314 @@
+/* ============================================================
+   薬剤師転職 比較・ランキング型LP パーツ（yk-*）
+   色：青=見出し・表／緑=特徴・求人の数字／オレンジ=ボタン／赤=強調・対象条件／黄マーカー=結論
+   ============================================================ */
+:root {
+  --yk-blue: #2f67b8; --yk-blue-d: #1f4f97; --yk-blue-bg: #eaf1fb; --yk-blue-pale: #f4f7fc;
+  --yk-green: #36a05a; --yk-green-d: #24813f; --yk-green-bg: #ecf8ef;
+  --yk-orange: #ff5a1f; --yk-orange-d: #cf3f0a; --yk-red: #d6282b; --yk-pink: #ffd9df;
+  --yk-mark: #fff19a; --yk-cream: #fffaf0;
+  --yk-gold: #e3ab00; --yk-silver: #9aa4b1; --yk-bronze: #c58a4a;
+  --yk-ink: #2a2a2a; --yk-sub: #6b7280; --yk-rule: #d9e1ec;
+  --yk-font: "Hiragino Sans", "ヒラギノ角ゴ ProN W3", "Noto Sans JP", Meiryo, sans-serif;
+}
+.yk-body { font-family: var(--yk-font); color: var(--yk-ink); font-size: 15.5px; line-height: 1.8; }
+.yk-body p { margin: 0 0 1em; }
+.yk-body *, .yk-body *::before, .yk-body *::after { box-sizing: border-box; }
+
+/* 強調・注記 */
+.yk-red { color: var(--yk-red); font-weight: 700; }
+.yk-mark { font-weight: 700; background: linear-gradient(transparent 58%, var(--yk-mark) 58%); }
+.yk-small { font-size: 11.5px !important; line-height: 1.6 !important; color: var(--yk-sub); }
+.yk-ph { display: grid; place-items: center; background: #eef1f5; border: 1px dashed #b9c3d0; color: #8a94a3; font-size: 11px; line-height: 1.4; text-align: center; }
+
+/* ボタン（オレンジ・光が走る）と、上のひとこと（対象条件） */
+.yk-catch { margin: .6em 0 .25em !important; text-align: center; font-size: 12px; font-weight: 700; color: var(--yk-orange-d); line-height: 1.4 !important; }
+.yk-catch::before { content: "＼"; } .yk-catch::after { content: "／"; }
+.yk-btn { position: relative; display: flex; align-items: center; justify-content: center; gap: .3em; padding: .75em 1.6em .75em .8em; border-radius: 6px; background: linear-gradient(#ff7a3d, var(--yk-orange)); box-shadow: 0 3px 0 var(--yk-orange-d); color: #fff !important; font-weight: 900; font-size: 15px; line-height: 1.4; text-align: center; text-decoration: none; overflow: hidden; isolation: isolate; }
+.yk-btn::before { content: ""; position: absolute; right: .8em; top: 50%; width: .5em; height: .5em; border: solid #fff; border-width: 3px 3px 0 0; transform: translateY(-50%) rotate(45deg); }
+.yk-btn::after { content: ""; position: absolute; top: 0; left: -80%; z-index: -1; width: 45%; height: 100%; background: linear-gradient(100deg, rgba(255,255,255,0), rgba(255,255,255,.55), rgba(255,255,255,0)); transform: skewX(-20deg); animation: yk-shine 2.8s ease-in-out infinite; }
+.yk-btn:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--yk-orange-d); }
+.yk-btn--sm { padding: .55em 1.3em .55em .5em; font-size: 13px; }
+.yk-btn--sub { background: #fff; box-shadow: 0 3px 0 #b6bec9; border: 2px solid #c9d1db; color: var(--yk-ink) !important; padding: .5em .6em; }
+.yk-btn--sub::before, .yk-btn--sub::after { display: none; }
+@keyframes yk-shine { 0% { left: -80%; } 55%, 100% { left: 130%; } }
+@media (prefers-reduced-motion: reduce) { .yk-btn::after { animation: none; display: none; } }
+
+/* A-1 FV（最新版バッジ＋見出し＋実績の丸） */
+.yk-hero { position: relative; display: grid; grid-template-columns: 1fr 38%; align-items: end; margin: 0 -12px; padding: 12px 12px 14px; background: linear-gradient(160deg, #e9f1fc, #fff 70%); overflow: hidden; }
+.yk-hero__year { display: inline-block; margin: 0 0 .3em !important; padding: .15em .8em; border-radius: 6px 6px 6px 0; background: var(--yk-blue); color: #fff; font-size: 12.5px; font-weight: 900; }
+.yk-hero__ttl { margin: 0 0 .5em; font-size: 23px; font-weight: 900; line-height: 1.32; color: #1d3557; }
+.yk-hero__ttl em { font-style: normal; color: var(--yk-blue); font-size: 1.22em; }
+.yk-hero__badges { grid-column: 1 / -1; display: flex; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.yk-hero__badges li { display: grid; place-items: center; width: 82px; height: 82px; border-radius: 50%; background: radial-gradient(#fffdf0, #ffeeb5); border: 3px solid #f2c94c; color: #7a5200; font-size: 11.5px; font-weight: 900; line-height: 1.25; text-align: center; }
+.yk-hero__badges b { display: block; color: var(--yk-blue-d); font-size: 19px; }
+.yk-hero__img { align-self: stretch; min-height: 150px; border-radius: 6px; }
+
+/* A-2 ロゴの横流し */
+.yk-logos { margin: 0 -12px; padding: 8px 0; overflow: hidden; background: #f2f5f9; }
+.yk-logos__track { display: flex; gap: 10px; width: max-content; margin: 0; padding: 0; list-style: none; animation: yk-marquee 30s linear infinite; }
+.yk-logos__track li { flex: 0 0 102px; height: 28px; display: grid; place-items: center; border-radius: 4px; background: #fff; overflow: hidden; }
+.yk-logos__track img { width: 100%; height: 100%; object-fit: contain; }
+@keyframes yk-marquee { to { transform: translateX(-50%); } }
+@media (prefers-reduced-motion: reduce) { .yk-logos { overflow-x: auto; } .yk-logos__track { animation: none; } }
+
+/* A-3 PR表記（ロゴの下） */
+.yk-pr { display: flex; gap: .6em; align-items: flex-start; margin: .7em 0 1em !important; font-size: 11.5px; line-height: 1.6 !important; color: var(--yk-sub); }
+.yk-pr b { flex: 0 0 auto; padding: 0 .35em; border: 1px solid #999; font-weight: 400; color: #555; }
+
+/* B-1 BEST3（王冠つき3列カード） */
+.yk-best3 { margin: 1em -12px; padding: 16px 8px 18px; background: var(--yk-cream); }
+.yk-best3__ttl { margin: 0 0 .7em !important; text-align: center; font-size: 19px; font-weight: 900; line-height: 1.4 !important; }
+.yk-best3__ttl em { font-style: normal; color: var(--yk-blue); font-size: 1.3em; }
+.yk-best3__list { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin: 0; padding: 0; list-style: none; }
+.yk-best3__item { display: flex; flex-direction: column; border-radius: 8px; background: #fff; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+.yk-best3__crown { display: grid; place-items: center; height: 30px; background: var(--yk-gold); color: #fff; font-weight: 900; font-size: 15px; }
+.yk-best3__item:nth-child(2) .yk-best3__crown { background: var(--yk-silver); }
+.yk-best3__item:nth-child(3) .yk-best3__crown { background: var(--yk-bronze); }
+.yk-best3__logo { height: 30px; margin: 7px 6px 6px; }
+.yk-best3__text { flex: 1; margin: 0 !important; padding: 0 7px; font-size: 12.5px; line-height: 1.65 !important; }
+.yk-best3__note { margin: .5em 4px 0 !important; text-align: center; font-size: 10.5px !important; line-height: 1.4 !important; color: var(--yk-red); font-weight: 700; }
+.yk-best3 .yk-btn { margin: 0 6px 8px; padding: .6em 1.2em .6em .3em; font-size: 12.5px; white-space: nowrap; }
+.yk-best3 .yk-btn::before { right: .55em; }
+.yk-best3 .yk-catch { font-size: 10px; letter-spacing: -.02em; }
+
+/* B-2 横スクロールの入れ物と案内 */
+.yk-hscroll { display: flex; gap: 10px; margin: 0 -12px; padding: 4px 12px 12px; overflow-x: auto; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; }
+.yk-hscroll > * { flex: 0 0 80%; scroll-snap-align: start; }
+.yk-hint { margin: .2em 0 .3em !important; text-align: right; font-size: 11px !important; color: var(--yk-sub); }
+.yk-hint::after { content: " →"; }
+
+/* B-2 非公開求人の例カード */
+.yk-sec-ttl { margin: 1.4em 0 .6em !important; text-align: center; font-size: 21px; font-weight: 900; line-height: 1.45 !important; }
+.yk-sec-ttl em { font-style: normal; color: var(--yk-green); }
+.yk-jobcard { position: relative; border: 2px solid var(--yk-blue); border-radius: 8px; background: #fff; overflow: hidden; }
+.yk-jobcard__ttl { margin: 0 !important; padding: .45em .6em; background: var(--yk-blue); color: #fff; text-align: center; font-size: 15px; font-weight: 900; line-height: 1.4 !important; }
+.yk-jobcard__img { aspect-ratio: 3 / 2; margin: 10px; }
+.yk-jobcard__pay { margin: 0 0 .4em !important; text-align: center; font-weight: 700; }
+.yk-jobcard__pay b { color: var(--yk-green); font-size: 26px; }
+.yk-kv { width: calc(100% - 20px); margin: 0 10px; border-collapse: collapse; font-size: 12.5px; line-height: 1.55; }
+.yk-kv th { width: 34%; padding: .5em; border: 2px solid #fff; background: var(--yk-blue-bg); color: var(--yk-blue-d); text-align: center; }
+.yk-kv td { padding: .5em; border-bottom: 1px solid var(--yk-rule); }
+.yk-tags { display: flex; flex-wrap: wrap; gap: 4px; margin: 8px 10px; padding: 0; list-style: none; }
+.yk-tags li { padding: .15em .55em; border-radius: 4px; background: var(--yk-blue); color: #fff; font-size: 11.5px; font-weight: 700; line-height: 1.6; }
+.yk-tags--green li { background: var(--yk-green); }
+.yk-jobcard .yk-btn { margin: 0 10px 12px; }
+
+/* C-1 タブ切替（ラジオボタンで切替。JSなし） */
+.yk-tabs { margin: 1.2em 0; }
+.yk-tabs > input { position: absolute; opacity: 0; pointer-events: none; }
+.yk-tabs__labels { display: flex; gap: 4px; }
+.yk-tabs__labels label { flex: 1; display: grid; place-items: center; min-height: 44px; padding: .3em; border-radius: 8px 8px 0 0; background: #e7ebf1; color: #444; font-size: 13.5px; font-weight: 700; line-height: 1.3; text-align: center; cursor: pointer; }
+.yk-tabs__panels { border-top: 4px solid var(--yk-blue); }
+.yk-tabs__panels > div { display: none; }
+.yk-tabs > input:nth-of-type(1):checked ~ .yk-tabs__labels label:nth-child(1),
+.yk-tabs > input:nth-of-type(2):checked ~ .yk-tabs__labels label:nth-child(2),
+.yk-tabs > input:nth-of-type(3):checked ~ .yk-tabs__labels label:nth-child(3) { background: var(--yk-blue); color: #fff; }
+.yk-tabs > input:nth-of-type(1):checked ~ .yk-tabs__panels > div:nth-child(1),
+.yk-tabs > input:nth-of-type(2):checked ~ .yk-tabs__panels > div:nth-child(2),
+.yk-tabs > input:nth-of-type(3):checked ~ .yk-tabs__panels > div:nth-child(3) { display: block; }
+.yk-tabs > input:focus-visible ~ .yk-tabs__labels { outline: 2px solid var(--yk-blue); outline-offset: 2px; }
+
+/* C-1 比較表（王冠・評価・◎・タグ・ボタン） */
+.yk-cmp { width: 100%; border-collapse: collapse; table-layout: fixed; background: #fff; font-size: 12px; line-height: 1.5; }
+.yk-cmp th { padding: .5em .2em; background: var(--yk-green); color: #fff; font-weight: 700; border: 1px solid #fff; }
+.yk-cmp td { padding: .55em .35em; border: 1px dashed #cdd6e2; vertical-align: middle; text-align: center; }
+.yk-cmp tr.is-pick td { background: #fffbea; }
+.yk-cmp col.c1 { width: 27%; } .yk-cmp col.c2 { width: 19%; } .yk-cmp col.c4 { width: 19%; }
+.yk-cmp__rank { display: inline-grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; background: var(--yk-gold); color: #fff; font-weight: 900; }
+/* 1行目は見出し行なので、2位＝3行目・3位＝4行目 */
+.yk-cmp tr:nth-child(3) .yk-cmp__rank { background: var(--yk-silver); } .yk-cmp tr:nth-child(4) .yk-cmp__rank { background: var(--yk-bronze); }
+.yk-cmp__logo { height: 22px; margin: 4px 0; }
+.yk-cmp__name { display: block; color: var(--yk-blue); font-weight: 700; text-decoration: underline; }
+.yk-stars { display: block; color: #f5a623; letter-spacing: .02em; }
+.yk-grade { display: block; font-size: 11px; font-weight: 700; } .yk-grade b { color: var(--yk-red); font-size: 18px; }
+.yk-maru { display: block; color: var(--yk-red); font-size: 26px; line-height: 1.1; font-weight: 900; }
+.yk-pink { color: #e8507a; font-weight: 700; }
+.yk-cmp .is-left { text-align: left; }
+.yk-chips { display: flex; flex-wrap: wrap; gap: 3px; margin: .4em 0 0; padding: 0; list-style: none; }
+.yk-chips li { padding: .05em .5em; border: 1px solid #9dd3ae; border-radius: 99px; color: var(--yk-green-d); font-size: 10.5px; }
+.yk-chips li.is-pink { border-color: #f3a6b8; color: #d6456c; } .yk-chips li.is-gray { border-color: #c3c9d2; color: #555; }
+.yk-cmp .yk-catch { font-size: 10px; margin-top: 0 !important; }
+.yk-cmp .yk-btn { padding: .55em 1.1em .55em .2em; font-size: 12.5px; white-space: nowrap; }
+.yk-cmp .yk-btn::before { right: .5em; }
+
+/* C-1 もっと見る（チェックボックスで開閉） */
+.yk-fold > input { position: absolute; opacity: 0; pointer-events: none; }
+.yk-fold__body { position: relative; max-height: 420px; overflow: hidden; }
+.yk-fold__body::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 90px; background: linear-gradient(rgba(255,255,255,0), #fff); }
+.yk-fold__btn { display: block; width: 86%; margin: -24px auto 0; padding: .6em; position: relative; z-index: 1; border: 1px solid #bbb; border-radius: 6px; background: #fff; text-align: center; font-size: 15px; cursor: pointer; }
+.yk-fold > input:checked ~ .yk-fold__body { max-height: none; }
+.yk-fold > input:checked ~ .yk-fold__body::after, .yk-fold > input:checked ~ .yk-fold__btn { display: none; }
+
+/* C-2 ポジショニングマップ（2軸の早見表） */
+.yk-matrix { position: relative; aspect-ratio: 1 / 1; margin: 1.6em 14px; border: 8px solid var(--yk-blue-bg); border-radius: 16px; background: #fff; }
+.yk-matrix::before, .yk-matrix::after { content: ""; position: absolute; border: 0 dashed #9aa7b8; }
+.yk-matrix::before { left: 50%; top: 6%; bottom: 6%; border-left-width: 2px; }
+.yk-matrix::after { top: 50%; left: 6%; right: 6%; border-top-width: 2px; border-top-color: #7fc49a; border-top-style: dotted; }
+.yk-matrix__ax { position: absolute; z-index: 1; padding: .2em .8em; border-radius: 6px; background: var(--yk-blue); color: #fff; font-size: 12px; font-weight: 700; white-space: nowrap; }
+.yk-matrix__ax--t { top: -20px; left: 50%; transform: translateX(-50%); }
+.yk-matrix__ax--b { bottom: -20px; left: 50%; transform: translateX(-50%); background: #7d8794; }
+.yk-matrix__ax--l { left: -22px; top: 50%; transform: translateY(-50%); writing-mode: vertical-rl; padding: .8em .2em; background: #7d8794; }
+.yk-matrix__ax--r { right: -22px; top: 50%; transform: translateY(-50%); writing-mode: vertical-rl; padding: .8em .2em; background: var(--yk-green); }
+.yk-matrix__item { position: absolute; z-index: 2; left: var(--x); top: var(--y); transform: translate(-50%, -50%); width: 28%; height: 9%; padding: 0; border: 1px solid var(--yk-rule); border-radius: 4px; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+.yk-matrix__item.is-pick { width: 40%; height: auto; padding: 4px; border: 2px solid #f2c94c; background: #fffbe6; }
+.yk-matrix__item.is-pick ul { margin: 3px 0 0; padding: 0; list-style: none; font-size: 10px; line-height: 1.45; font-weight: 700; }
+
+/* C-3 2社併用のすすめ */
+.yk-combo { margin: 1.4em -12px; padding: 18px 12px 6px; background: var(--yk-blue-bg); }
+.yk-combo__ttl { margin: 0 0 .8em !important; text-align: center; font-size: 19px; font-weight: 900; line-height: 1.5 !important; }
+.yk-combo__ttl em { font-style: normal; color: var(--yk-red); }
+.yk-combo__card { margin: 0 0 14px; border-radius: 8px; background: #fff; overflow: hidden; }
+.yk-combo__head { margin: 0 !important; padding: .6em .8em; background: repeating-linear-gradient(135deg, var(--yk-blue) 0 12px, #3c74c6 12px 24px); color: #fff; text-align: center; font-size: 16px; font-weight: 900; line-height: 1.45 !important; }
+.yk-combo__logo { height: 44px; margin: 12px auto 4px; width: 70%; }
+.yk-combo__link { display: block; margin: 0 0 .5em; text-align: center; font-size: 13px; font-weight: 700; color: var(--yk-blue); }
+.yk-combo__points { margin: 0 12px; padding: 0; list-style: none; }
+.yk-combo__points li { margin: 0 0 .8em; padding-left: 1.7em; position: relative; font-size: 13.5px; line-height: 1.65; }
+.yk-combo__points li::before { content: ""; position: absolute; left: 0; top: .15em; width: 1.3em; height: 1.3em; background: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2020%2020'%3E%3Crect%20x='1.5'%20y='3.5'%20width='14'%20height='14'%20rx='2'%20fill='%23fff'%20stroke='%232f67b8'%20stroke-width='2'/%3E%3Cpath%20d='M5%2010.5l3.5%203.5L18%203'%20fill='none'%20stroke='%23d6282b'%20stroke-width='3'%20stroke-linecap='round'%20stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat; }
+.yk-combo__points b { display: inline; font-size: 15px; background: linear-gradient(transparent 62%, var(--yk-pink) 62%); }
+.yk-combo__card .yk-btn { margin: 0 12px 14px; }
+
+/* D-1 ランキングの枠・順位見出し・赤キャッチ */
+.yk-rankarea { margin: 1em -12px; padding: 4px 12px 16px; background: #e9eef7; }
+.yk-rankhead { display: flex; align-items: center; gap: .5em; margin: 1.2em -12px .7em; padding: .45em 12px; border-top: 4px solid var(--yk-blue); background: #fff; font-size: 21px; font-weight: 900; line-height: 1.35; }
+.yk-medal { flex: 0 0 auto; display: grid; place-items: center; width: 38px; height: 38px; border-radius: 50%; background: radial-gradient(#ffe48a, var(--yk-gold)); box-shadow: inset 0 -3px 0 rgba(0,0,0,.15); color: #fff; font-size: 20px; font-weight: 900; }
+.yk-medal--2 { background: radial-gradient(#eef1f4, var(--yk-silver)); } .yk-medal--3 { background: radial-gradient(#f2d1ad, var(--yk-bronze)); } .yk-medal--n { background: var(--yk-blue); }
+.yk-rankcatch { margin: 0 0 .9em !important; padding: .7em .9em; border-radius: 4px; background: #fff; color: var(--yk-red); font-size: 16.5px; font-weight: 900; line-height: 1.6 !important; }
+
+/* D-2 特徴チェックリスト（緑の見出し） */
+.yk-features { margin: 1em 0; border-radius: 6px; background: var(--yk-green-bg); overflow: hidden; }
+.yk-features__ttl { margin: 0 !important; padding: .35em; background: var(--yk-green); color: #fff; text-align: center; font-size: 14.5px; font-weight: 900; }
+.yk-features ul { margin: 0; padding: .4em .9em .5em; list-style: none; }
+.yk-features li { position: relative; display: flex; gap: .6em; justify-content: space-between; padding: .55em 0 .55em 1.8em; border-bottom: 1px dashed #8ccaa0; font-size: 13.5px; line-height: 1.6; }
+.yk-features li:last-child { border-bottom: 0; }
+.yk-features li::before { content: ""; position: absolute; left: 0; top: .6em; width: 1.3em; height: 1.3em; background: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2020%2020'%3E%3Crect%20x='1.5'%20y='3.5'%20width='14'%20height='14'%20rx='2'%20fill='%23fff'%20stroke='%232f67b8'%20stroke-width='2'/%3E%3Cpath%20d='M5%2010.5l3.5%203.5L18%203'%20fill='none'%20stroke='%23d6282b'%20stroke-width='3'%20stroke-linecap='round'%20stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat; }
+.yk-features li small { flex: 0 0 5.5em; color: var(--yk-sub); font-size: 10.5px; text-align: right; }
+
+/* D-3 編集部のイチオシポイント（キャラクターつき） */
+.yk-editor { position: relative; margin: 1.6em 0 1.2em; border: 2px solid var(--yk-blue); border-radius: 8px; background: #fff; overflow: visible; }
+.yk-editor__ttl { margin: 0 !important; padding: .5em 64px .5em .9em; border-radius: 5px 5px 0 0; background: var(--yk-blue); color: #fff; font-size: 15px; font-weight: 900; }
+.yk-editor__ttl em { font-style: normal; color: #ffe066; }
+.yk-editor__ttl::before { content: "✎ "; }
+.yk-editor__chara { position: absolute; right: 8px; top: -26px; width: 52px; height: 64px; border-radius: 6px; }
+.yk-editor__body { padding: .8em .9em .6em; font-size: 14.5px; line-height: 1.85; }
+.yk-editor__body p:last-child { margin-bottom: .3em; }
+
+/* D-4 口コミ（アバター＋年代・性別＋本文） */
+.yk-voice__ttl { margin: 1.4em 0 .4em !important; padding-bottom: .3em; border-bottom: 3px solid var(--yk-blue); text-align: center; font-size: 15.5px; font-weight: 900; }
+.yk-voice { margin: 0 0 1em; padding: 6px; list-style: none; background: #eceff4; }
+.yk-voice li { display: grid; grid-template-columns: 74px 1fr; gap: 10px; padding: 12px 10px; background: #fff; border-bottom: 1px dashed #c8cfd9; }
+.yk-voice__who { text-align: center; font-size: 12px; color: #555; line-height: 1.4; }
+.yk-voice__face { width: 60px; height: 60px; margin: 0 auto 4px; border-radius: 50%; overflow: hidden; }
+.yk-voice__face img { width: 100%; height: 100%; object-fit: cover; }
+.yk-voice li p { margin: 0 !important; font-size: 14px; line-height: 1.75; }
+
+/* D-5 2ボタン（詳細ページ＋公式） */
+.yk-btnpair { display: grid; grid-template-columns: 5.6em 1fr; gap: 8px; align-items: end; margin: 1.2em 0; }
+.yk-btnpair .yk-btn--sub { min-height: 62px; font-size: 13.5px; }
+
+/* D-6 レーダーチャート（scriptで data- の数値から描く） */
+.yk-radar { max-width: 320px; margin: 1em auto; }
+.yk-radar svg { display: block; width: 100%; height: auto; }
+.yk-radar__note { margin: -.3em 0 1em !important; text-align: center; }
+
+/* D-7 基本情報の表（2列・青見出し） */
+.yk-info { width: 100%; margin: 1em 0; border-collapse: separate; border-spacing: 2px; table-layout: fixed; background: var(--yk-blue-bg); font-size: 13.5px; line-height: 1.6; }
+.yk-info th { padding: .55em; background: var(--yk-blue); color: #fff; font-weight: 700; }
+.yk-info td { padding: .6em .5em; background: #fff; text-align: center; }
+.yk-info td.is-left { text-align: left; }
+.yk-info small { display: block; color: var(--yk-sub); font-size: 10.5px; }
+
+/* D-8 求人例カード（横スクロール） */
+.yk-jobex { border: 2px solid #b9cdea; border-radius: 8px; background: #fff; overflow: hidden; }
+.yk-jobex__ttl { margin: 0 !important; padding: .4em; background: var(--yk-blue); color: #fff; text-align: center; font-weight: 900; }
+.yk-jobex .yk-tags { justify-content: center; margin: 10px; }
+.yk-jobex__logo { height: 24px; margin: 8px auto 12px; width: 60%; }
+.yk-jobex .yk-btn { margin: 0 10px; }
+
+/* E-1 迷ったらまずは（2社カード） */
+.yk-pickup { margin: 1.6em -12px; padding: 14px 12px 16px; background: var(--yk-green-bg); }
+.yk-pickup__ttl { margin: 0 0 .8em !important; text-align: center; font-size: 20px; font-weight: 900; line-height: 1.4 !important; }
+.yk-pickup__ttl small { display: inline-block; margin-bottom: .3em; padding: .2em .8em; border: 2px solid #333; border-radius: 10px; background: #fff; font-size: 13px; transform: rotate(-4deg); }
+.yk-pickup__ttl em { font-style: normal; color: var(--yk-red); }
+.yk-pickup__list { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.yk-pickup__item { display: flex; flex-direction: column; border-radius: 8px; background: #fff; overflow: hidden; }
+.yk-pickup__name { margin: 0 !important; padding: .4em; background: var(--yk-green); color: #fff; text-align: center; font-size: 15px; font-weight: 900; line-height: 1.35 !important; }
+.yk-pickup__img { aspect-ratio: 6 / 5; margin: 8px; }
+.yk-pickup__text { flex: 1; margin: 0 !important; padding: 0 9px; font-size: 13px; line-height: 1.65 !important; }
+.yk-pickup .yk-btn { margin: 0 8px 10px; }
+
+/* E-2 転職サイト診断（条件フォーム） */
+.yk-finder { margin: 1.4em 0; padding: 12px; border: 1px solid #c9d1db; border-radius: 4px; background: #fff; }
+.yk-finder__ttl { margin: 0 0 .7em !important; text-align: center; font-size: 19px; font-weight: 900; }
+.yk-finder__ttl em { font-style: normal; color: var(--yk-green); }
+.yk-finder__row { display: grid; grid-template-columns: 6.5em 1fr; align-items: center; gap: 6px; margin: 0 0 6px; font-size: 13.5px; font-weight: 700; }
+.yk-finder select { width: 100%; padding: .55em; border: 0; border-radius: 4px; background: #eef1f5; font-size: 14px; }
+.yk-finder fieldset { margin: 10px 0; padding: 0; border: 0; }
+.yk-finder legend { padding: .3em .9em; border-radius: 6px 6px 0 0; background: var(--yk-blue); color: #fff; font-size: 12.5px; font-weight: 700; }
+.yk-finder__checks { display: flex; flex-wrap: wrap; gap: 6px 10px; padding: 10px; border-top: 2px solid var(--yk-blue); background: var(--yk-blue-bg); font-size: 13px; }
+.yk-finder__checks label { display: inline-flex; align-items: center; gap: .3em; }
+.yk-finder__submit { display: block; width: 80%; margin: 12px auto 0; padding: .7em; border: 0; border-radius: 6px; background: var(--yk-green); color: #fff; font-size: 16px; font-weight: 900; cursor: pointer; }
+.yk-finder__submit::before { content: "🔍 "; }
+
+/* E-3 フッター（運営者・調査概要・プライバシー） */
+.yk-footer { margin: 1.6em -12px 0; padding: 14px 18px 10px; background: var(--yk-blue); color: #fff; }
+.yk-footer ul { margin: 0 0 .8em; padding: 0; list-style: none; }
+.yk-footer li { padding: .35em 0 .35em 1.1em; position: relative; font-size: 14px; }
+.yk-footer li::before { content: ""; position: absolute; left: 0; top: .95em; width: .45em; height: .45em; border-radius: 50%; background: #cfe0f7; }
+.yk-footer a { color: #fff; text-decoration: none; }
+.yk-footer small { display: block; text-align: center; font-size: 11px; opacity: .85; }
+
+/* F-1 パンくず */
+.yk-crumb { margin: 0 -12px .8em; padding: .5em 12px; background: #eceff3; font-size: 12.5px; }
+.yk-crumb a { color: var(--yk-blue); font-weight: 700; }
+.yk-crumb span::before { content: " ＞ "; color: #888; }
+
+/* F-2 サービス概要（名前・キャッチ・特徴＋公式画像） */
+.yk-svchead__name { margin: .4em 0 .5em !important; text-align: center; font-size: 22px; font-weight: 900; }
+.yk-svchead__catch { margin: 0 0 .8em !important; padding: .5em 0; border-top: 2px solid var(--yk-blue-bg); border-bottom: 2px solid var(--yk-blue-bg); color: var(--yk-red); font-size: 16px; font-weight: 900; line-height: 1.55 !important; }
+.yk-svchead__grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; align-items: start; }
+.yk-svchead__grid .yk-features { margin: 0; }
+.yk-svchead__grid .yk-features li { flex-direction: column; gap: 0; font-size: 12.5px; }
+.yk-svchead__img { aspect-ratio: 6 / 5; }
+
+/* F-3 公式画面＋出典 */
+.yk-shot { margin: 1em 0 1.2em; padding: 0; }
+.yk-shot__img { aspect-ratio: 16 / 9; border: 1px solid var(--yk-rule); }
+.yk-shot figcaption { margin-top: .3em; text-align: right; font-size: 11px; color: var(--yk-sub); }
+
+/* F-4 番号つき目次ボックス（強み1〜） */
+.yk-order { margin: 1.2em 0; border: 3px solid var(--yk-blue-bg); border-radius: 0 6px 6px 6px; background: #fff; }
+.yk-order__ttl { display: inline-block; margin: -3px 0 0 -3px !important; padding: .35em 1em; background: var(--yk-blue-bg); color: var(--yk-blue-d); font-size: 13.5px; font-weight: 900; }
+.yk-order ol { margin: 0; padding: .7em .9em .5em; list-style: none; }
+.yk-order li { display: grid; grid-template-columns: 4.6em 1fr; gap: .6em; margin: 0 0 .5em; font-size: 14.5px; font-weight: 700; line-height: 1.55; }
+.yk-order li span { display: grid; place-items: center; height: 1.8em; border-left: 4px solid var(--yk-blue); background: #eef1f5; color: var(--yk-blue-d); font-size: 12.5px; clip-path: polygon(0 0, 85% 0, 100% 50%, 85% 100%, 0 100%); }
+.yk-order a { color: var(--yk-ink); text-decoration: none; }
+
+/* F-5 番号ラベルつき見出し */
+.yk-numh { display: flex; align-items: center; gap: .6em; margin: 1.6em 0 .8em; padding-bottom: .35em; border-bottom: 2px solid var(--yk-blue); color: var(--yk-blue-d); font-size: 18px; font-weight: 900; line-height: 1.4; }
+.yk-numh span { flex: 0 0 auto; padding: .35em 1.1em .35em .7em; background: var(--yk-blue); color: #fff; font-size: 13.5px; clip-path: polygon(0 0, 88% 0, 100% 50%, 88% 100%, 0 100%); }
+
+/* F-6 チェックの箱（入力項目・特徴など） */
+.yk-listbox { margin: 1em 0; padding: .3em .9em .5em; border: 2px solid var(--yk-blue-bg); border-radius: 6px; background: var(--yk-blue-pale); }
+.yk-listbox__ttl { margin: .4em 0 .3em !important; font-size: 14px; font-weight: 900; color: var(--yk-blue-d); }
+.yk-listbox ul { margin: 0; padding: 0; list-style: none; }
+.yk-listbox li { position: relative; padding: .3em 0 .3em 1.8em; font-size: 14px; line-height: 1.6; }
+.yk-listbox li::before { content: ""; position: absolute; left: 0; top: .4em; width: 1.25em; height: 1.25em; background: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2020%2020'%3E%3Crect%20x='1.5'%20y='3.5'%20width='14'%20height='14'%20rx='2'%20fill='%23fff'%20stroke='%232f67b8'%20stroke-width='2'/%3E%3Cpath%20d='M5%2010.5l3.5%203.5L18%203'%20fill='none'%20stroke='%23d6282b'%20stroke-width='3'%20stroke-linecap='round'%20stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat; }
+
+/* 画像（体験談パーツ集と同じ仕組み）：画像指示枠と本文画像 */
+.mt-imgslot { margin: 1.4em 0; border: 2px dashed #b39ddb; border-radius: 8px; background: #f6f1fb; color: #4a2c7a; font-size: 13px; line-height: 1.6; overflow: hidden; }
+.mt-imgslot--have { border-color: #9cc3e8; background: #eef5fc; color: #0d3c6e; }
+.mt-imgslot--ad { border-color: #f5b98a; background: #fff4ea; color: #7a3e00; }
+.mt-imgslot__head { display: flex; flex-wrap: wrap; align-items: center; gap: .3em .5em; padding: .5em .7em; border-bottom: 1px dashed currentColor; background: rgba(255,255,255,.75); font-size: 12px; }
+.mt-imgslot__id { padding: 0 .45em; border-radius: 4px; background: #7b1fa2; color: #fff; font-weight: 900; }
+.mt-imgslot--have .mt-imgslot__id { background: #1565c0; } .mt-imgslot--ad .mt-imgslot__id { background: #ef6c00; }
+.mt-imgslot__kind { font-weight: 900; }
+.mt-imgslot__todo { margin-left: auto; color: #c62828; font-weight: 700; }
+.mt-imgslot__box { display: grid; place-items: center; padding: 1em; text-align: center; font-weight: 700; }
+.mt-imgslot__spec { display: grid; grid-template-columns: 6.2em 1fr; gap: .2em .6em; margin: 0; padding: .6em .8em; border-top: 1px dashed currentColor; background: rgba(255,255,255,.75); font-size: 12.5px; }
+.mt-imgslot__spec dt { font-weight: 900; } .mt-imgslot__spec dd { margin: 0; }
+.mt-imgslot__prompt { padding: 0 .8em .7em; background: rgba(255,255,255,.75); }
+.mt-imgslot__prompt summary { cursor: pointer; font-weight: 700; }
+.mt-imgslot__prompt pre { margin: .4em 0 0; padding: .6em .7em; border-radius: 6px; background: #fff; border: 1px solid rgba(0,0,0,.08); color: #333; font-size: 11.5px; line-height: 1.6; white-space: pre-wrap; }
+.mt-img { margin: 1.2em 0 .6em; } .mt-img img { display: block; width: 100%; height: auto; border-radius: 4px; }
+.mt-img__note { margin: .3em 0 0; color: var(--yk-sub); font-size: 11px; text-align: right; }

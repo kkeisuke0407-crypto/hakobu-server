@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>薬剤師転職 比較・ランキング型LP パーツ集</title>
+<link rel="stylesheet" href="parts.css">
+<style>
+body { margin: 0; background: #f4f4f4; font-family: "Hiragino Sans", "Noto Sans JP", Meiryo, sans-serif; color: #222; }
+.pd-wrap { max-width: 640px; margin: 0 auto; padding: 16px 12px; background: #fff; overflow-x: hidden; }
+.pd-top { margin: 0 0 1.2em; padding: 1.1em; border-radius: 12px; background: #1f4f97; color: #fff; }
+.pd-top h1 { margin: 0 0 .4em; font-size: 21px; }
+.pd-top p { margin: 0 0 .4em; font-size: 13.5px; line-height: 1.7; color: #dbe7f3; }
+.pd-top b { color: #fff19a; }
+.pd-toc { display: flex; flex-wrap: wrap; gap: .4em; margin: 0 0 1.2em; padding: 0; list-style: none; }
+.pd-toc a { display: inline-block; padding: .35em .75em; border-radius: 999px; border: 1px solid #c8d6e5; background: #fff; font-size: 13px; font-weight: 700; color: #1f4f97; text-decoration: none; }
+.pd-chapter { margin: 2.2em 0 .4em; padding: .5em .8em; border-radius: 8px; background: #e6eef7; font-size: 18px; font-weight: 900; }
+.pd-chapter__lead { margin: 0 0 1em; font-size: 13.5px; color: #666; line-height: 1.7; }
+.pd-card { margin: 1em 0 1.8em; padding: .9em .7em 1em; border: 2px dashed #c8d6e5; border-radius: 12px; background: #fbfcfe; }
+.pd-card__head { display: flex; flex-wrap: wrap; align-items: center; gap: .4em .6em; margin-bottom: .5em; }
+.pd-card__name { font-size: 17px; font-weight: 900; }
+.pd-card__cls { padding: .1em .5em; border-radius: 6px; background: #1f2733; color: #cfe3ff; font-size: 12px; font-family: ui-monospace, Consolas, monospace; }
+.pd-meta { display: grid; grid-template-columns: 5.2em 1fr; gap: .25em .6em; margin: 0 0 .8em; font-size: 13.5px; line-height: 1.65; }
+.pd-meta dt { font-weight: 900; color: #666; } .pd-meta dd { margin: 0; } .pd-meta .pd-ng { color: #c62828; }
+.pd-sample { padding: .3em 12px .6em; border-radius: 10px; background: #fff; border: 1px solid #e3e8ef; overflow: hidden; }
+.pd-sample__lbl { margin: 0 0 .2em; font-size: 11px; font-weight: 900; letter-spacing: .1em; color: #9aa7b6; }
+.pd-code { margin-top: .6em; position: relative; }
+.pd-code summary { cursor: pointer; font-size: 13px; font-weight: 700; color: #1f4f97; }
+.pd-code pre { margin: .5em 0 0; padding: .8em; border-radius: 8px; background: #1f232c; color: #e9e3d0; font-size: 12px; line-height: 1.55; overflow-x: auto; }
+.pd-copy { position: absolute; right: 0; top: 0; padding: .2em .8em; border: 1px solid #c8d6e5; border-radius: 6px; background: #fff; font-size: 12px; cursor: pointer; }
+.pd-table { width: 100%; border-collapse: collapse; font-size: 13.5px; line-height: 1.6; }
+.pd-table th, .pd-table td { border: 1px solid #dbe3ec; padding: .5em .6em; text-align: left; vertical-align: top; }
+.pd-table th { background: #f3f6fa; white-space: nowrap; }
+</style>
+</head>
+<body>
+<div class="pd-wrap">
+  <div class="pd-top">
+    <h1>薬剤師転職 比較・ランキング型LP パーツ集</h1>
+    <p>薬剤師向け転職サイトの比較・ランキング型サイトを構造分析し、<b>見せ方の型だけ</b>を抜き出して作り直しました（参考サイトの文章・画像・サービス名・数値は使っていません）。トップ（比較・ランキング）と、サービス個別ページの両方の部品があります。</p>
+    <p>全29パーツ。CSSは <code>parts.css</code> 1ファイル。LPで使うときは parts.css を読み込み、本文を <code>class="yk-body"</code> で囲む。体験談パーツ集（<code>mt-*</code>）と一緒に使える。</p>
+  </div>
+  <ul class="pd-toc"><li><a href="#flow">ページの流れ</a></li><li><a href="#imgrule">画像の入れ方</a></li><li><a href="#fv">A. FV・ページ上部</a></li><li><a href="#top">B. 結論を先に見せる</a></li><li><a href="#compare">C. 比較する</a></li><li><a href="#rank">D. ランキングの中身</a></li><li><a href="#close">E. 締め・ページ下部</a></li><li><a href="#detail">F. サービス個別ページ</a></li><li><a href="#image">I. 画像</a></li></ul>
+
+  <p class="pd-chapter" id="flow">ページの流れとルール（参考サイトの構造から）</p>
+  <table class="pd-table">
+    <tr><th>トップ</th><td>FV（最新版・見出し・実績の丸）→ ロゴの横流し → PR表記 → BEST3 → 求人の例カード → タブ切替の比較表（もっと見る）→ 2軸の早見表 → 2社併用のすすめ → ランキング（順位見出し → 赤キャッチ → タブ［イチオシ／基本情報／注目の求人］→ 特徴 → 編集部のイチオシ → 口コミ → 2ボタン）→ 迷ったらまずは → 転職サイト診断 → フッター</td></tr>
+    <tr><th>個別ページ</th><td>パンくず → サービス概要（キャッチ・特徴・公式画像・基本情報）→ 強み（公式画面＋目次＋番号見出し）→ こんな方におすすめ → 利用手順（各ステップの画面＋入力項目）→ 口コミ・評判 → よくある質問。H2ブロックごとに登録ボタン</td></tr>
+    <tr><th>色</th><td>青＝見出し・表／緑＝特徴・求人の数字・診断／<span class="yk-red">赤</span>＝強調・対象条件／オレンジ＝ボタン／<span class="yk-mark">黄マーカー</span>＝結論</td></tr>
+    <tr><th>ボタン</th><td>上に対象条件のひとこと（＼正社員のみ対象／など、<b>ASPの条件どおり</b>）。下に「※無資格・学生は対象外」などの注記。</td></tr>
+    <tr><th>必ず入れる</th><td>冒頭のPR表記／「ランキング調査概要」（順位・総合評価・星・◎・レーダーの採点方法）／No.1・満足度など数字の出典と時点／求人例の出典と取得日／口コミは公式掲載か許諾のあるものだけ（※個人の感想です）</td></tr>
+    <tr><th>素材</th><td>ロゴ・公式バナー・公式画面は<b>ASP・公式の提供素材だけ</b>（生成・加工しない）。人物・職場写真は生成可（「※写真はイメージです」）。</td></tr>
+  </table>
+
+  <p class="pd-chapter" id="imgrule">画像の入れ方</p>
+  <table class="pd-table">
+    <tr><th>手順</th><td>台本 → パーツと並びを決める → 画像のない区間を測る → 置き場所に「画像指示枠」（I章）→ 既存素材・ASP素材を先に割り当て、足りない人物・イメージ写真だけ生成 → できたら「本文画像」に差し替え</td></tr>
+    <tr><th>配置</th><td>スマホ1画面に画像・表・カード・ボタンのどれか1つ以上。比較サイト型はカード・表が多いので、文章だけの区間は主に個別ページの強み・手順で注意する</td></tr>
+    <tr><th>生成しないもの</th><td>サービスのロゴ・公式バナー・公式画面・認証マーク（橙の枠で「ASPから取得」）</td></tr>
+    <tr><th>公開前</th><td>画像指示枠が残っていない／全画像に alt・width・height／ロゴの横流しの2周目は alt="" ／375pxで横はみ出しなし（横スクロールのカードは除く）</td></tr>
+  </table>
+
+  <p class="pd-chapter" id="fv">A. FV・ページ上部</p>
+  <p class="pd-chapter__lead">最新版の表示・実績の丸・ロゴの横流し・PR表記までがファーストビュー。</p>
+
+    <section class="pd-card" id="fv-1">
+      <div class="pd-card__head"><span class="pd-card__name">FV（最新版＋見出し＋実績の丸）</span><code class="pd-card__cls">yk-hero</code></div>
+      <dl class="pd-meta"><dt>使う場面</dt><dd>ページの一番上。</dd><dt>ルール</dt><dd>見出しは「誰向け×何を比べたか×件数」。実績の丸は3つまでで、<b>出典のある数字だけ</b>（ない場合は丸を外す）。右は人物画像（写真風なら「イメージ」表記）。「◯年◯月最新版」は実際に内容を見直した月。</dd><dt class="pd-ng">NG</dt><dd>出典のない数字を丸に入れる／更新していないのに最新版と書く</dd></dl>
+      <div class="pd-sample"><p class="pd-sample__lbl">見本</p><div class="yk-body"><header class="yk-hero">
+  <div><p class="yk-hero__year">2026年◯月最新版</p>
+  <h1 class="yk-hero__ttl"><em>薬剤師</em>向け<br>転職サイト<br>徹底比較◯選</h1></div>
+  <span class="yk-ph yk-hero__img">人物画像<br>（イメージ）</span>
+  <ul class="yk-hero__badges"><li><span>年収<b>◯◯◯</b>万円以上</span></li><li><span>年間休日<b>◯◯◯</b>日以上</span></li><li><span>在宅<b>勤務</b>あり</span></li></ul>
+</header></div></div>
+      <details class="pd-code"><summary>HTMLを見る・コピー</summary><button type="button" class="pd-copy">コピー</button><pre><code>&lt;header class="yk-hero"&gt;
+  &lt;div&gt;&lt;p class="yk-hero__year"&gt;2026年◯月最新版&lt;/p&gt;
+  &lt;h1 class="yk-hero__ttl"&gt;&lt;em&gt;薬剤師&lt;/em&gt;向け&lt;br&gt;転職サイト&lt;br&gt;徹底比較◯選&lt;/h1&gt;&lt;/div&gt;
+  &lt;span class="yk-ph yk-hero__img"&gt;人物画像&lt;br&gt;（イメージ）&lt;/span&gt;
+  &lt;ul class="yk-hero__badges"&gt;&lt;li&gt;&lt;span&gt;年収&lt;b&gt;◯◯◯&lt;/b&gt;万円以上&lt;/span&gt;&lt;/li&gt;&lt;li&gt;&lt;span&gt;年間休日&lt;b&gt;◯◯◯&lt;/b&gt;日以上&lt;/span&gt;&lt;/li&gt;&lt;li&gt;&lt;span&gt;在宅&lt;b&gt;勤務&lt;/b&gt;あり&lt;/span&gt;&lt;/li&gt;&lt;/ul&gt;
+&lt;/header&gt;</code></pre></details>
+    </section>
+
+    <section class="pd-card" id="fv-2">
+      <div class="pd-card__head"><span class="pd-card__name">ロゴの横流し</span><code class="pd-card__cls">yk-logos</code></div>
+      <dl class="pd-meta"><dt>使う場面</dt><dd>FVの直下。比べたサービスの数と顔ぶれを一瞬で見せる。</dd><dt>ルール</dt><dd>ロゴは<b>公式・ASP提供の素材だけ</b>（AIで作らない）。リストは同じ並びを2回繰り返す（つなぎ目なく流れる）。動きを減らす設定の人には流さず横スクロールにする。</dd><dt class="pd-ng">NG</dt><dd>ロゴを自作・生成する／比較していないサービスを流す</dd></dl>
+      <div class="pd-sample"><p class="pd-sample__lbl">見本</p><div class="yk-body"><div class="yk-logos"><ul class="yk-logos__track">
+  <li><span class="yk-ph" style="width:100%;height:100%">サービスA</span></li><li><span class="yk-ph" style="width:100%;height:100%">サービスB</span></li><li><span class="yk-ph" style="width:100%;height:100%">サービスC</span></li><li><span class="yk-ph" style="width:100%;height:100%">サービスD</span></li><li><span class="yk-ph" style="width:100%;height:100%">サービスE</span></li>
+  <li><span class="yk-ph" style="width:100%;height:100%">サービスA</span></li><li><span class="yk-ph" style="width:100%;height:100%">サービスB</span></li><li><span class="yk-ph" style="width:100%;height:100%">サービスC</span></li><li><span class="yk-ph" style="width:100%;height:100%">サービスD</span></li><li><span class="yk-ph" style="width:100%;height:100%">サービスE</span></li>
+</ul></div></div></div>
+      <details class="pd-code"><summary>HTMLを見る・コピー</summary><button type="button" class="pd-copy">コピー</button><pre><code>&lt;div class="yk-logos"&gt;&lt;ul class="yk-logos__track"&gt;
+  &lt;li&gt;&lt;img src="logo-a.webp" alt="サービスA" width="102" height="28"&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;img src="logo-b.webp" alt="サービスB" width="102" height="28"&gt;&lt;/li&gt;
+  &lt;!-- 全ロゴ → もう一度同じ並び（alt="" にする） --&gt;
+  &lt;li&gt;&lt;img src="logo-a.webp" alt="" width="102" height="28"&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;img src="logo-b.webp" alt="" width="102" height="28"&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/div&gt;</code></pre></details>
+    </section>
+
+    <section class="pd-card" id="fv-3">
+      <div class="pd-card__head"><span class="pd-card__name">PR表記（ロゴの下）</span><code class="pd-card__cls">yk-pr</code></div>
+      <dl class="pd-meta"><dt>使う場面</dt><dd>FVのすぐ下。どのサービスの広告を含むかを書く。</dd><dt>ルール</dt><dd>「PR」の四角＋「アフィリエイトサイトのため、〇〇・〇〇等のプロモーションを含みます」。</dd><dt class="pd-ng">NG</dt><dd>PR表記を下の方に置く</dd></dl>
+      <div class="pd-sample"><p class="pd-sample__lbl">見本</p><div class="yk-body"><p class="yk-pr"><b>PR</b><span>アフィリエイトサイトのため、サービスA・サービスB等のプロモーションを含みます。</span></p></div></div>
+      <details class="pd-code"><summary>HTMLを見る・コピー</summary><button type="button" class="pd-copy">コピー</button><pre><code>&lt;p class="yk-pr"&gt;&lt;b&gt;PR&lt;/b&gt;&lt;span&gt;アフィリエイトサイトのため、サービスA・サービスB等のプロモーションを含みます。&lt;/span&gt;&lt;/p&gt;</code></pre></details>
+    </section>
+
+  <p class="pd-chapter" id="top">B. 結論を先に見せる</p>
+  <p class="pd-chapter__lead">BEST3と「こんな求人がある」を最初の2画面で見せる。</p>
+
+    <section class="pd-card" id="top-1">
+      <div class="pd-card__head"><span class="pd-card__name">BEST3（王冠つき3列カード）</span><code class="pd-card__cls">yk-best3</code></div>
+      <dl class="pd-meta"><dt>使う場面</dt><dd>PR表記の直後。読まずに決めたい人を拾う。</dd><dt>ルール</dt><dd>3列固定。各カード：王冠（金・銀・銅）→ロゴ→赤字と黄マーカーで強み2〜3行→対象条件の注記（赤）→ボタンの上のひとこと（＼正社員のみ対象／など、<b>ASPの対象条件どおり</b>）→公式ボタン。順位の根拠は「ランキング調査概要」に書く。</dd><dt class="pd-ng">NG</dt><dd>対象条件（資格・雇用形態）を書かない／根拠のないNo.1</dd></dl>
+      <div class="pd-sample"><p class="pd-sample__lbl">見本</p><div class="yk-body"><section class="yk-best3"><h2 class="yk-best3__ttl"><em>薬剤師</em>に強い転職サイト<em>BEST3</em></h2>
+<ol class="yk-best3__list">
+  <li class="yk-best3__item"><span class="yk-best3__crown">1</span><span class="yk-best3__logo"><span class="yk-ph" style="width:100%;height:100%">サービスA</span></span><p class="yk-best3__text"><span class="yk-red">強み（数字は出典つき）</span><br><span class="yk-mark">◯◯が得意</span>。確認できた特徴を2〜3行で。</p><p class="yk-best3__note">※無資格・学生は対象外</p><p class="yk-catch">正社員のみ対象</p><a class="yk-btn yk-btn--sm" href="#sample">公式サイト</a></li>
+  <li class="yk-best3__item"><span class="yk-best3__crown">2</span><span class="yk-best3__logo"><span class="yk-ph" style="width:100%;height:100%">サービスB</span></span><p class="yk-best3__text"><span class="yk-red">強み</span><br><span class="yk-mark">◯◯に対応</span>。確認できた特徴を2〜3行で。</p><p class="yk-best3__note">※無資格・学生は対象外</p><p class="yk-catch">正社員のみ対象</p><a class="yk-btn yk-btn--sm" href="#sample">公式サイト</a></li>
+  <li class="yk-best3__item"><span class="yk-best3__crown">3</span><span class="yk-best3__logo"><span class="yk-ph" style="width:100%;height:100%">サービスC</span></span><p class="yk-best3__text"><span class="yk-red">強み</span><br><span class="yk-mark">◯◯を代行</span>。確認できた特徴を2〜3行で。</p><p class="yk-best3__note">※無資格・学生は対象外</p><p class="yk-catch">正社員のみ対象</p><a class="yk-btn yk-btn--sm" href="#sample">公式サイト</a></li>
+</ol></section></div></div>
+      <details class="pd-code"><summary>HTMLを見る・コピー</summary><button type="button" class="pd-copy">コピー</button><pre><code>&lt;section class="yk-best3"&gt;&lt;h2 class="yk-best3__ttl"&gt;&lt;em&gt;薬剤師&lt;/em&gt;に強い転職サイト&lt;em&gt;BEST3&lt;/em&gt;&lt;/h2&gt;
+&lt;ol class="yk-best3__list"&gt;
+  &lt;li class="yk-best3__item"&gt;&lt;span class="yk-best3__crown"&gt;1&lt;/span&gt;&lt;span class="yk-best3__logo"&gt;&lt;span class="yk-ph" style="width:100%;height:100%"&gt;サービスA&lt;/span&gt;&lt;/span&gt;&lt;p class="yk-best3__text"&gt;&lt;span class="yk-red"&gt;強み（数字は出典つき）&lt;/span&gt;&lt;br&gt;&lt;span class="yk-mark"&gt;◯◯が得意&lt;/span&gt;。確認できた特徴を2〜3行で。&lt;/p&gt;&lt;p class="yk-best3__note"&gt;※無資格・学生は対象外&lt;/p&gt;&lt;p class="yk-catch"&gt;正社員のみ対象&lt;/p&gt;&lt;a class="yk-btn yk-btn--sm" href="#sample"&gt;公式サイト&lt;/a&gt;&lt;/li&gt;
+  &lt;li class="yk-best3__item"&gt;&lt;span class="yk-best3__crown"&gt;2&lt;/span&gt;&lt;span class="yk-best3__logo"&gt;&lt;span class="yk-ph" style="width:100%;height:100%"&gt;サービスB&lt;/span&gt;&lt;/span&gt;&lt;p class="yk-best3__text"&gt;&lt;span class="yk-red"&gt;強み&lt;/span&gt;&lt;br&gt;&lt;span class="yk-mark"&gt;◯◯に対応&lt;/span&gt;。確認できた特徴を2〜3行で。&lt;/p&gt;&lt;p class="yk-best3__note"&gt;※無資格・学生は対象外&lt;/p&gt;&lt;p class="yk-catch"&gt;正社員のみ対象&lt;/p&gt;&lt;a class="yk-btn yk-btn--sm" href="#sample"&gt;公式サイト&lt;/a&gt;&lt;/li&gt;
+  &lt;li class="yk-best3__item"&gt;&lt;span class="yk-best3__crown"&gt;3&lt;/span&gt;&lt;span class="yk-best3__logo"&gt;&lt;span class="yk-ph" style="width:100%;height:100%"&gt;サービスC&lt;/span&gt;&lt;/span&gt;&lt;p class="yk-best3__text"&gt;&lt;span class="yk-red"&gt;強み&lt;/span&gt;&lt;br&gt;&lt;span class="yk-mark"&gt;◯◯を代行&lt;/span&gt;。確認できた特徴を2〜3行で。&lt;/p&gt;&lt;p class="yk-best3__note"&gt;※無資格・学生は対象外&lt;/p&gt;&lt;p class="yk-catch"&gt;正社員のみ対象&lt;/p&gt;&lt;a class="yk-btn yk-btn--sm" href="#sample"&gt;公式サイト&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;&lt;/section&gt;</code></pre></details>
+    </section>
+
+    <section class="pd-card" id="top-2">
+      <div class="pd-card__head"><span class="pd-card__name">求人の例カード（横スクロール）</span><code class="pd-card__cls">yk-hscroll + yk-jobcard</code></div>
+      <dl class="pd-meta"><dt>使う場面</dt><dd>BEST3の下。「こんな条件の求人がある」を目的別に見せる。</dd><dt>ルール</dt><dd>カードの見出しは読者の目的（高年収・在宅・休日 など）。年収は大きく緑。表は施設形態・業務内容・対象条件。下にこだわりタグ3つ。<b>実在の求人を出典URL・取得日つきで</b>（コメントで残す）。案内「→ 横にスクロールできます」を必ず付ける。</dd><dt class="pd-ng">NG</dt><dd>架空の求人／取得日のない年収</dd></dl>
+      <div class="pd-sample"><p class="pd-sample__lbl">見本</p><div class="yk-body"><h2 class="yk-sec-ttl">オススメの<em>求人</em>の一部を紹介</h2>
+<p class="yk-hint">横にスクロールできます</p>
+<div class="yk-hscroll">
+  <div class="yk-jobcard"><h3 class="yk-jobcard__ttl">高年収を狙いたい</h3><span class="yk-ph yk-jobcard__img">職場の写真（イメージ）</span><p class="yk-jobcard__pay">年収<b>◯◯◯</b>万円〜</p><table class="yk-kv"><tr><th>施設形態</th><td>病院</td></tr><tr><th>業務内容</th><td>調剤・服薬指導 など<br><span class="yk-red">対象条件</span></td></tr></table><ul class="yk-tags"><li>駅チカ</li><li>福利厚生◎</li><li>新規オープン</li></ul><p class="yk-catch">正社員のみ対象</p><a class="yk-btn yk-btn--sm" href="#sample">求人を探す</a></div>
+  <div class="yk-jobcard"><h3 class="yk-jobcard__ttl">休日をしっかりほしい</h3><span class="yk-ph yk-jobcard__img">職場の写真（イメージ）</span><p class="yk-jobcard__pay">年収<b>◯◯◯</b>万円〜</p><table class="yk-kv"><tr><th>施設形態</th><td>調剤薬局</td></tr><tr><th>業務内容</th><td>薬局業務全般</td></tr></table><ul class="yk-tags"><li>週休2.5日</li><li>残業少なめ</li><li>転勤なし</li></ul><p class="yk-catch">正社員のみ対象</p><a class="yk-btn yk-btn--sm" href="#sample">求人を探す</a></div>
+</div></div></div>
+      <details class="pd-code"><summary>HTMLを見る・コピー</summary><button type="button" class="pd-copy">コピー</button><pre><code>&lt;h2 class="yk-sec-ttl"&gt;オススメの&lt;em&gt;求人&lt;/em&gt;の一部を紹介&lt;/h2&gt;
+&lt;p class="yk-hint"&gt;横にスクロールできます&lt;/p&gt;
+&lt;div class="yk-hscroll"&gt;
+  &lt;div class="yk-jobcard"&gt;&lt;h3 class="yk-jobcard__ttl"&gt;高年収を狙いたい&lt;/h3&gt;&lt;span class="yk-ph yk-jobcard__img"&gt;職場の写真（イメージ）&lt;/span&gt;&lt;p class="yk-jobcard__pay"&gt;年収&lt;b&gt;◯◯◯&lt;/b&gt;万円〜&lt;/p&gt;&lt;table class="yk-kv"&gt;&lt;tr&gt;&lt;th&gt;施設形態&lt;/th&gt;&lt;td&gt;病院&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;th&gt;業務内容&lt;/th&gt;&lt;td&gt;調剤・服薬指導 など&lt;br&gt;&lt;span class="yk-red"&gt;対象条件&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;ul class="yk-tags"&gt;&lt;li&gt;駅チカ&lt;/li&gt;&lt;li&gt;福利厚生◎&lt;/li&gt;&lt;li&gt;新規オープン&lt;/li&gt;&lt;/ul&gt;&lt;p class="yk-catch"&gt;正社員のみ対象&lt;/p&gt;&lt;a class="yk-btn yk-btn--sm" href="#sample"&gt;求人を探す&lt;/a&gt;&lt;/div&gt;
+  &lt;div class="yk-jobcard"&gt;&lt;h3 class="yk-jobcard__ttl"&gt;休日をしっかりほしい&lt;/h3&gt;&lt;span class="yk-ph yk-jobcard__img"&gt;職場の写真（イメージ）&lt;/span&gt;&lt;p class="yk-jobcard__pay"&gt;年収&lt;b&gt;◯◯◯&lt;/b&gt;万円〜&lt;/p&gt;&lt;table class="yk-kv"&gt;&lt;tr&gt;&lt;th&gt;施設形態&lt;/th&gt;&lt;td&gt;調剤薬局&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;th&gt;業務内容&lt;/th&gt;&lt;td&gt;薬局業務全般&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;ul class="yk-tags"&gt;&lt;li&gt;週休2.5日&lt;/li&gt;&lt;li&gt;残業少なめ&lt;/li&gt;&lt;li&gt;転勤なし&lt;/li&gt;&lt;/ul&gt;&lt;p class="yk-catch"&gt;正社員のみ対象&lt;/p&gt;&lt;a class="yk-btn yk-btn--sm" href="#sample"&gt;求人を探す&lt;/a&gt;&lt;/div&gt;
+&lt;/div&gt;</code></pre></details>
+    </section>
+
+  <p class="pd-chapter" id="compare">C. 比較する</p>
+  <p class="pd-chapter__lead">タブ切替の比較表 → 2軸の早見表 → 2社併用のすすめ、の順。</p>
+
+    <section class="pd-card" id="compare-1">
+      <div class="pd-card__head"><span class="pd-card__name">タブ切替の比較表（もっと見る付き）</span><code class="pd-card__cls">yk-tabs + yk-cmp + yk-fold</code></div>
+      <dl class="pd-meta"><dt>使う場面</dt><dd>BEST3・求人例の後。全サービスを1つの表で比べる。</dd><dt>ルール</dt><dd>タブは「総合／取扱い求人／サービス内容」など3つまで（JSなしで切り替わる）。総合タブ：順位・ロゴ・名前・星・総合評価・求人数（◎）・編集部のひとこと＋対応タグ・ボタン。1位の行は is-pick。<b>評価（S/A・星・◎）は採点方法を「ランキング調査概要」に書いたうえで</b>使う。最初は数社だけ見せ「もっと見る」で開く。1ページにタブが複数あるときは name と id を変える。</dd><dt class="pd-ng">NG</dt><dd>採点方法のない評価・星／求人数の時点を書かない</dd></dl>
+      <div class="pd-sample"><p class="pd-sample__lbl">見本</p><div class="yk-body"><div class="yk-tabs">
+  <input type="radio" name="cmp1" id="cmp1-1" checked><input type="radio" name="cmp1" id="cmp1-2"><input type="radio" name="cmp1" id="cmp1-3">
+  <div class="yk-tabs__labels"><label for="cmp1-1">総合</label><label for="cmp1-2">取扱い求人</label><label for="cmp1-3">サービス内容</label></div>
+  <div class="yk-tabs__panels">
+    <div><div class="yk-fold"><input type="checkbox" id="cmp1-more"><div class="yk-fold__body">
+      <table class="yk-cmp"><colgroup><col class="c1"><col class="c2"><col><col class="c4"></colgroup>
+        <tr><th>サイト</th><th>求人数</th><th>編集部のイチ押し</th><th>公式</th></tr>
+        <tr class="is-pick"><td><span class="yk-cmp__rank">1</span><span class="yk-cmp__logo" style="display:block"><span class="yk-ph" style="width:100%;height:100%">A</span></span><a class="yk-cmp__name" href="#sample">サービスA</a><span class="yk-stars">★★★★★</span><span class="yk-grade">総合評価 <b>S</b></span></td><td><span class="yk-maru">◎</span>◯万件以上<br><span class="yk-pink">全国対応</span></td><td class="is-left">確認できた強みを2〜3行。<span class="yk-red">対象条件</span><ul class="yk-chips"><li class="is-pink">入職後フォロー</li><li>LINE相談可</li><li class="is-gray">面接対策</li></ul></td><td><p class="yk-catch">正社員のみ</p><a class="yk-btn yk-btn--sm" href="#sample">公式</a></td></tr>
+        <tr><td><span class="yk-cmp__rank">2</span><span class="yk-cmp__logo" style="display:block"><span class="yk-ph" style="width:100%;height:100%">B</span></span><a class="yk-cmp__name" href="#sample">サービスB</a><span class="yk-stars">★★★★☆</span><span class="yk-grade">総合評価 <b>A</b></span></td><td><span class="yk-maru">◎</span>◯万件以上<br><span class="yk-pink">全国対応</span></td><td class="is-left">確認できた強みを2〜3行。<ul class="yk-chips"><li>面接同行</li><li>専任担当</li></ul></td><td><p class="yk-catch">正社員のみ</p><a class="yk-btn yk-btn--sm" href="#sample">公式</a></td></tr>
+        <tr><td><span class="yk-cmp__rank">3</span><span class="yk-cmp__logo" style="display:block"><span class="yk-ph" style="width:100%;height:100%">C</span></span><a class="yk-cmp__name" href="#sample">サービスC</a><span class="yk-stars">★★★★☆</span><span class="yk-grade">総合評価 <b>A</b></span></td><td><span class="yk-maru">○</span>◯千件以上<br><span class="yk-pink">首都圏中心</span></td><td class="is-left">確認できた強みを2〜3行。<ul class="yk-chips"><li>条件交渉</li></ul></td><td><p class="yk-catch">正社員のみ</p><a class="yk-btn yk-btn--sm" href="#sample">公式</a></td></tr>
+      </table></div><label class="yk-fold__btn" for="cmp1-more">もっと見る</label></div></div>
+    <div><table class="yk-cmp"><tr><th>サイト</th><th>病院</th><th>薬局</th><th>企業</th></tr><tr><td>サービスA</td><td><span class="yk-maru">◎</span></td><td><span class="yk-maru">◎</span></td><td><span class="yk-maru">○</span></td></tr><tr><td>サービスB</td><td><span class="yk-maru">○</span></td><td><span class="yk-maru">◎</span></td><td><span class="yk-maru">△</span></td></tr></table></div>
+    <div><table class="yk-cmp"><tr><th>サイト</th><th>面接対策</th><th>条件交渉</th><th>LINE</th></tr><tr><td>サービスA</td><td>○</td><td>○</td><td>○</td></tr><tr><td>サービスB</td><td>○</td><td>○</td><td>－</td></tr></table></div>
+  </div>
+</div></div></div>
+      <details class="pd-code"><summary>HTMLを見る・コピー</summary><button type="button" class="pd-copy">コピー</button><pre><code>&lt;div class="yk-tabs"&gt;
+  &lt;input type="radio" name="cmp1" id="cmp1-1" checked&gt;&lt;input type="radio" name="cmp1" id="cmp1-2"&gt;&lt;input type="radio" name="cmp1" id="cmp1-3"&gt;
+  &lt;div class="yk-tabs__labels"&gt;&lt;label for="cmp1-1"&gt;総合&lt;/label&gt;&lt;label for="cmp1-2"&gt;取扱い求人&lt;/label&gt;&lt;label for="cmp1-3"&gt;サービス内容&lt;/label&gt;&lt;/div&gt;
+  &lt;div class="yk-tabs__panels"&gt;
+    &lt;div&gt;&lt;div class="yk-fold"&gt;&lt;input type="checkbox" id="cmp1-more"&gt;&lt;div class="yk-fold__body"&gt;
+      &lt;table class="yk-cmp"&gt;&lt;colgroup&gt;&lt;col class="c1"&gt;&lt;col class="c2"&gt;&lt;col&gt;&lt;col class="c4"&gt;&lt;/colgroup&gt;
+        &lt;tr&gt;&lt;th&gt;サイト&lt;/th&gt;&lt;th&gt;求人数&lt;/th&gt;&lt;th&gt;編集部のイチ押し&lt;/th&gt;&lt;th&gt;公式&lt;/th&gt;&lt;/tr&gt;
+        &lt;tr class="is-pick"&gt;&lt;td&gt;&lt;span class="yk-cmp__rank"&gt;1&lt;/span&gt;&lt;span class="yk-cmp__logo" style="display:block"&gt;&lt;span class="yk-ph" style="width:100%;height:100%"&gt;A&lt;/span&gt;&lt;/span&gt;&lt;a class="yk-cmp__name" href="#sample"&gt;サービスA&lt;/a&gt;&lt;span class="yk-stars"&gt;★★★★★&lt;/span&gt;&lt;span class="yk-grade"&gt;総合評価 &lt;b&gt;S&lt;/b&gt;&lt;/span&gt;&lt;/td&gt;&lt;td&gt;&lt;span class="yk-maru"&gt;◎&lt;/span&gt;◯万件以上&lt;br&gt;&lt;span class="yk-pink"&gt;全国対応&lt;/span&gt;&lt;/td&gt;&lt;td class="is-left"&gt;確認できた強みを2〜3行。&lt;span class="yk-red"&gt;対象条件&lt;/span&gt;&lt;ul class="yk-chips"&gt;&lt;li class="is-pink"&gt;入職後フォロー&lt;/li&gt;&lt;li&gt;LINE相談可&lt;/li&gt;&lt;li class="is-gray"&gt;面接対策&lt;/li&gt;&lt;/ul&gt;&lt;/td&gt;&lt;td&gt;&lt;p class="yk-catch"&gt;正社員のみ&lt;/p&gt;&lt;a class="yk-btn yk-btn--sm" href="#sample"&gt;公式&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+        &lt;tr&gt;&lt;td&gt;&lt;span class="yk-cmp__rank"&gt;2&lt;/span&gt;&lt;span class="yk-cmp__logo" style="display:block"&gt;&lt;span class="yk-ph" style="width:100%;height:100%"&gt;B&lt;/span&gt;&lt;/span&gt;&lt;a class="yk-cmp__name" href="#sample"&gt;サービスB&lt;/a&gt;&lt;span class="yk-stars"&gt;★★★★☆&lt;/span&gt;&lt;span class="yk-grade"&gt;総合評価 &lt;b&gt;A&lt;/b&gt;&lt;/span&gt;&lt;/td&gt;&lt;td&gt;&lt;span class="yk-maru"&gt;◎&lt;/span&gt;◯万件以上&lt;br&gt;&lt;span class="yk-pink"&gt;全国対応&lt;/span&gt;&lt;/td&gt;&lt;td class="is-left"&gt;確認できた強みを2〜3行。&lt;ul class="yk-chips"&gt;&lt;li&gt;面接同行&lt;/li&gt;&lt;li&gt;専任担当&lt;/li&gt;&lt;/ul&gt;&lt;/td&gt;&lt;td&gt;&lt;p class="yk-catch"&gt;正社員のみ&lt;/p&gt;&lt;a class="yk-btn yk-btn--sm" href="#sample"&gt;公式&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+        &lt;tr&gt;&lt;td&gt;&lt;span class="yk-cmp__rank"&gt;3&lt;/span&gt;&lt;span class="yk-cmp__logo" style="display:block"&gt;&lt;span class="yk-ph" style="width:100%;height:100%"&gt;C&lt;/span&gt;&lt;/span&gt;&lt;a class="yk-cmp__name" href="#sample"&gt;サービスC&lt;/a&gt;&lt;span class="yk-stars"&gt;★★★★☆&lt;/span&gt;&lt;span class="yk-grade"&gt;総合評価 &lt;b&gt;A&lt;/b&gt;&lt;/span&gt;&lt;/td&gt;&lt;td&gt;&lt;span class="yk-maru"&gt;○&lt;/span&gt;◯千件以上&lt;br&gt;&lt;span class="yk-pink"&gt;首都圏中心&lt;/span&gt;&lt;/td&gt;&lt;td class="is-left"&gt;確認できた強みを2〜3行。&lt;ul class="yk-chips"&gt;&lt;li&gt;条件交渉&lt;/li&gt;&lt;/ul&gt;&lt;/td&gt;&lt;td&gt;&lt;p class="yk-catch"&gt;正社員のみ&lt;/p&gt;&lt;a class="yk-btn yk-btn--sm" href="#sample"&gt;公式&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+      &lt;/table&gt;&lt;/div&gt;&lt;label class="yk-fold__btn" for="cmp1-more"&gt;もっと見る&lt;/label&gt;&lt;/div&gt;&lt;/div&gt;
+    &lt;div&gt;&lt;table class="yk-cmp"&gt;&lt;tr&gt;&lt;th&gt;サイト&lt;/th&gt;&lt;th&gt;病院&lt;/th&gt;&lt;th&gt;薬局&lt;/th&gt;&lt;th&gt;企業&lt;/th&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;サービスA&lt;/td&gt;&lt;td&gt;&lt;span class="yk-maru"&gt;◎&lt;/span&gt;&lt;/td&gt;&lt;td&gt;&lt;span class="yk-maru"&gt;◎&lt;/span&gt;&lt;/td&gt;&lt;td&gt;&lt;span class="yk-maru"&gt;○&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;サービスB&lt;/td&gt;&lt;td&gt;&lt;span class="yk-maru"&gt;○&lt;/span&gt;&lt;/td&gt;&lt;td&gt;&lt;span class="yk-maru"&gt;◎&lt;/span&gt;&lt;/td&gt;&lt;td&gt;&lt;span class="yk-maru"&gt;△&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;
+    &lt;div&gt;&lt;table class="yk-cmp"&gt;&lt;tr&gt;&lt;th&gt;サイト&lt;/th&gt;&lt;th&gt;面接対策&lt;/th&gt;&lt;th&gt;条件交渉&lt;/th&gt;&lt;th&gt;LINE&lt;/th&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;サービスA&lt;/td&gt;&lt;td&gt;○&lt;/td&gt;&lt;td&gt;○&lt;/td&gt;&lt;td&gt;○&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;サービスB&lt;/td&gt;&lt;td&gt;○&lt;/td&gt;&lt;td&gt;○&lt;/td&gt;&lt;td&gt;－&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre></details>
+    </section>
+
+    <section class="pd-card" id="compare-2">
+      <div class="pd-card__head"><span class="pd-card__name">2軸の早見表（ポジショニングマップ）</span><code class="pd-card__cls">yk-matrix</code></div>
+      <dl class="pd-meta"><dt>使う場面</dt><dd>比較表の後。全体の位置関係を一枚で見せる。</dd><dt>ルール</dt><dd>縦軸・横軸は1つずつ（例：求人数の多い・少ない × サポートの手厚さ）。各サービスは公式ロゴを --x / --y（%）で置く。推す1社だけ is-pick で黄色の箱＋根拠2行。<b>配置の根拠（公表値・調査方法）を下に注記</b>。</dd><dt class="pd-ng">NG</dt><dd>根拠のない配置で推しを右上に置く／ロゴを自作</dd></dl>
+      <div class="pd-sample"><p class="pd-sample__lbl">見本</p><div class="yk-body"><div class="yk-matrix">
+  <span class="yk-matrix__ax yk-matrix__ax--t">求人 多</span><span class="yk-matrix__ax yk-matrix__ax--b">求人 少</span><span class="yk-matrix__ax yk-matrix__ax--l">サポート △</span><span class="yk-matrix__ax yk-matrix__ax--r">サポート ◎</span>
+  <div class="yk-matrix__item is-pick" style="--x:72%;--y:20%"><span class="yk-ph" style="height:22px">サービスA</span><ul><li>✔ 根拠1（数字は出典つき）</li><li>✔ 根拠2</li></ul></div>
+  <span class="yk-matrix__item" style="--x:30%;--y:22%"><span class="yk-ph" style="width:100%;height:100%">サービスB</span></span>
+  <span class="yk-matrix__item" style="--x:50%;--y:40%"><span class="yk-ph" style="width:100%;height:100%">サービスC</span></span>
+  <span class="yk-matrix__item" style="--x:72%;--y:60%"><span class="yk-ph" style="width:100%;height:100%">サービスD</span></span>
+  <span class="yk-matrix__item" style="--x:28%;--y:66%"><span class="yk-ph" style="width:100%;height:100%">サービスE</span></span>
+  <span class="yk-matrix__item" style="--x:30%;--y:84%"><span class="yk-ph" style="width:100%;height:100%">サービスF</span></span>
+</div>
+<p class="yk-small">※配置は各社公式サイトの公表求人数（◯年◯月時点）と編集部の調査（方法は調査概要）による</p></div></div>
+      <details class="pd-code"><summary>HTMLを見る・コピー</summary><button type="button" class="pd-copy">コピー</button><pre><code>&lt;div class="yk-matrix"&gt;
+  &lt;span class="yk-matrix__ax yk-matrix__ax--t"&gt;求人 多&lt;/span&gt;&lt;span class="yk-matrix__ax yk-matrix__ax--b"&gt;求人 少&lt;/span&gt;&lt;span class="yk-matrix__ax yk-matrix__ax--l"&gt;サポート △&lt;/span&gt;&lt;span class="yk-matrix__ax yk-matrix__ax--r"&gt;サポート ◎&lt;/span&gt;
+  &lt;div class="yk-matrix__item is-pick" style="--x:72%;--y:20%"&gt;&lt;span class="yk-ph" style="height:22px"&gt;サービスA&lt;/span&gt;&lt;ul&gt;&lt;li&gt;✔ 根拠1（数字は出典つき）&lt;/li&gt;&lt;li&gt;✔ 根拠2&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;
+  &lt;span class="yk-matrix__item" style="--x:30%;--y:22%"&gt;&lt;span class="yk-ph" style="width:100%;height:100%"&gt;サービスB&lt;/span&gt;&lt;/span&gt;
+  &lt;span class="yk-matrix__item" style="--x:50%;--y:40%"&gt;&lt;span class="yk-ph" style="width:100%;height:100%"&gt;サービスC&lt;/span&gt;&lt;/span&gt;
+  &lt;span class="yk-matrix__item" style="--x:72%;--y:60%"&gt;&lt;span class="yk-ph" style="width:100%;height:100%"&gt;サービスD&lt;/span&gt;&lt;/span&gt;
+  &lt;span class="yk-matrix__item" style="--x:28%;--y:66%"&gt;&lt;span class="yk-ph" style="width:100%;height:100%"&gt;サービスE&lt;/span&gt;&lt;/span&gt;
+  &lt;span class="yk-matrix__item" style="--x:30%;--y:84%"&gt;&lt;span class="yk-ph" style="width:100%;height:100%"&gt;サービスF&lt;/span&gt;&lt;/span&gt;
+&lt;/div&gt;
+&lt;p class="yk-small"&gt;※配置は各社公式サイトの公表求人数（◯年◯月時点）と編集部の調査（方法は調査概要）による&lt;/p&gt;</code></pre></details>
+    </section>
+
+    <section class="pd-card" id="compare-3">
+      <div class="pd-card__head"><span class="pd-card__name">2社併用のすすめ</span><code class="pd-card__cls">yk-combo</code></div>
+      <dl class="pd-meta"><dt>使う場面</dt><dd>ランキングの前。「1社だけだと取りこぼす」を伝えて2社登録を促す。</dd><dt>ルール</dt><dd>見出しは「A × B 2社の強みで取りこぼしを防ぎましょう！」の型。各社カード：斜めストライプの見出し（そのサービスを使う理由1行）→ロゴ→公式リンク→チェック2〜3個（太字＋ピンクの下線＋説明）→ボタン。</dd><dt class="pd-ng">NG</dt><dd>根拠のない「必ず見つかる」</dd></dl>
+      <div class="pd-sample"><p class="pd-sample__lbl">見本</p><div class="yk-body"><section class="yk-combo"><h2 class="yk-combo__ttl"><em>サービスA</em> × <em>サービスB</em><br>2社の強みで取りこぼしを防ぎましょう！</h2>
+  <div class="yk-combo__card"><p class="yk-combo__head">求人数が多いから、自分に合う求人を探せる</p><span class="yk-combo__logo" style="display:block"><span class="yk-ph" style="width:100%;height:100%">サービスA</span></span><a class="yk-combo__link" href="#sample">サービスA</a>
+    <ul class="yk-combo__points"><li><b>希望の条件が見つかりやすい！</b><br>確認できた事実を1〜2行。<span class="yk-red">対象条件</span></li><li><b>職場の内部情報まで知れる！</b><br>確認できた事実を1〜2行。</li></ul>
+    <p class="yk-catch">正社員のみ対象</p><a class="yk-btn" href="#sample">サービスAの公式サイト</a></div>
+</section></div></div>
+      <details class="pd-code"><summary>HTMLを見る・コピー</summary><button type="button" class="pd-copy">コピー</button><pre><code>&lt;section class="yk-combo"&gt;&lt;h2 class="yk-combo__ttl"&gt;&lt;em&gt;サービスA&lt;/em&gt; × &lt;em&gt;サービスB&lt;/em&gt;&lt;br&gt;2社の強みで取りこぼしを防ぎましょう！&lt;/h2&gt;
+  &lt;div class="yk-combo__card"&gt;&lt;p class="yk-combo__head"&gt;求人数が多いから、自分に合う求人を探せる&lt;/p&gt;&lt;span class="yk-combo__logo" style="display:block"&gt;&lt;span class="yk-ph" style="width:100%;height:100%"&gt;サービスA&lt;/span&gt;&lt;/span&gt;&lt;a class="yk-combo__link" href="#sample"&gt;サービスA&lt;/a&gt;
+    &lt;ul class="yk-combo__points"&gt;&lt;li&gt;&lt;b&gt;希望の条件が見つかりやすい！&lt;/b&gt;&lt;br&gt;確認できた事実を1〜2行。&lt;span class="yk-red"&gt;対象条件&lt;/span&gt;&lt;/li&gt;&lt;li&gt;&lt;b&gt;職場の内部情報まで知れる！&lt;/b&gt;&lt;br&gt;確認できた事実を1〜2行。&lt;/li&gt;&lt;/ul&gt;
+    &lt;p class="yk-catch"&gt;正社員のみ対象&lt;/p&gt;&lt;a class="yk-btn" href="#sample"&gt;サービスAの公式サイト&lt;/a&gt;&lt;/div&gt;
+&lt;/section&gt;</code></pre></details>
+    </section>
+
+  <p class="pd-chapter" id="rank">D. ランキングの中身</p>
+  <p class="pd-chapter__lead">順位見出し → 赤キャッチ → タブ（イチオシ／基本情報／注目の求人）→ 特徴 → 編集部 → 口コミ → 2ボタン。</p>
+
+    <section class="pd-card" id="rank-1">
+      <div class="pd-card__head"><span class="pd-card__name">順位見出し＋赤キャッチ</span><code class="pd-card__cls">yk-rankhead + yk-rankcatch</code></div>
+      <dl class="pd-meta"><dt>使う場面</dt><dd>各順位の頭。背景は yk-rankarea（薄い青）で包む。</dd><dt>ルール</dt><dd>メダルは1〜3位が金銀銅、4位以降は yk-medal--n。キャッチは赤太字2行まで（そのサービスを選ぶ理由）。ランキングの冒頭に「1サイトだけでは見逃すので2〜3サイトの登録がおすすめ」の吹き出し（体験談パーツ集の mt-say）を置くと流れが自然。</dd><dt class="pd-ng">NG</dt><dd>キャッチに未確認の数字</dd></dl>
+      <div class="pd-sample"><p class="pd-sample__lbl">見本</p><div class="yk-body"><div class="yk-rankarea"><h3 class="yk-rankhead"><span class="yk-medal">1</span>サービスA</h3><p class="yk-rankcatch">未経験でも応募できる求人あり！<br>最短◯日で求人を紹介</p></div></div></div>
+      <details class="pd-code"><summary>HTMLを見る・コピー</summary><button type="button" class="pd-copy">コピー</button><pre><code>&lt;div class="yk-rankarea"&gt;&lt;h3 class="yk-rankhead"&gt;&lt;span class="yk-medal"&gt;1&lt;/span&gt;サービスA&lt;/h3&gt;&lt;p class="yk-rankcatch"&gt;未経験でも応募できる求人あり！&lt;br&gt;最短◯日で求人を紹介&lt;/p&gt;&lt;/div&gt;</code></pre></details>
+    </section>
+
+    <section class="pd-card" id="rank-2">
+      <div class="pd-card__head"><span class="pd-card__name">ランキング内のタブ（イチオシ／基本情報／注目の求人）</span><code class="pd-card__cls">yk-tabs</code></div>
+      <dl class="pd-meta"><dt>使う場面</dt><dd>赤キャッチの直下。1社の情報を3つに分けて長さを抑える。</dd><dt>ルール</dt><dd>1枚目＝イチオシ（公式バナー→ボタン→特徴）、2枚目＝基本情報（レーダーチャート＋基本情報の表）、3枚目＝注目の求人（求人例カード）。<b>順位ごとに name / id を変える</b>。</dd><dt class="pd-ng">NG</dt><dd>大事な対象条件をタブの奥だけに置く</dd></dl>
+      <div class="pd-sample"><p class="pd-sample__lbl">見本</p><div class="yk-body"><div class="yk-tabs">
+  <input type="radio" name="rk1" id="rk1-1" checked><input type="radio" name="rk1" id="rk1-2"><input type="radio" name="rk1" id="rk1-3">
+  <div class="yk-tabs__labels"><label for="rk1-1">イチオシ<br>ポイント</label><label for="rk1-2">基本情報</label><label for="rk1-3">注目の<br>求人</label></div>
+  <div class="yk-tabs__panels" style="background:#fff;padding:10px">
+    <div><span class="yk-ph" style="aspect-ratio:6/5;max-width:260px;margin:0 auto">公式バナー（ASP素材）</span><p class="yk-catch">正社員のみ対象です！</p><a class="yk-btn" href="#sample">最短◯日で求人提案<br>公式サイトはこちら</a></div>
+    <div><p>（レーダーチャート＋基本情報の表）</p></div>
+    <div><p>（求人例カードを横スクロールで）</p></div>
+  </div>
+</div></div></div>
+      <details class="pd-code"><summary>HTMLを見る・コピー</summary><button type="button" class="pd-copy">コピー</button><pre><code>&lt;div class="yk-tabs"&gt;
+  &lt;input type="radio" name="rk1" id="rk1-1" checked&gt;&lt;input type="radio" name="rk1" id="rk1-2"&gt;&lt;input type="radio" name="rk1" id="rk1-3"&gt;
+  &lt;div class="yk-tabs__labels"&gt;&lt;label for="rk1-1"&gt;イチオシ&lt;br&gt;ポイント&lt;/label&gt;&lt;label for="rk1-2"&gt;基本情報&lt;/label&gt;&lt;label for="rk1-3"&gt;注目の&lt;br&gt;求人&lt;/label&gt;&lt;/div&gt;
+  &lt;div class="yk-tabs__panels" style="background:#fff;padding:10px"&gt;
+    &lt;div&gt;&lt;span class="yk-ph" style="aspect-ratio:6/5;max-width:260px;margin:0 auto"&gt;公式バナー（ASP素材）&lt;/span&gt;&lt;p class="yk-catch"&gt;正社員のみ対象です！&lt;/p&gt;&lt;a class="yk-btn" href="#sample"&gt;最短◯日で求人提案&lt;br&gt;公式サイトはこちら&lt;/a&gt;&lt;/div&gt;
+    &lt;div&gt;&lt;p&gt;（レーダーチャート＋基本情報の表）&lt;/p&gt;&lt;/div&gt;
+    &lt;div&gt;&lt;p&gt;（求人例カードを横スクロールで）&lt;/p&gt;&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre></details>
+    </section>
+
+    <section class="pd-card" id="rank-3">
+      <div class="pd-card__head"><span class="pd-card__name">特徴チェックリスト（緑見出し）</span><code class="pd-card__cls">yk-features</code></div>
+      <dl class="pd-meta"><dt>使う場面</dt><dd>イチオシのタブの中、ボタンの下。</dd><dt>ルール</dt><dd>4〜5項目。数字は太字か赤、出典は右に小さく（small）。最後の行は対象条件（赤）。</dd><dt class="pd-ng">NG</dt><dd>感想を特徴に入れる</dd></dl>
+      <div class="pd-sample"><p class="pd-sample__lbl">見本</p><div class="yk-body"><div class="yk-features"><p class="yk-features__ttl">特徴</p><ul>
+  <li><span><span class="yk-mark">年収◯◯◯万円以上の求人</span>が多い</span></li>
+  <li><span><span class="yk-red">利用者満足度◯％！</span>サポートの評価が高い</span><small>※◯◯調べ</small></li>
+  <li><span>最短即日で求人を紹介</span></li>
+  <li><span class="yk-red">無資格の方・学生は対象外です</span></li>
+</ul></div></div></div>
+      <details class="pd-code"><summary>HTMLを見る・コピー</summary><button type="button" class="pd-copy">コピー</button><pre><code>&lt;div class="yk-features"&gt;&lt;p class="yk-features__ttl"&gt;特徴&lt;/p&gt;&lt;ul&gt;
+  &lt;li&gt;&lt;span&gt;&lt;span class="yk-mark"&gt;年収◯◯◯万円以上の求人&lt;/span&gt;が多い&lt;/span&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;span&gt;&lt;span class="yk-red"&gt;利用者満足度◯％！&lt;/span&gt;サポートの評価が高い&lt;/span&gt;&lt;small&gt;※◯◯調べ&lt;/small&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;span&gt;最短即日で求人を紹介&lt;/span&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;span class="yk-red"&gt;無資格の方・学生は対象外です&lt;/span&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/div&gt;</code></pre></details>
+    </section>
+
+    <section class="pd-card" id="rank-4">
+      <div class="pd-card__head"><span class="pd-card__name">編集部のイチオシポイント</span><code class="pd-card__cls">yk-editor</code></div>
+      <dl class="pd-meta"><dt>使う場面</dt><dd>特徴の下。編集部としての推す理由をまとめる。</dd><dt>ルール</dt><dd>見出し帯の右に編集部キャラクター（画像）。本文は4〜6行、数字は赤、結論は黄マーカー。注（※1）は本文の下に小さく。キャラクターは自社で用意したイラストか生成画像。</dd><dt class="pd-ng">NG</dt><dd>他社サイトのキャラクター・文章の流用</dd></dl>
+      <div class="pd-sample"><p class="pd-sample__lbl">見本</p><div class="yk-body"><div class="yk-editor"><p class="yk-editor__ttl">編集部の<em>イチオシ</em>ポイント</p><span class="yk-ph yk-editor__chara">キャラ</span>
+<div class="yk-editor__body"><p>サービスAは<span class="yk-mark">確認できた実績</span>があり、<span class="yk-red">数字の強み※1</span>も公表しています。こういう人におすすめ、までを一文で。</p><p class="yk-small" style="text-align:right">※1 出典（調査名・時期）</p></div></div></div></div>
+      <details class="pd-code"><summary>HTMLを見る・コピー</summary><button type="button" class="pd-copy">コピー</button><pre><code>&lt;div class="yk-editor"&gt;&lt;p class="yk-editor__ttl"&gt;編集部の&lt;em&gt;イチオシ&lt;/em&gt;ポイント&lt;/p&gt;&lt;span class="yk-ph yk-editor__chara"&gt;キャラ&lt;/span&gt;
+&lt;div class="yk-editor__body"&gt;&lt;p&gt;サービスAは&lt;span class="yk-mark"&gt;確認できた実績&lt;/span&gt;があり、&lt;span class="yk-red"&gt;数字の強み※1&lt;/span&gt;も公表しています。こういう人におすすめ、までを一文で。&lt;/p&gt;&lt;p class="yk-small" style="text-align:right"&gt;※1 出典（調査名・時期）&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;</code></pre></details>
+    </section>
+
+    <section class="pd-card" id="rank-5">
+      <div class="pd-card__head"><span class="pd-card__name">口コミ（アバター＋年代・性別）</span><code class="pd-card__cls">yk-voice</code></div>
+      <dl class="pd-meta"><dt>使う場面</dt><dd>編集部の下。</dd><dt>ルール</dt><dd>見出し「〇〇の口コミ」。各口コミ：左にアバター（イラスト）と「30代女性」など、右に本文。<b>公式掲載・許諾のある口コミだけ</b>を要約し、出典を下に書く。良い点だけでなく気になる点も入れる。</dd><dt class="pd-ng">NG</dt><dd>作った口コミ／他サイトの口コミの転載</dd></dl>
+      <div class="pd-sample"><p class="pd-sample__lbl">見本</p><div class="yk-body"><h4 class="yk-voice__ttl">サービスAの口コミ</h4>
+<ul class="yk-voice">
+  <li><div class="yk-voice__who"><span class="yk-ph yk-voice__face">顔</span>30代女性</div><p>（公式サイト掲載の体験談を要約。どんな状況で使い、何が良かったか）</p></li>
+  <li><div class="yk-voice__who"><span class="yk-ph yk-voice__face">顔</span>40代男性</div><p>（気になった点も含めて要約）</p></li>
+</ul>
+<p class="yk-small">※サービスA公式サイト掲載の体験談を要約。個人の感想です。</p></div></div>
+      <details class="pd-code"><summary>HTMLを見る・コピー</summary><button type="button" class="pd-copy">コピー</button><pre><code>&lt;h4 class="yk-voice__ttl"&gt;サービスAの口コミ&lt;/h4&gt;
+&lt;ul class="yk-voice"&gt;
+  &lt;li&gt;&lt;div class="yk-voice__who"&gt;&lt;span class="yk-ph yk-voice__face"&gt;顔&lt;/span&gt;30代女性&lt;/div&gt;&lt;p&gt;（公式サイト掲載の体験談を要約。どんな状況で使い、何が良かったか）&lt;/p&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;div class="yk-voice__who"&gt;&lt;span class="yk-ph yk-voice__face"&gt;顔&lt;/span&gt;40代男性&lt;/div&gt;&lt;p&gt;（気になった点も含めて要約）&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p class="yk-small"&gt;※サービスA公式サイト掲載の体験談を要約。個人の感想です。&lt;/p&gt;</code></pre></details>
+    </section>
+
+    <section class="pd-card" id="rank-6">
+      <div class="pd-card__head"><span class="pd-card__name">2ボタン（詳細ページ＋公式）</span><code class="pd-card__cls">yk-btnpair</code></div>
+      <dl class="pd-meta"><dt>使う場面</dt><dd>各順位の最後。</dd><dt>ルール</dt><dd>左は灰色の「詳細はこちら」（自サイトの個別ページへ）、右はオレンジの公式ボタン（上に対象条件のひとこと）。</dd><dt class="pd-ng">NG</dt><dd>左右とも公式リンクにする</dd></dl>
+      <div class="pd-sample"><p class="pd-sample__lbl">見本</p><div class="yk-body"><div class="yk-btnpair"><a class="yk-btn yk-btn--sub" href="#sample">詳細は<br>こちら</a><div><p class="yk-catch">正社員のみ対象です！</p><a class="yk-btn" href="#sample">最短◯日で求人提案<br>公式サイトはこちら</a></div></div></div></div>
+      <details class="pd-code"><summary>HTMLを見る・コピー</summary><button type="button" class="pd-copy">コピー</button><pre><code>&lt;div class="yk-btnpair"&gt;&lt;a class="yk-btn yk-btn--sub" href="#sample"&gt;詳細は&lt;br&gt;こちら&lt;/a&gt;&lt;div&gt;&lt;p class="yk-catch"&gt;正社員のみ対象です！&lt;/p&gt;&lt;a class="yk-btn" href="#sample"&gt;最短◯日で求人提案&lt;br&gt;公式サイトはこちら&lt;/a&gt;&lt;/div&gt;&lt;/div&gt;</code></pre></details>
+    </section>
+
+    <section class="pd-card" id="rank-7">
+      <div class="pd-card__head"><span class="pd-card__name">レーダーチャート（評価の6軸）</span><code class="pd-card__cls">yk-radar</code></div>
+      <dl class="pd-meta"><dt>使う場面</dt><dd>基本情報タブの上。</dd><dt>ルール</dt><dd>data-labels に軸名、data-scores に点数（0〜5）。描画用のscriptをページ末尾に1回だけ置く。<b>採点基準を「ランキング調査概要」に公開できる場合だけ</b>使う。下に「※編集部の採点（基準は調査概要）」を付ける。</dd><dt class="pd-ng">NG</dt><dd>根拠のない点数</dd></dl>
+      <div class="pd-sample"><p class="pd-sample__lbl">見本</p><div class="yk-body"><div class="yk-radar" data-name="サービスA" data-labels="総合,求人数,求人の質,対応業種,転職サポート,年収UP" data-scores="4.5,4,4,3.5,4.5,4"></div>
+<p class="yk-small yk-radar__note">※編集部の採点（基準は調査概要）</p></div></div>
+      <details class="pd-code"><summary>HTMLを見る・コピー</summary><button type="button" class="pd-copy">コピー</button><pre><code>&lt;div class="yk-radar" data-name="サービスA" data-labels="総合,求人数,求人の質,対応業種,転職サポート,年収UP" data-scores="4.5,4,4,3.5,4.5,4"&gt;&lt;/div&gt;
+&lt;p class="yk-small yk-radar__note"&gt;※編集部の採点（基準は調査概要）&lt;/p&gt;
+&lt;!-- ページ末尾に1回だけ --&gt;
+&lt;script&gt;
+/* yk-radar：data-labels（カンマ区切り）と data-scores（同じ数）からレーダーチャートを描く。ページ末尾に1回だけ置く */
+document.querySelectorAll('.yk-radar[data-labels]').forEach(function (el) {
+  var L = el.dataset.labels.split(','), S = el.dataset.scores.split(',').map(Number), M = +(el.dataset.max || 5), n = L.length, cx = 160, cy = 150, R = 100;
+  function p(i, r) { var a = -Math.PI / 2 + i * 2 * Math.PI / n; return [(cx + r * Math.cos(a)).toFixed(1), (cy + r * Math.sin(a)).toFixed(1)]; }
+  var s = '&lt;svg viewBox="0 0 320 300" role="img" aria-label="' + (el.dataset.name || '') + 'の評価：' + L.map(function (l, i) { return l + ' ' + S[i]; }).join('、') + '"&gt;';
+  for (var k = 1; k &lt;= M; k++) s += '&lt;polygon points="' + L.map(function (_, i) { return p(i, R * k / M).join(','); }).join(' ') + '" fill="none" stroke="#c9d3e3"/&gt;';
+  L.forEach(function (l, i) { var a = p(i, R), b = p(i, R + 24); s += '&lt;line x1="' + cx + '" y1="' + cy + '" x2="' + a[0] + '" y2="' + a[1] + '" stroke="#c9d3e3"/&gt;&lt;text x="' + b[0] + '" y="' + b[1] + '" text-anchor="middle" dominant-baseline="middle" font-size="12" font-weight="700" fill="#444"&gt;' + l + '&lt;/text&gt;'; });
+  s += '&lt;polygon points="' + S.map(function (v, i) { return p(i, R * v / M).join(','); }).join(' ') + '" fill="rgba(47,103,184,.18)" stroke="#2f67b8" stroke-width="2.5"/&gt;&lt;/svg&gt;';
+  el.innerHTML = s;
+});
+&lt;/script&gt;</code></pre></details>
+    </section>
+
+    <section class="pd-card" id="rank-8">
+      <div class="pd-card__head"><span class="pd-card__name">基本情報の表（2列・青見出し）</span><code class="pd-card__cls">yk-info</code></div>
+      <dl class="pd-meta"><dt>使う場面</dt><dd>レーダーチャートの下／個別ページの冒頭。</dd><dt>ルール</dt><dd>2列×3段（求人数・対応地域／対応年代・得意な職種／転職サポート・対応時間）。求人数には時点（※◯年◯月時点）。</dd><dt class="pd-ng">NG</dt><dd>時点のない求人数</dd></dl>
+      <div class="pd-sample"><p class="pd-sample__lbl">見本</p><div class="yk-body"><table class="yk-info"><tr><th>求人数</th><th>対応地域</th></tr><tr><td>◯万件以上<small>※◯年◯月時点</small></td><td>全国</td></tr><tr><th>対応年代</th><th>得意な職種</th></tr><tr><td>〜◯歳</td><td>薬剤師</td></tr><tr><th>転職サポート</th><th>対応時間</th></tr><tr><td class="is-left">求人紹介・条件交渉・面接対策 など</td><td class="is-left">平日 ◯:◯〜◯:◯</td></tr></table></div></div>
+      <details class="pd-code"><summary>HTMLを見る・コピー</summary><button type="button" class="pd-copy">コピー</button><pre><code>&lt;table class="yk-info"&gt;&lt;tr&gt;&lt;th&gt;求人数&lt;/th&gt;&lt;th&gt;対応地域&lt;/th&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;◯万件以上&lt;small&gt;※◯年◯月時点&lt;/small&gt;&lt;/td&gt;&lt;td&gt;全国&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;th&gt;対応年代&lt;/th&gt;&lt;th&gt;得意な職種&lt;/th&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;〜◯歳&lt;/td&gt;&lt;td&gt;薬剤師&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;th&gt;転職サポート&lt;/th&gt;&lt;th&gt;対応時間&lt;/th&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td class="is-left"&gt;求人紹介・条件交渉・面接対策 など&lt;/td&gt;&lt;td class="is-left"&gt;平日 ◯:◯〜◯:◯&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</code></pre></details>
+    </section>
+
+    <section class="pd-card" id="rank-9">
+      <div class="pd-card__head"><span class="pd-card__name">求人例カード（ランキング内・横スクロール）</span><code class="pd-card__cls">yk-hscroll + yk-jobex</code></div>
+      <dl class="pd-meta"><dt>使う場面</dt><dd>「注目の求人」タブの中。</dd><dt>ルール</dt><dd>見出し「求人例1」→ 都道府県・雇用形態のタグ（緑）→ 年収・職種・業務内容・特徴の表 → ボタン → サービスのロゴ。実在の求人を出典URL・取得日つきで。</dd><dt class="pd-ng">NG</dt><dd>架空の求人</dd></dl>
+      <div class="pd-sample"><p class="pd-sample__lbl">見本</p><div class="yk-body"><p class="yk-hint">横にスクロールできます</p><div class="yk-hscroll">
+  <div class="yk-jobex"><p class="yk-jobex__ttl">求人例1</p><ul class="yk-tags yk-tags--green"><li>◯◯県</li><li>正社員</li></ul><table class="yk-kv"><tr><th>年収</th><td>◯◯◯万円</td></tr><tr><th>職種</th><td>薬剤師</td></tr><tr><th>業務内容</th><td>調剤・服薬指導 など</td></tr><tr><th>特徴</th><td>研修制度あり など</td></tr></table><p class="yk-catch">正社員のみ対象です！</p><a class="yk-btn yk-btn--sm" href="#sample">求人を探す</a><span class="yk-jobex__logo" style="display:block"><span class="yk-ph" style="width:100%;height:100%">サービスA</span></span></div>
+  <div class="yk-jobex"><p class="yk-jobex__ttl">求人例2</p><ul class="yk-tags yk-tags--green"><li>◯◯県</li><li>正社員</li></ul><table class="yk-kv"><tr><th>年収</th><td>◯◯◯万円</td></tr><tr><th>職種</th><td>薬剤師</td></tr></table><p class="yk-catch">正社員のみ対象です！</p><a class="yk-btn yk-btn--sm" href="#sample">求人を探す</a><span class="yk-jobex__logo" style="display:block"><span class="yk-ph" style="width:100%;height:100%">サービスA</span></span></div>
+</div></div></div>
+      <details class="pd-code"><summary>HTMLを見る・コピー</summary><button type="button" class="pd-copy">コピー</button><pre><code>&lt;p class="yk-hint"&gt;横にスクロールできます&lt;/p&gt;&lt;div class="yk-hscroll"&gt;
+  &lt;div class="yk-jobex"&gt;&lt;p class="yk-jobex__ttl"&gt;求人例1&lt;/p&gt;&lt;ul class="yk-tags yk-tags--green"&gt;&lt;li&gt;◯◯県&lt;/li&gt;&lt;li&gt;正社員&lt;/li&gt;&lt;/ul&gt;&lt;table class="yk-kv"&gt;&lt;tr&gt;&lt;th&gt;年収&lt;/th&gt;&lt;td&gt;◯◯◯万円&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;th&gt;職種&lt;/th&gt;&lt;td&gt;薬剤師&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;th&gt;業務内容&lt;/th&gt;&lt;td&gt;調剤・服薬指導 など&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;th&gt;特徴&lt;/th&gt;&lt;td&gt;研修制度あり など&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;p class="yk-catch"&gt;正社員のみ対象です！&lt;/p&gt;&lt;a class="yk-btn yk-btn--sm" href="#sample"&gt;求人を探す&lt;/a&gt;&lt;span class="yk-jobex__logo" style="display:block"&gt;&lt;span class="yk-ph" style="width:100%;height:100%"&gt;サービスA&lt;/span&gt;&lt;/span&gt;&lt;/div&gt;
+  &lt;div class="yk-jobex"&gt;&lt;p class="yk-jobex__ttl"&gt;求人例2&lt;/p&gt;&lt;ul class="yk-tags yk-tags--green"&gt;&lt;li&gt;◯◯県&lt;/li&gt;&lt;li&gt;正社員&lt;/li&gt;&lt;/ul&gt;&lt;table class="yk-kv"&gt;&lt;tr&gt;&lt;th&gt;年収&lt;/th&gt;&lt;td&gt;◯◯◯万円&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;th&gt;職種&lt;/th&gt;&lt;td&gt;薬剤師&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;p class="yk-catch"&gt;正社員のみ対象です！&lt;/p&gt;&lt;a class="yk-btn yk-btn--sm" href="#sample"&gt;求人を探す&lt;/a&gt;&lt;span class="yk-jobex__logo" style="display:block"&gt;&lt;span class="yk-ph" style="width:100%;height:100%"&gt;サービスA&lt;/span&gt;&lt;/span&gt;&lt;/div&gt;
+&lt;/div&gt;</code></pre></details>
+    </section>
+
+  <p class="pd-chapter" id="close">E. 締め・ページ下部</p>
+  <p class="pd-chapter__lead">迷った人の受け皿 → 条件で選ぶ診断 → 信頼のフッター。</p>
+
+    <section class="pd-card" id="close-1">
+      <div class="pd-card__head"><span class="pd-card__name">迷ったらまずは（2社カード）</span><code class="pd-card__cls">yk-pickup</code></div>
+      <dl class="pd-meta"><dt>使う場面</dt><dd>ランキングの後。決めきれない人に2社だけ示す。</dd><dt>ルール</dt><dd>見出しは「迷ったらまずは」の吹き出し＋「ここを登録すれば安心！」の型。2列：緑の帯にサービス名→公式バナー→1〜2行→ボタン。</dd><dt class="pd-ng">NG</dt><dd>3社以上並べる（迷わせる）</dd></dl>
+      <div class="pd-sample"><p class="pd-sample__lbl">見本</p><div class="yk-body"><section class="yk-pickup"><h2 class="yk-pickup__ttl"><small>迷ったらまずは</small><br><em>ここ</em>を登録すれば安心！</h2>
+<ul class="yk-pickup__list">
+  <li class="yk-pickup__item"><p class="yk-pickup__name">サービスA</p><span class="yk-ph yk-pickup__img">公式バナー</span><p class="yk-pickup__text">選ぶ理由を1〜2行。</p><p class="yk-catch">正社員のみ対象です！</p><a class="yk-btn yk-btn--sm" href="#sample">公式サイト</a></li>
+  <li class="yk-pickup__item"><p class="yk-pickup__name">サービスB</p><span class="yk-ph yk-pickup__img">公式バナー</span><p class="yk-pickup__text">選ぶ理由を1〜2行。</p><p class="yk-catch">正社員のみ対象です！</p><a class="yk-btn yk-btn--sm" href="#sample">公式サイト</a></li>
+</ul></section></div></div>
+      <details class="pd-code"><summary>HTMLを見る・コピー</summary><button type="button" class="pd-copy">コピー</button><pre><code>&lt;section class="yk-pickup"&gt;&lt;h2 class="yk-pickup__ttl"&gt;&lt;small&gt;迷ったらまずは&lt;/small&gt;&lt;br&gt;&lt;em&gt;ここ&lt;/em&gt;を登録すれば安心！&lt;/h2&gt;
+&lt;ul class="yk-pickup__list"&gt;
+  &lt;li class="yk-pickup__item"&gt;&lt;p class="yk-pickup__name"&gt;サービスA&lt;/p&gt;&lt;span class="yk-ph yk-pickup__img"&gt;公式バナー&lt;/span&gt;&lt;p class="yk-pickup__text"&gt;選ぶ理由を1〜2行。&lt;/p&gt;&lt;p class="yk-catch"&gt;正社員のみ対象です！&lt;/p&gt;&lt;a class="yk-btn yk-btn--sm" href="#sample"&gt;公式サイト&lt;/a&gt;&lt;/li&gt;
+  &lt;li class="yk-pickup__item"&gt;&lt;p class="yk-pickup__name"&gt;サービスB&lt;/p&gt;&lt;span class="yk-ph yk-pickup__img"&gt;公式バナー&lt;/span&gt;&lt;p class="yk-pickup__text"&gt;選ぶ理由を1〜2行。&lt;/p&gt;&lt;p class="yk-catch"&gt;正社員のみ対象です！&lt;/p&gt;&lt;a class="yk-btn yk-btn--sm" href="#sample"&gt;公式サイト&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/section&gt;</code></pre></details>
+    </section>
+
+    <section class="pd-card" id="close-2">
+      <div class="pd-card__head"><span class="pd-card__name">転職サイト診断（条件フォーム）</span><code class="pd-card__cls">yk-finder</code></div>
+      <dl class="pd-meta"><dt>使う場面</dt><dd>ページの最後。条件から合うサービスを選ばせる。</dd><dt>ルール</dt><dd>勤務地・年齢・職場・年収のセレクト＋こだわり条件のチェック＋検索ボタン。<b>押した先（結果ページ・絞り込みの仕組み）を用意してから</b>置く。結果は各社の公表情報で判定できる条件だけ。</dd><dt class="pd-ng">NG</dt><dd>押しても何も起きないフォーム</dd></dl>
+      <div class="pd-sample"><p class="pd-sample__lbl">見本</p><div class="yk-body"><form class="yk-finder" action="#sample"><p class="yk-finder__ttl">薬剤師<br><em>転職サイト</em>診断</p>
+  <label class="yk-finder__row">希望の勤務地<select><option>指定なし</option><option>東京都</option></select></label>
+  <label class="yk-finder__row">年齢<select><option>指定なし</option><option>20代</option></select></label>
+  <label class="yk-finder__row">希望の職場<select><option>指定なし</option><option>調剤薬局</option><option>病院</option></select></label>
+  <fieldset><legend>こだわり条件</legend><div class="yk-finder__checks"><label><input type="checkbox">求人数が多い</label><label><input type="checkbox">未経験歓迎</label><label><input type="checkbox">在宅あり</label><label><input type="checkbox">転勤なし</label></div></fieldset>
+  <button class="yk-finder__submit" type="submit">検索する</button></form></div></div>
+      <details class="pd-code"><summary>HTMLを見る・コピー</summary><button type="button" class="pd-copy">コピー</button><pre><code>&lt;form class="yk-finder" action="#sample"&gt;&lt;p class="yk-finder__ttl"&gt;薬剤師&lt;br&gt;&lt;em&gt;転職サイト&lt;/em&gt;診断&lt;/p&gt;
+  &lt;label class="yk-finder__row"&gt;希望の勤務地&lt;select&gt;&lt;option&gt;指定なし&lt;/option&gt;&lt;option&gt;東京都&lt;/option&gt;&lt;/select&gt;&lt;/label&gt;
+  &lt;label class="yk-finder__row"&gt;年齢&lt;select&gt;&lt;option&gt;指定なし&lt;/option&gt;&lt;option&gt;20代&lt;/option&gt;&lt;/select&gt;&lt;/label&gt;
+  &lt;label class="yk-finder__row"&gt;希望の職場&lt;select&gt;&lt;option&gt;指定なし&lt;/option&gt;&lt;option&gt;調剤薬局&lt;/option&gt;&lt;option&gt;病院&lt;/option&gt;&lt;/select&gt;&lt;/label&gt;
+  &lt;fieldset&gt;&lt;legend&gt;こだわり条件&lt;/legend&gt;&lt;div class="yk-finder__checks"&gt;&lt;label&gt;&lt;input type="checkbox"&gt;求人数が多い&lt;/label&gt;&lt;label&gt;&lt;input type="checkbox"&gt;未経験歓迎&lt;/label&gt;&lt;label&gt;&lt;input type="checkbox"&gt;在宅あり&lt;/label&gt;&lt;label&gt;&lt;input type="checkbox"&gt;転勤なし&lt;/label&gt;&lt;/div&gt;&lt;/fieldset&gt;
+  &lt;button class="yk-finder__submit" type="submit"&gt;検索する&lt;/button&gt;&lt;/form&gt;</code></pre></details>
+    </section>
+
+    <section class="pd-card" id="close-3">
+      <div class="pd-card__head"><span class="pd-card__name">フッター（運営者・調査概要・プライバシー）</span><code class="pd-card__cls">yk-footer</code></div>
+      <dl class="pd-meta"><dt>使う場面</dt><dd>ページの一番下。</dd><dt>ルール</dt><dd>運営者情報・<b>ランキング調査概要</b>（順位・評価・星の決め方）・プライバシーポリシーの3つは必須。</dd><dt class="pd-ng">NG</dt><dd>調査概要のページがないのに順位・評価を出す</dd></dl>
+      <div class="pd-sample"><p class="pd-sample__lbl">見本</p><div class="yk-body"><footer class="yk-footer"><ul><li><a href="#sample">運営者情報</a></li><li><a href="#sample">ランキング調査概要</a></li><li><a href="#sample">プライバシーポリシー</a></li></ul><small>© サイト名</small></footer></div></div>
+      <details class="pd-code"><summary>HTMLを見る・コピー</summary><button type="button" class="pd-copy">コピー</button><pre><code>&lt;footer class="yk-footer"&gt;&lt;ul&gt;&lt;li&gt;&lt;a href="#sample"&gt;運営者情報&lt;/a&gt;&lt;/li&gt;&lt;li&gt;&lt;a href="#sample"&gt;ランキング調査概要&lt;/a&gt;&lt;/li&gt;&lt;li&gt;&lt;a href="#sample"&gt;プライバシーポリシー&lt;/a&gt;&lt;/li&gt;&lt;/ul&gt;&lt;small&gt;© サイト名&lt;/small&gt;&lt;/footer&gt;</code></pre></details>
+    </section>
+
+  <p class="pd-chapter" id="detail">F. サービス個別ページ</p>
+  <p class="pd-chapter__lead">パンくず → 概要 → 強み（公式画面＋目次＋番号見出し）→ こんな方 → 利用手順 → 口コミ → よくある質問。区切りごとに登録ボタン。</p>
+
+    <section class="pd-card" id="detail-1">
+      <div class="pd-card__head"><span class="pd-card__name">パンくず</span><code class="pd-card__cls">yk-crumb</code></div>
+      <dl class="pd-meta"><dt>使う場面</dt><dd>個別ページの一番上。</dd><dt>ルール</dt><dd>TOP ＞ サービス名。</dd><dt class="pd-ng">NG</dt><dd>階層の飛んだパンくず</dd></dl>
+      <div class="pd-sample"><p class="pd-sample__lbl">見本</p><div class="yk-body"><nav class="yk-crumb"><a href="#sample">TOP</a><span>サービスA</span></nav></div></div>
+      <details class="pd-code"><summary>HTMLを見る・コピー</summary><button type="button" class="pd-copy">コピー</button><pre><code>&lt;nav class="yk-crumb"&gt;&lt;a href="#sample"&gt;TOP&lt;/a&gt;&lt;span&gt;サービスA&lt;/span&gt;&lt;/nav&gt;</code></pre></details>
+    </section>
+
+    <section class="pd-card" id="detail-2">
+      <div class="pd-card__head"><span class="pd-card__name">サービス概要（キャッチ＋特徴＋公式画像）</span><code class="pd-card__cls">yk-svchead</code></div>
+      <dl class="pd-meta"><dt>使う場面</dt><dd>個別ページの冒頭。</dd><dt>ルール</dt><dd>サービス名（中央・大）→赤のキャッチ（上下に線）→左に特徴（yk-features）、右に公式バナー。下に基本情報の表（yk-info）と公式ボタン。</dd><dt class="pd-ng">NG</dt><dd>公式画像を加工する</dd></dl>
+      <div class="pd-sample"><p class="pd-sample__lbl">見本</p><div class="yk-body"><p class="yk-svchead__name">サービスA</p><p class="yk-svchead__catch">年間◯万人が使う薬剤師特化型の転職サービス</p>
+<div class="yk-svchead__grid"><div class="yk-features"><p class="yk-features__ttl">特徴</p><ul><li><span class="yk-mark">強み1（数字は出典つき）</span></li><li><span>強み2</span></li><li><span class="yk-red">対象条件</span></li></ul></div><span class="yk-ph yk-svchead__img">公式バナー</span></div></div></div>
+      <details class="pd-code"><summary>HTMLを見る・コピー</summary><button type="button" class="pd-copy">コピー</button><pre><code>&lt;p class="yk-svchead__name"&gt;サービスA&lt;/p&gt;&lt;p class="yk-svchead__catch"&gt;年間◯万人が使う薬剤師特化型の転職サービス&lt;/p&gt;
+&lt;div class="yk-svchead__grid"&gt;&lt;div class="yk-features"&gt;&lt;p class="yk-features__ttl"&gt;特徴&lt;/p&gt;&lt;ul&gt;&lt;li&gt;&lt;span class="yk-mark"&gt;強み1（数字は出典つき）&lt;/span&gt;&lt;/li&gt;&lt;li&gt;&lt;span&gt;強み2&lt;/span&gt;&lt;/li&gt;&lt;li&gt;&lt;span class="yk-red"&gt;対象条件&lt;/span&gt;&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;&lt;span class="yk-ph yk-svchead__img"&gt;公式バナー&lt;/span&gt;&lt;/div&gt;</code></pre></details>
+    </section>
+
+    <section class="pd-card" id="detail-3">
+      <div class="pd-card__head"><span class="pd-card__name">公式画面＋出典</span><code class="pd-card__cls">yk-shot</code></div>
+      <dl class="pd-meta"><dt>使う場面</dt><dd>強み・利用手順の各見出しの下。</dd><dt>ルール</dt><dd>公式サイトの画面キャプチャを使う場合は<b>利用条件を確認</b>し、右下に「出典：〇〇」。個人情報の入る画面は使わない。</dd><dt class="pd-ng">NG</dt><dd>出典なし／条件を確認していない画面</dd></dl>
+      <div class="pd-sample"><p class="pd-sample__lbl">見本</p><div class="yk-body"><figure class="yk-shot"><span class="yk-ph yk-shot__img">公式サイトの画面</span><figcaption>出典：サービスA公式サイト</figcaption></figure></div></div>
+      <details class="pd-code"><summary>HTMLを見る・コピー</summary><button type="button" class="pd-copy">コピー</button><pre><code>&lt;figure class="yk-shot"&gt;&lt;span class="yk-ph yk-shot__img"&gt;公式サイトの画面&lt;/span&gt;&lt;figcaption&gt;出典：サービスA公式サイト&lt;/figcaption&gt;&lt;/figure&gt;</code></pre></details>
+    </section>
+
+    <section class="pd-card" id="detail-4">
+      <div class="pd-card__head"><span class="pd-card__name">番号つき目次ボックス（強み1〜）</span><code class="pd-card__cls">yk-order</code></div>
+      <dl class="pd-meta"><dt>使う場面</dt><dd>強み・こんな方・手順・FAQの各H2の冒頭。何が何個あるかを先に見せる。</dd><dt>ルール</dt><dd>左上にタブ見出し「〇〇の強み」。各行：矢印型のラベル（強み1）＋短い見出し（各H3へのリンク）。</dd><dt class="pd-ng">NG</dt><dd>5個を超える（分ける）</dd></dl>
+      <div class="pd-sample"><p class="pd-sample__lbl">見本</p><div class="yk-body"><div class="yk-order"><p class="yk-order__ttl">サービスAの強み</p><ol><li><span>強み1</span><a href="#sample">利用者の評価が高い</a></li><li><span>強み2</span><a href="#sample">求人の数が多い</a></li><li><span>強み3</span><a href="#sample">紹介が早い</a></li></ol></div></div></div>
+      <details class="pd-code"><summary>HTMLを見る・コピー</summary><button type="button" class="pd-copy">コピー</button><pre><code>&lt;div class="yk-order"&gt;&lt;p class="yk-order__ttl"&gt;サービスAの強み&lt;/p&gt;&lt;ol&gt;&lt;li&gt;&lt;span&gt;強み1&lt;/span&gt;&lt;a href="#sample"&gt;利用者の評価が高い&lt;/a&gt;&lt;/li&gt;&lt;li&gt;&lt;span&gt;強み2&lt;/span&gt;&lt;a href="#sample"&gt;求人の数が多い&lt;/a&gt;&lt;/li&gt;&lt;li&gt;&lt;span&gt;強み3&lt;/span&gt;&lt;a href="#sample"&gt;紹介が早い&lt;/a&gt;&lt;/li&gt;&lt;/ol&gt;&lt;/div&gt;</code></pre></details>
+    </section>
+
+    <section class="pd-card" id="detail-5">
+      <div class="pd-card__head"><span class="pd-card__name">番号ラベルつき見出し</span><code class="pd-card__cls">yk-numh</code></div>
+      <dl class="pd-meta"><dt>使う場面</dt><dd>目次ボックスの各項目の本文の頭。</dd><dt>ルール</dt><dd>ラベル（強み1／特徴1／ステップ1／質問1）＋見出し。目次の文言と同じにする。</dd><dt class="pd-ng">NG</dt><dd>目次と見出しの文言が違う</dd></dl>
+      <div class="pd-sample"><p class="pd-sample__lbl">見本</p><div class="yk-body"><h3 class="yk-numh"><span>強み1</span>利用者の評価が高い</h3></div></div>
+      <details class="pd-code"><summary>HTMLを見る・コピー</summary><button type="button" class="pd-copy">コピー</button><pre><code>&lt;h3 class="yk-numh"&gt;&lt;span&gt;強み1&lt;/span&gt;利用者の評価が高い&lt;/h3&gt;</code></pre></details>
+    </section>
+
+    <section class="pd-card" id="detail-6">
+      <div class="pd-card__head"><span class="pd-card__name">チェックの箱（入力項目など）</span><code class="pd-card__cls">yk-listbox</code></div>
+      <dl class="pd-meta"><dt>使う場面</dt><dd>利用手順の入力項目、こんな方の特徴など。</dd><dt>ルール</dt><dd>見出し（入力項目 など）＋チェックつきの行。登録の手間が分かる項目は全部書く。</dd><dt class="pd-ng">NG</dt><dd>項目を減らして書く（登録後に違うと離脱）</dd></dl>
+      <div class="pd-sample"><p class="pd-sample__lbl">見本</p><div class="yk-body"><div class="yk-listbox"><p class="yk-listbox__ttl">入力項目</p><ul><li>希望する働き方</li><li>転職希望時期</li><li>住まいのエリア</li><li>氏名・生年月日・連絡先</li></ul></div></div></div>
+      <details class="pd-code"><summary>HTMLを見る・コピー</summary><button type="button" class="pd-copy">コピー</button><pre><code>&lt;div class="yk-listbox"&gt;&lt;p class="yk-listbox__ttl"&gt;入力項目&lt;/p&gt;&lt;ul&gt;&lt;li&gt;希望する働き方&lt;/li&gt;&lt;li&gt;転職希望時期&lt;/li&gt;&lt;li&gt;住まいのエリア&lt;/li&gt;&lt;li&gt;氏名・生年月日・連絡先&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;</code></pre></details>
+    </section>
+
+    <section class="pd-card" id="detail-7">
+      <div class="pd-card__head"><span class="pd-card__name">登録ボタン（区切りごと）</span><code class="pd-card__cls">yk-btn</code></div>
+      <dl class="pd-meta"><dt>使う場面</dt><dd>個別ページの各H2ブロックの最後。</dd><dt>ルール</dt><dd>文言は「まずは無料で簡単登録」の型（押した先の行動を書く）。上に対象条件のひとこと。</dd><dt class="pd-ng">NG</dt><dd>毎回同じ位置に大ボタンを連続させる</dd></dl>
+      <div class="pd-sample"><p class="pd-sample__lbl">見本</p><div class="yk-body"><p class="yk-catch">正社員のみ対象です！</p><a class="yk-btn" href="#sample">まずは無料で簡単登録</a></div></div>
+      <details class="pd-code"><summary>HTMLを見る・コピー</summary><button type="button" class="pd-copy">コピー</button><pre><code>&lt;p class="yk-catch"&gt;正社員のみ対象です！&lt;/p&gt;&lt;a class="yk-btn" href="#sample"&gt;まずは無料で簡単登録&lt;/a&gt;</code></pre></details>
+    </section>
+
+  <p class="pd-chapter" id="image">I. 画像</p>
+  <p class="pd-chapter__lead">画像を入れる場所すべてに「画像指示枠」を置き、できたら「本文画像」に差し替える（体験談パーツ集と同じ仕組み）。</p>
+
+    <section class="pd-card" id="image-1">
+      <div class="pd-card__head"><span class="pd-card__name">画像指示枠（LP作成中に置く）</span><code class="pd-card__cls">mt-imgslot / --have / --ad</code></div>
+      <dl class="pd-meta"><dt>使う場面</dt><dd>台本からLPを組むとき、画像を入れる場所すべて。</dd><dt>ルール</dt><dd>紫＝新規生成（GPTに貼る指示文つき）、青＝既存素材、橙＝広告主バナー・公式ロゴ。ロゴ・公式画面・バナーは<b>生成しない</b>（橙で「ASPから取得」）。</dd><dt class="pd-ng">NG</dt><dd>公開ページに枠を残す／ロゴをAIで作る</dd></dl>
+      <div class="pd-sample"><p class="pd-sample__lbl">見本</p><div class="yk-body"><figure class="mt-imgslot mt-imgslot--ad"><figcaption class="mt-imgslot__head"><span class="mt-imgslot__id">IMG-01</span><span class="mt-imgslot__kind">公式素材</span><span>ロゴ・102×28</span><span class="mt-imgslot__todo">画像ができたら差し替え</span></figcaption><div class="mt-imgslot__box" style="aspect-ratio:4/1">サービスAの公式ロゴ（ASP素材）</div><dl class="mt-imgslot__spec"><dt>置き場所</dt><dd>ロゴの横流し・比較表・BEST3</dd><dt>alt</dt><dd>サービスA</dd></dl></figure>
+<figure class="mt-imgslot"><figcaption class="mt-imgslot__head"><span class="mt-imgslot__id">IMG-02</span><span class="mt-imgslot__kind">新規生成（GPT）</span><span>FV・人物</span><span class="mt-imgslot__todo">画像ができたら差し替え</span></figcaption><div class="mt-imgslot__box" style="aspect-ratio:3/4">白衣の薬剤師がクリップボードを持って微笑む（イメージ）</div><dl class="mt-imgslot__spec"><dt>置き場所</dt><dd>FVの右</dd><dt>画像内の文字</dt><dd>なし</dd><dt>alt</dt><dd>薬剤師のイメージ</dd></dl><details class="mt-imgslot__prompt"><summary>GPTに貼る指示文</summary><pre>写真風・縦3:4。調剤薬局の明るい店内で、白衣の日本人の薬剤師（30代女性）がクリップボードを胸に持ち、こちらを見て穏やかに微笑んでいる。背景はぼかした薬の棚。文字・ロゴ・透かしは入れない。</pre></details></figure></div></div>
+      <details class="pd-code"><summary>HTMLを見る・コピー</summary><button type="button" class="pd-copy">コピー</button><pre><code>&lt;figure class="mt-imgslot mt-imgslot--ad"&gt;&lt;figcaption class="mt-imgslot__head"&gt;&lt;span class="mt-imgslot__id"&gt;IMG-01&lt;/span&gt;&lt;span class="mt-imgslot__kind"&gt;公式素材&lt;/span&gt;&lt;span&gt;ロゴ・102×28&lt;/span&gt;&lt;span class="mt-imgslot__todo"&gt;画像ができたら差し替え&lt;/span&gt;&lt;/figcaption&gt;&lt;div class="mt-imgslot__box" style="aspect-ratio:4/1"&gt;サービスAの公式ロゴ（ASP素材）&lt;/div&gt;&lt;dl class="mt-imgslot__spec"&gt;&lt;dt&gt;置き場所&lt;/dt&gt;&lt;dd&gt;ロゴの横流し・比較表・BEST3&lt;/dd&gt;&lt;dt&gt;alt&lt;/dt&gt;&lt;dd&gt;サービスA&lt;/dd&gt;&lt;/dl&gt;&lt;/figure&gt;
+&lt;figure class="mt-imgslot"&gt;&lt;figcaption class="mt-imgslot__head"&gt;&lt;span class="mt-imgslot__id"&gt;IMG-02&lt;/span&gt;&lt;span class="mt-imgslot__kind"&gt;新規生成（GPT）&lt;/span&gt;&lt;span&gt;FV・人物&lt;/span&gt;&lt;span class="mt-imgslot__todo"&gt;画像ができたら差し替え&lt;/span&gt;&lt;/figcaption&gt;&lt;div class="mt-imgslot__box" style="aspect-ratio:3/4"&gt;白衣の薬剤師がクリップボードを持って微笑む（イメージ）&lt;/div&gt;&lt;dl class="mt-imgslot__spec"&gt;&lt;dt&gt;置き場所&lt;/dt&gt;&lt;dd&gt;FVの右&lt;/dd&gt;&lt;dt&gt;画像内の文字&lt;/dt&gt;&lt;dd&gt;なし&lt;/dd&gt;&lt;dt&gt;alt&lt;/dt&gt;&lt;dd&gt;薬剤師のイメージ&lt;/dd&gt;&lt;/dl&gt;&lt;details class="mt-imgslot__prompt"&gt;&lt;summary&gt;GPTに貼る指示文&lt;/summary&gt;&lt;pre&gt;写真風・縦3:4。調剤薬局の明るい店内で、白衣の日本人の薬剤師（30代女性）がクリップボードを胸に持ち、こちらを見て穏やかに微笑んでいる。背景はぼかした薬の棚。文字・ロゴ・透かしは入れない。&lt;/pre&gt;&lt;/details&gt;&lt;/figure&gt;</code></pre></details>
+    </section>
+
+    <section class="pd-card" id="image-2">
+      <div class="pd-card__head"><span class="pd-card__name">本文画像（差し替え後）</span><code class="pd-card__cls">mt-img</code></div>
+      <dl class="pd-meta"><dt>使う場面</dt><dd>画像ができたらこの形に置き換える。</dd><dt>ルール</dt><dd>全幅。alt・width・height を必ず入れる。写真風の人物は「※写真はイメージです」。</dd><dt class="pd-ng">NG</dt><dd>altを空にする</dd></dl>
+      <div class="pd-sample"><p class="pd-sample__lbl">見本</p><div class="yk-body"><figure class="mt-img"><span class="yk-ph" style="aspect-ratio:16/9">画像</span><figcaption class="mt-img__note">※写真はイメージです</figcaption></figure></div></div>
+      <details class="pd-code"><summary>HTMLを見る・コピー</summary><button type="button" class="pd-copy">コピー</button><pre><code>&lt;figure class="mt-img"&gt;&lt;img src="images/〇〇.webp" alt="画像の内容" width="1080" height="608" loading="lazy"&gt;&lt;figcaption class="mt-img__note"&gt;※写真はイメージです&lt;/figcaption&gt;&lt;/figure&gt;</code></pre></details>
+    </section>
+</div>
+<script>
+document.querySelectorAll('a[href="#sample"]').forEach(function (a) { a.addEventListener('click', function (e) { e.preventDefault(); }); });
+document.querySelectorAll('form[action="#sample"]').forEach(function (f) { f.addEventListener('submit', function (e) { e.preventDefault(); }); });
+document.querySelectorAll('.pd-copy').forEach(function (b) { b.addEventListener('click', function () { var t = b.parentNode.querySelector('code').textContent; (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).then(function () { b.textContent = 'コピーしました'; setTimeout(function () { b.textContent = 'コピー'; }, 1500); }).catch(function () { b.textContent = '選択してコピーしてください'; }); }); });
+</script>
+<script>
+/* yk-radar：data-labels（カンマ区切り）と data-scores（同じ数）からレーダーチャートを描く。ページ末尾に1回だけ置く */
+document.querySelectorAll('.yk-radar[data-labels]').forEach(function (el) {
+  var L = el.dataset.labels.split(','), S = el.dataset.scores.split(',').map(Number), M = +(el.dataset.max || 5), n = L.length, cx = 160, cy = 150, R = 100;
+  function p(i, r) { var a = -Math.PI / 2 + i * 2 * Math.PI / n; return [(cx + r * Math.cos(a)).toFixed(1), (cy + r * Math.sin(a)).toFixed(1)]; }
+  var s = '<svg viewBox="0 0 320 300" role="img" aria-label="' + (el.dataset.name || '') + 'の評価：' + L.map(function (l, i) { return l + ' ' + S[i]; }).join('、') + '">';
+  for (var k = 1; k <= M; k++) s += '<polygon points="' + L.map(function (_, i) { return p(i, R * k / M).join(','); }).join(' ') + '" fill="none" stroke="#c9d3e3"/>';
+  L.forEach(function (l, i) { var a = p(i, R), b = p(i, R + 24); s += '<line x1="' + cx + '" y1="' + cy + '" x2="' + a[0] + '" y2="' + a[1] + '" stroke="#c9d3e3"/><text x="' + b[0] + '" y="' + b[1] + '" text-anchor="middle" dominant-baseline="middle" font-size="12" font-weight="700" fill="#444">' + l + '</text>'; });
+  s += '<polygon points="' + S.map(function (v, i) { return p(i, R * v / M).join(','); }).join(' ') + '" fill="rgba(47,103,184,.18)" stroke="#2f67b8" stroke-width="2.5"/></svg>';
+  el.innerHTML = s;
+});
+</script>
+</body>
+</html>
