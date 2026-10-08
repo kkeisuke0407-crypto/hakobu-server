@@ -32,6 +32,23 @@ body { margin: 0; background: #f4f4f4; font-family: "Hiragino Sans", "Noto Sans 
 .pd-table { width: 100%; border-collapse: collapse; font-size: 13.5px; line-height: 1.6; }
 .pd-table th, .pd-table td { border: 1px solid #dbe3ec; padding: .5em .6em; text-align: left; vertical-align: top; }
 .pd-table th { background: #f3f6fa; white-space: nowrap; }
+.pd-sub { margin: 1.6em 0 .5em; padding-left: .6em; border-left: 5px solid #1f4f97; font-size: 16px; font-weight: 900; }
+.pd-x { overflow-x: auto; }
+.pd-prep { min-width: 560px; font-size: 13px; }
+.pd-prep td:first-child { width: 28%; font-weight: 700; } .pd-prep td:nth-child(2) { width: 22%; font-size: 12px; }
+.pd-prep label { display: flex; gap: .4em; align-items: flex-start; cursor: pointer; } .pd-prep input { margin-top: .35em; flex: 0 0 auto; }
+.pd-prep a { color: #1f4f97; }
+.pd-who { white-space: nowrap; font-size: 12px; font-weight: 700; color: #555; }
+@media (max-width: 600px) {
+  .pd-prep { min-width: 0; } .pd-prep, .pd-prep tbody, .pd-prep tr, .pd-prep td { display: block; width: auto !important; }
+  .pd-prep tr:first-child { display: none; }
+  .pd-prep tr { margin: 0 0 .6em; border: 1px solid #dbe3ec; border-radius: 8px; overflow: hidden; }
+  .pd-prep td { border: 0; padding: .25em .7em; }
+  .pd-prep td:first-child { padding: .5em .7em; background: #f3f6fa; }
+  .pd-prep td[data-l] { display: grid; grid-template-columns: 66px 1fr; gap: .5em; }
+  .pd-prep td[data-l]::before { content: attr(data-l); font-size: 11.5px; font-weight: 700; color: #888; }
+  .pd-prep td:last-child { padding-bottom: .6em; }
+}
 </style>
 </head>
 <body>
@@ -41,7 +58,135 @@ body { margin: 0; background: #f4f4f4; font-family: "Hiragino Sans", "Noto Sans 
     <p>薬剤師向け転職サイトの比較・ランキング型サイトを構造分析し、<b>見せ方の型だけ</b>を抜き出して作り直しました（参考サイトの文章・画像・サービス名・数値は使っていません）。トップ（比較・ランキング）と、サービス個別ページの両方の部品があります。</p>
     <p>全29パーツ。CSSは <code>parts.css</code> 1ファイル。LPで使うときは parts.css を読み込み、本文を <code>class="yk-body"</code> で囲む。体験談パーツ集（<code>mt-*</code>）と一緒に使える。</p>
   </div>
-  <ul class="pd-toc"><li><a href="#flow">ページの流れ</a></li><li><a href="#imgrule">画像の入れ方</a></li><li><a href="#fv">A. FV・ページ上部</a></li><li><a href="#top">B. 結論を先に見せる</a></li><li><a href="#compare">C. 比較する</a></li><li><a href="#rank">D. ランキングの中身</a></li><li><a href="#close">E. 締め・ページ下部</a></li><li><a href="#detail">F. サービス個別ページ</a></li><li><a href="#image">I. 画像</a></li></ul>
+  <ul class="pd-toc"><li><a href="#prep">集める情報と素材</a></li><li><a href="#flow">ページの流れ</a></li><li><a href="#imgrule">画像の入れ方</a></li><li><a href="#fv">A. FV・ページ上部</a></li><li><a href="#top">B. 結論を先に見せる</a></li><li><a href="#compare">C. 比較する</a></li><li><a href="#rank">D. ランキングの中身</a></li><li><a href="#close">E. 締め・ページ下部</a></li><li><a href="#detail">F. サービス個別ページ</a></li><li><a href="#image">I. 画像</a></li></ul>
+
+  <p class="pd-chapter" id="prep">0. LPを作る前に集める情報と素材</p>
+  <p class="pd-chapter__lead">パーツと並びを決めたら、そのパーツに入れる中身をここで集める。取り先は <b>ASP</b>＝ASPからもらう／<b>公式</b>＝公式サイトで調べる（URLと確認日を残す）／<b>編集部</b>＝自分で決める・作る／<b>生成</b>＝画像生成。チェック欄は画面上のメモ用（保存されない）。案件ごとの記録は下の「素材シート」に残す。</p>
+
+  <p class="pd-sub" id="prep-asp">① 案件・ASP（案件ごとに1回）</p>
+  <div class="pd-x"><table class="pd-table pd-prep"><tr><th>集めるもの</th><th>使うパーツ</th><th>取り先</th><th>確認すること</th></tr>
+    <tr><td><label><input type="checkbox"> ASP説明の原文</label></td><td data-l="使うパーツ"><span>全体</span></td><td class="pd-who" data-l="取り先"><span>ASP</span></td><td data-l="確認"><span>改変せず保存。成果地点・報酬・承認条件・NG条件をここから抜き出す</span></td></tr>
+    <tr><td><label><input type="checkbox"> 対象条件（資格・雇用形態・年齢・地域）</label></td><td data-l="使うパーツ"><span><a href="#top-1">BEST3</a>・<a href="#rank-6">2ボタン</a>・<a href="#rank-3">特徴チェックリスト</a></span></td><td class="pd-who" data-l="取り先"><span>ASP</span></td><td data-l="確認"><span>ボタン上のひとこと（＼正社員のみ対象／など）と「※無資格・学生は対象外」の注記に<b>そのまま</b>使う</span></td></tr>
+    <tr><td><label><input type="checkbox"> 禁止表現・NG</label></td><td data-l="使うパーツ"><span>全体</span></td><td class="pd-who" data-l="取り先"><span>ASP</span></td><td data-l="確認"><span>No.1・最大級・「年収が必ず上がる」等の可否。比較・ランキング形式そのものの可否も確認</span></td></tr>
+    <tr><td><label><input type="checkbox"> リスティング・指名KW・商標の条件</label></td><td data-l="使うパーツ"><span>広告設定</span></td><td class="pd-who" data-l="取り先"><span>ASP</span></td><td data-l="確認"><span>サービス名入りの見出し・広告文が使えるか</span></td></tr>
+    <tr><td><label><input type="checkbox"> サービスごとのリンク（トラッキングURL）</label></td><td data-l="使うパーツ"><span>全ボタン</span></td><td class="pd-who" data-l="取り先"><span>ASP</span></td><td data-l="確認"><span>サービスごとに別。届くまでは仮リンクで作り、公開前に置換</span></td></tr>
+    <tr><td><label><input type="checkbox"> 素材の利用条件</label></td><td data-l="使うパーツ"><span><a href="#fv-2">ロゴの横流し</a>・<a href="#image-1">画像指示枠</a></span></td><td class="pd-who" data-l="取り先"><span>ASP</span></td><td data-l="確認"><span>ロゴ・バナー・公式画面キャプチャ・人物写真の可否とサイズ。<b>不明ならロゴは文字表記で作って進める</b></span></td></tr>
+  </table></div>
+
+  <p class="pd-sub" id="prep-svc">② サービスごと（比較する全社ぶん）</p>
+  <div class="pd-x"><table class="pd-table pd-prep"><tr><th>集めるもの</th><th>使うパーツ</th><th>取り先</th><th>確認すること</th></tr>
+    <tr><td><label><input type="checkbox"> 正式名称・運営会社・有料職業紹介の許可番号</label></td><td data-l="使うパーツ"><span><a href="#detail-2">サービス概要</a>・<a href="#fv-3">PR表記</a></span></td><td class="pd-who" data-l="取り先"><span>公式</span></td><td data-l="確認"><span>表記ゆれをそろえる。許可番号は会社概要・フッターで確認</span></td></tr>
+    <tr><td><label><input type="checkbox"> ロゴ</label></td><td data-l="使うパーツ"><span><a href="#fv-2">ロゴの横流し</a>・<a href="#top-1">BEST3</a>・<a href="#compare-1">タブ切替の比較表</a>・<a href="#compare-2">2軸の早見表</a></span></td><td class="pd-who" data-l="取り先"><span>ASP</span></td><td data-l="確認"><span>生成・加工しない</span></td></tr>
+    <tr><td><label><input type="checkbox"> 公式バナー</label></td><td data-l="使うパーツ"><span><a href="#rank-2">ランキング内のタブ</a>・<a href="#close-1">迷ったらまずは</a>・<a href="#detail-2">サービス概要</a></span></td><td class="pd-who" data-l="取り先"><span>ASP</span></td><td data-l="確認"><span>比率とサイズ。ASPのPR表記込みで使う</span></td></tr>
+    <tr><td><label><input type="checkbox"> 求人数（数・時点・出典）</label></td><td data-l="使うパーツ"><span><a href="#compare-1">タブ切替の比較表</a>・<a href="#rank-8">基本情報の表</a></span></td><td class="pd-who" data-l="取り先"><span>公式</span></td><td data-l="確認"><span>「◯万件以上（◯年◯月時点）」。公開求人数か非公開込みかを書き分ける</span></td></tr>
+    <tr><td><label><input type="checkbox"> 対応地域・対応年代・得意な職場</label></td><td data-l="使うパーツ"><span><a href="#rank-8">基本情報の表</a>・<a href="#compare-1">タブ切替の比較表</a></span></td><td class="pd-who" data-l="取り先"><span>公式</span></td><td data-l="確認"><span>病院／調剤薬局／ドラッグストア／企業 のどれに強いか</span></td></tr>
+    <tr><td><label><input type="checkbox"> サポート内容</label></td><td data-l="使うパーツ"><span><a href="#compare-1">タブ切替の比較表</a>・<a href="#rank-3">特徴チェックリスト</a></span></td><td class="pd-who" data-l="取り先"><span>公式</span></td><td data-l="確認"><span>面接対策・条件交渉・面接同行・LINE相談・入職後フォロー の有無（比較表のタグ・◎○△）</span></td></tr>
+    <tr><td><label><input type="checkbox"> 対応時間・紹介までの日数</label></td><td data-l="使うパーツ"><span><a href="#rank-8">基本情報の表</a>・<a href="#rank-1">順位見出し＋赤キャッチ</a></span></td><td class="pd-who" data-l="取り先"><span>公式</span></td><td data-l="確認"><span>「最短◯日」は公式の記載がある場合だけ</span></td></tr>
+    <tr><td><label><input type="checkbox"> 実績の数字（満足度・利用者数・No.1 など）</label></td><td data-l="使うパーツ"><span><a href="#fv-1">FV</a>・<a href="#rank-3">特徴チェックリスト</a>・<a href="#rank-4">編集部のイチオシポイント</a></span></td><td class="pd-who" data-l="取り先"><span>公式</span></td><td data-l="確認"><span>調査機関・時期・対象・方法を注記できるものだけ。出典が古い・不明なら使わない</span></td></tr>
+    <tr><td><label><input type="checkbox"> 強み3〜4つ（根拠URLつき）</label></td><td data-l="使うパーツ"><span><a href="#top-1">BEST3</a>・<a href="#detail-4">番号つき目次ボックス</a>・<a href="#detail-5">番号ラベルつき見出し</a>・<a href="#compare-3">2社併用のすすめ</a></span></td><td class="pd-who" data-l="取り先"><span>公式＋編集部</span></td><td data-l="確認"><span>「なぜそう言えるか」の公式ページを1つずつ結ぶ</span></td></tr>
+    <tr><td><label><input type="checkbox"> 向いている人・向いていない人</label></td><td data-l="使うパーツ"><span><a href="#detail-6">チェックの箱</a></span></td><td class="pd-who" data-l="取り先"><span>編集部</span></td><td data-l="確認"><span>公式の対象条件と強みから書く。感想で作らない</span></td></tr>
+    <tr><td><label><input type="checkbox"> 登録の流れ（ステップ・入力項目・所要時間）</label></td><td data-l="使うパーツ"><span><a href="#detail-6">チェックの箱</a>・<a href="#detail-3">公式画面＋出典</a></span></td><td class="pd-who" data-l="取り先"><span>公式</span></td><td data-l="確認"><span>実際の入力項目を全部。画面キャプチャは利用条件を確認、個人情報の入る画面は使わない</span></td></tr>
+    <tr><td><label><input type="checkbox"> 求人例（1社2〜4件）</label></td><td data-l="使うパーツ"><span><a href="#top-2">求人の例カード</a>・<a href="#rank-9">求人例カード</a></span></td><td class="pd-who" data-l="取り先"><span>公式</span></td><td data-l="確認"><span>年収・施設形態・業務内容・地域・雇用形態・特徴＋<b>求人URLと取得日</b>。公開前に掲載中か再確認</span></td></tr>
+    <tr><td><label><input type="checkbox"> 口コミ</label></td><td data-l="使うパーツ"><span><a href="#rank-5">口コミ</a></span></td><td class="pd-who" data-l="取り先"><span>公式</span></td><td data-l="確認"><span>公式掲載・許諾のあるものだけ。年代性別・要約・出典URL。気になる点も1つは入れる</span></td></tr>
+    <tr><td><label><input type="checkbox"> よくある質問</label></td><td data-l="使うパーツ"><span>個別ページ</span></td><td class="pd-who" data-l="取り先"><span>公式</span></td><td data-l="確認"><span>公式FAQのURLと回答の要点</span></td></tr>
+  </table></div>
+
+  <p class="pd-sub" id="prep-edit">③ 編集部で決める・作る</p>
+  <div class="pd-x"><table class="pd-table pd-prep"><tr><th>集めるもの</th><th>使うパーツ</th><th>取り先</th><th>確認すること</th></tr>
+    <tr><td><label><input type="checkbox"> 比較するサービスと順位の決め方</label></td><td data-l="使うパーツ"><span><a href="#top-1">BEST3</a>・<a href="#compare-1">タブ切替の比較表</a>・<a href="#close-3">フッター</a></span></td><td class="pd-who" data-l="取り先"><span>編集部</span></td><td data-l="確認"><span>「ランキング調査概要」ページに書く（決め方がないなら順位を付けない並べ方にする）</span></td></tr>
+    <tr><td><label><input type="checkbox"> 評価軸と採点基準</label></td><td data-l="使うパーツ"><span><a href="#compare-1">タブ切替の比較表</a>・<a href="#rank-7">レーダーチャート</a></span></td><td class="pd-who" data-l="取り先"><span>編集部</span></td><td data-l="確認"><span>総合評価（S/A）・星・◎○△・レーダー6軸の点数と、その根拠表。基準を公開できないなら使わない</span></td></tr>
+    <tr><td><label><input type="checkbox"> 2軸マップの軸と各社の位置</label></td><td data-l="使うパーツ"><span><a href="#compare-2">2軸の早見表</a></span></td><td class="pd-who" data-l="取り先"><span>編集部</span></td><td data-l="確認"><span>縦横の軸と、置いた位置の根拠（公表値・採点）</span></td></tr>
+    <tr><td><label><input type="checkbox"> 2社併用・「迷ったらまずは」に出す2社</label></td><td data-l="使うパーツ"><span><a href="#compare-3">2社併用のすすめ</a>・<a href="#close-1">迷ったらまずは</a></span></td><td class="pd-who" data-l="取り先"><span>編集部</span></td><td data-l="確認"><span>組み合わせる理由（求人の多さ×サポート など）</span></td></tr>
+    <tr><td><label><input type="checkbox"> 求人カードの目的見出し</label></td><td data-l="使うパーツ"><span><a href="#top-2">求人の例カード</a></span></td><td class="pd-who" data-l="取り先"><span>編集部</span></td><td data-l="確認"><span>高年収・休日・在宅・未経験 など。KW調査で出た読者の目的に合わせる</span></td></tr>
+    <tr><td><label><input type="checkbox"> FVの見出し・更新月・実績の丸3つ</label></td><td data-l="使うパーツ"><span><a href="#fv-1">FV</a></span></td><td class="pd-who" data-l="取り先"><span>編集部</span></td><td data-l="確認"><span>丸の数字は②の出典つきの数字から選ぶ。更新月は実際に見直した月</span></td></tr>
+    <tr><td><label><input type="checkbox"> 診断フォームの結果の出し方</label></td><td data-l="使うパーツ"><span><a href="#close-2">転職サイト診断</a></span></td><td class="pd-who" data-l="取り先"><span>編集部</span></td><td data-l="確認"><span>条件 → 表示するサービスの対応表と結果ページ。作れないならフォームを置かない</span></td></tr>
+    <tr><td><label><input type="checkbox"> 運営者情報・ランキング調査概要・プライバシーポリシー</label></td><td data-l="使うパーツ"><span><a href="#close-3">フッター</a></span></td><td class="pd-who" data-l="取り先"><span>編集部</span></td><td data-l="確認"><span>3ページとも公開してからリンク</span></td></tr>
+    <tr><td><label><input type="checkbox"> 公開先URL・計測</label></td><td data-l="使うパーツ"><span>全体</span></td><td class="pd-who" data-l="取り先"><span>編集部</span></td><td data-l="確認"><span>ドメイン・ディレクトリ、アクセス解析、ボタンのクリック計測</span></td></tr>
+  </table></div>
+
+  <p class="pd-sub" id="prep-img">④ 画像（画像指示枠で管理）</p>
+  <div class="pd-x"><table class="pd-table pd-prep"><tr><th>集めるもの</th><th>使うパーツ</th><th>取り先</th><th>確認すること</th></tr>
+    <tr><td><label><input type="checkbox"> ロゴ・公式バナー・公式画面</label></td><td data-l="使うパーツ"><span><a href="#image-1">画像指示枠</a></span></td><td class="pd-who" data-l="取り先"><span>ASP・公式</span></td><td data-l="確認"><span>橙の枠。生成しない</span></td></tr>
+    <tr><td><label><input type="checkbox"> FVの人物</label></td><td data-l="使うパーツ"><span><a href="#fv-1">FV</a></span></td><td class="pd-who" data-l="取り先"><span>生成</span></td><td data-l="確認"><span>紫の枠。白衣の薬剤師など。写真風なら「※写真はイメージです」</span></td></tr>
+    <tr><td><label><input type="checkbox"> 求人カードの職場写真</label></td><td data-l="使うパーツ"><span><a href="#top-2">求人の例カード</a></span></td><td class="pd-who" data-l="取り先"><span>生成</span></td><td data-l="確認"><span>病院・薬局などのイメージ。実在の施設に見せない</span></td></tr>
+    <tr><td><label><input type="checkbox"> 口コミのアバター</label></td><td data-l="使うパーツ"><span><a href="#rank-5">口コミ</a></span></td><td class="pd-who" data-l="取り先"><span>生成</span></td><td data-l="確認"><span>イラスト。全員同じ画風</span></td></tr>
+    <tr><td><label><input type="checkbox"> 編集部キャラクター</label></td><td data-l="使うパーツ"><span><a href="#rank-4">編集部のイチオシポイント</a></span></td><td class="pd-who" data-l="取り先"><span>生成・既存</span></td><td data-l="確認"><span>サイトで1種類に固定して使い回す</span></td></tr>
+  </table></div>
+  <p class="pd-sub" id="prep-none">⑤ そろわないときの組み替え</p>
+  <table class="pd-table"><tr><th>そろわないもの</th><th>どうするか</th></tr>
+    <tr><td>採点基準を公開できない</td><td>星・S/A・レーダー・2軸マップを外し、公表値の比較表（求人数・地域・サポートの有無）だけにする</td></tr>
+    <tr><td>求人例が取れない</td><td>求人の例カードと「注目の求人」タブを外す（架空の求人で埋めない）</td></tr>
+    <tr><td>公式掲載・許諾のある口コミがない</td><td>口コミを外し、編集部のイチオシ（事実ベース）で受ける</td></tr>
+    <tr><td>ロゴの利用条件が不明</td><td>ロゴの横流しを外し、比較表・BEST3はサービス名の文字で作る</td></tr>
+    <tr><td>実績の数字に出典がない</td><td>FVの実績の丸を外す／特徴から数字を抜く</td></tr>
+    <tr><td>トラッキングリンクがまだ</td><td>仮リンクで制作・確認まで進め、公開前に置換（未置換チェック）</td></tr>
+  </table>
+  <p class="pd-sub" id="prep-sheet">⑥ 素材シート（案件ごとにコピーして使う）</p>
+  <p class="pd-chapter__lead">同じ内容を <a href="素材シート_テンプレート.md">素材シート_テンプレート.md</a> としても置いている。案件フォルダにコピーして埋める。</p>
+  <details class="pd-code"><summary>素材シートを見る・コピー</summary><button type="button" class="pd-copy">コピー</button><pre><code># 素材シート：（案件名）
+
+作成日：　　　／ FVの更新月（◯年◯月最新版）：
+※数字・強み・求人・口コミには必ず「出典URL・確認日」を書く。分からない欄は「未確認」と書き、埋めない。
+
+## 1. 案件・ASP
+- ASP・案件名：
+- ASP説明原文の保存先：
+- 成果地点／報酬／承認条件：
+- 対象条件（資格・雇用形態・年齢・地域）：
+  - ボタン上のひとこと：＼　　　　／
+  - 注記：※
+- 禁止表現・NG（No.1・最大級・年収保証・比較形式 等）：
+- リスティング・指名KW・商標の条件：
+- PR表記に書くサービス名：
+- 素材の利用条件（ロゴ／バナー／公式画面キャプチャ／人物写真）：
+
+## 2. サービスごと（比較する全社ぶん、この節を複製）
+### サービス名：
+- 正式表記／運営会社／有料職業紹介 許可番号：
+- 公式URL／トラッキングリンク：
+- ロゴ（ファイル名・サイズ・入手元）：
+- 公式バナー（ファイル名・比率・入手元）：
+- 求人数（数・時点・出典URL）：
+- 対応地域／対応年代／得意な職場：
+- サポート内容（有無）：面接対策［ ］条件交渉［ ］面接同行［ ］LINE相談［ ］入職後フォロー［ ］
+- 対応時間／紹介までの日数（出典）：
+- 実績の数字（調査機関・時期・対象）：
+- 強み（根拠URL）：
+  1.
+  2.
+  3.
+- 向いている人／向いていない人：
+- 登録の流れ（ステップ・入力項目・所要時間・画面キャプチャ可否）：
+- 求人例：
+
+  | 年収 | 施設形態 | 業務内容 | 地域 | 雇用形態 | 特徴 | 求人URL | 取得日 |
+  |---|---|---|---|---|---|---|---|
+
+- 口コミ（公式掲載・許諾あり）：
+
+  | 年代性別 | 要約 | 良い点／気になる点 | 出典URL |
+  |---|---|---|---|
+
+- よくある質問（公式FAQのURL）：
+- 対象外の人：
+
+## 3. 編集部で決める
+- 比較するサービスと順位、その決め方：
+- 評価軸と採点基準（総合評価S/A・星・◎○△・レーダー6軸）：
+- 2軸マップの縦軸・横軸と各社の位置の根拠：
+- 2社併用／「迷ったらまずは」の2社と理由：
+- 求人カードの目的見出しと対応KW：
+- FVの見出し・実績の丸3つ（出典）：
+- 診断フォームの結果の出し方：
+- 運営者情報／ランキング調査概要／プライバシーポリシーのURL：
+- 編集部キャラクター画像：
+- 公開先URL・計測：
+
+## 4. 画像
+
+| ID | 種類（生成／既存／ASP） | 置き場所（パーツ） | 比率 | 画像内の文字 | alt | 入手元・状態 |
+|---|---|---|---|---|---|---|
+</code></pre></details>
 
   <p class="pd-chapter" id="flow">ページの流れとルール（参考サイトの構造から）</p>
   <table class="pd-table">
