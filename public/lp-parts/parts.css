@@ -93,7 +93,8 @@
 .mt-spec__cell { margin: 0; background: #fff; text-align: center; }
 .mt-spec__cell--wide { grid-column: span 2; }
 .mt-spec__k { display: block; padding: .35em .2em; background: var(--mt-blue-bg); color: var(--mt-blue); font-size: 13px; font-weight: 700; line-height: 1.4; }
-.mt-spec__mark { display: block; margin: .3em 0 0; color: var(--mt-red); font-size: 28px; font-weight: 900; line-height: 1.2; }
+.mt-spec__mark { display: flex; align-items: center; justify-content: center; height: 32px; margin: .3em 0 0; color: var(--mt-red); }
+.mt-spec__mark .mt-mk__svg { width: 28px; height: 28px; }
 .mt-spec__v { display: block; margin: 0; padding: .1em .3em .6em; font-size: 12.5px; font-weight: 700; line-height: 1.5; }
 .mt-spec .mt-cta { margin: 1.1em .8em 1.2em; }
 /* 特徴リスト（黄色い箱） */
@@ -235,11 +236,16 @@
 .mt-vs tbody th { width: 28%; background: #fafafa; font-size: 13px; font-weight: 700; }
 .mt-vs td.is-pick { background: #fffdf0; }
 .mt-vs small { display: block; font-size: 11.5px; color: var(--mt-sub); }
-.mt-mk { display: block; font-size: 22px; font-weight: 900; line-height: 1.15; }
+/* 記号：字形の大きさがフォントでそろわないため、同じ大きさの図形で表示（build.cjs の mk / mkIcon） */
+.mt-mk { display: flex; align-items: center; justify-content: center; height: 26px; margin: 0 auto 2px; }
+.mt-mk__svg { display: block; width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linejoin: round; stroke-linecap: round; }
 .mt-mk--best { color: var(--mt-red); }
 .mt-mk--good { color: var(--mt-orange); }
 .mt-mk--fair, .mt-mk--bad { color: #9aa7b6; }
-.mt-cmpv .mt-mk--bad { font-size: 26px; }
+/* 記号のあるマスは上端にそろえ、下の一言の長さで記号の高さがずれないようにする */
+.mt-vs td:has(> .mt-mk), .mt-table td:has(> .mt-mk), .mt-cmpv td:has(> .mt-mk) { vertical-align: top; padding-top: 10px; }
+/* 読み上げ用の文字（画面には出さない） */
+.mt-sr { position: absolute !important; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
 
 /* 縦型比較表（3社・総合評価つき）：横スクロールなし。上に総合評価、下に公式サイトボタン */
 .mt-cmpv { width: 100%; margin: 1.2em 0; border-collapse: separate; border-spacing: 0; table-layout: fixed; font-size: 13px; line-height: 1.45; background: #fff; }
